@@ -18,11 +18,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 WORKDIR /app
 
 # Copy and install PHP deps
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader
-
-# Copy rest of the app
 COPY . .
+RUN composer install --no-dev --optimize-autoloader
 
 # Install Node deps & build
 RUN npm install && npm run build
