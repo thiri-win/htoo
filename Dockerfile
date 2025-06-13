@@ -12,10 +12,12 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy code
-COPY . .
+COPY composer.json composer.lock ./
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
+
+COPY . .
 
 # Install Node dependencies & build assets
 RUN npm install && npm run build
