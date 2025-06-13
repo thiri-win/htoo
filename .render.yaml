@@ -1,0 +1,9 @@
+# .render.yaml
+services:
+  - type: web
+    name: laravel-vue-sqlite
+    env: docker
+    plan: free
+    region: oregon
+    buildCommand: ""
+    startCommand: ""
