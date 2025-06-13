@@ -1,37 +1,37 @@
-# Dockerfile
 FROM laravelsail/php82-composer
 
-# Install system dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
-    nodejs \
-    npm \
-    sqlite3 \
-    && rm -rf /var/lib/apt/lists/*
+    libpng-dev libjpeg-dev libfreetype6-dev \
+    zip unzip git curl \
+    sqlite3 libsqlite3-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd pdo pdo_sqlite
 
-# Set working directory
+# Install Node.js (NodeSource version for compatibility)
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
+
+# Install Composer (redundant if already in base image, but safe)
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 WORKDIR /app
 
-# Copy code
+# Copy and install PHP deps
 COPY composer.json composer.lock ./
-
-# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Copy rest of the app
 COPY . .
 
-# Install Node dependencies & build assets
+# Install Node deps & build
 RUN npm install && npm run build
 
-# Generate key
-RUN php artisan key:generate
-
-# Cache configs
+# Cache config
 RUN php artisan config:cache && php artisan view:cache && php artisan route:cache
 
-# Create SQLite file if not exists
+# Create SQLite db file
 RUN touch database/database.sqlite
 
-# Expose port for Laravel app
 EXPOSE 8000
-
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
