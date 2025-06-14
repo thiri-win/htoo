@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\VoucherPrintController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -22,3 +23,11 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/vouchers/{voucher}/print', [VoucherPrintController::class, 'print'])->name('vouchers.print');
 // Route::get('/sales/{?sale}', )
+
+// routes/web.php
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'database' => DB::connection()->getPdo() ? 'connected' : 'disconnected'
+    ]);
+});

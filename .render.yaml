@@ -1,4 +1,3 @@
-# .render.yaml
 services:
   - type: web
     name: laravel-vue-sqlite
@@ -7,3 +6,12 @@ services:
     region: oregon
     buildCommand: ""
     startCommand: ""
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: DB_DATABASE
+        value: /app/database/database.sqlite

@@ -8,33 +8,41 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_sqlite
 
-# Install Node.js (NodeSource version for compatibility)
+# Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
 WORKDIR /app
 
-# Copy and install PHP deps
+# Copy files
 COPY . .
-RUN composer install --no-dev --optimize-autoloader
 
-# Permissions fix
-RUN chmod -R 775 storage bootstrap/cache
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Install Node deps & build assets (e.g. TailwindCSS)
-RUN npm install && npm run build
+# Create necessary directories and set permissions
+RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
+    && mkdir -p bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache
 
-# Laravel caching
-RUN php artisan config:cache && php artisan view:cache && php artisan route:cache
+# Install Node dependencies and build
+RUN npm ci --only=production && npm run build
 
-# Create SQLite database file
-RUN touch database/database.sqlite
+# Create SQLite database
+RUN mkdir -p database && touch database/database.sqlite \
+    && chmod 664 database/database.sqlite
+
+# Generate app key if not exists
+RUN php artisan key:generate --no-interaction
+
+# Run Laravel optimizations
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
 
 # Run migrations
-RUN php artisan migrate --force
+RUN php artisan migrate --force --no-interaction
 
 EXPOSE 8000
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
