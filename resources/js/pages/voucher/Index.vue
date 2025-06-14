@@ -4,7 +4,7 @@ import { Link } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
 import dayjs from 'dayjs';
 
-const props = defineProps({
+defineProps({
     vouchers: Array
 })
 onMounted(() => {

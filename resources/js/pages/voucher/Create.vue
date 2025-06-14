@@ -56,7 +56,11 @@ form.total = computed(() => {
 })
 
 const submit = () => {
-    props.voucher.car_number ? form.put(route('vouchers.update', props.voucher.id)) : form.post(route('vouchers.store'));
+    if(props.voucher.car_number) {
+        form.put(route('vouchers.update', props.voucher.id)) : 
+    } else {
+        form.post(route('vouchers.store'));
+    }
 }
 
 </script>

@@ -1,10 +1,10 @@
-<script setup lang="js">
+<script setup lang="ts">
 import { ref, nextTick } from 'vue';
 import html2pdf from 'html2pdf.js';
 
 const printSection = ref(null);
 
-const props = defineProps({
+defineProps({
     voucher: Object
 })
 
@@ -105,7 +105,7 @@ const downloadPDF = async () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="sale in voucher.sales">
+                    <tr v-for="sale in voucher.sales" :key="sale.id">
                         <td>{{ sale.description }}</td>
                         <td class="text-right">{{ sale.quantity }}</td>
                         <td class="text-right">{{ sale.unit_price }}</td>

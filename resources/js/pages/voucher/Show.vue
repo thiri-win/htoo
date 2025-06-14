@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import TextLink from '@/components/TextLink.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-const props = defineProps({
+defineProps({
     voucher: Object
 })
 </script>
