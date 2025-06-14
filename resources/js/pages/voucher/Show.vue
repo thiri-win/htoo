@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="js">
 import TextLink from '@/components/TextLink.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 const props = defineProps({
@@ -40,7 +40,7 @@ const props = defineProps({
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="sale in voucher.sales">
+                        <tr v-for="sale in voucher.sales" :key="sale.id">
                             <td class="!text-left">{{ sale.description }}</td>
                             <td>{{ sale.quantity }}</td>
                             <td>{{ sale.unit_price }}</td>

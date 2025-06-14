@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="js">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
@@ -34,7 +34,7 @@ onMounted(() => {
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="voucher in vouchers">
+                <tr v-for="voucher in vouchers" :key="voucher.id">
                     <td>{{ voucher.id }}</td>
                     <td>{{ dayjs(voucher.date).format('D-M-YYYY') }}</td>
                     <td>{{ voucher.customer_name }}</td>
