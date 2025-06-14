@@ -1,6 +1,6 @@
 <?php
 
-echo "hello, world<br>";
+// echo "hello, world<br>";
 // try {
 //     $pdo = new PDO('sqlite:' . __DIR__ . '/../database/database.sqlite');
 //     echo "SQLite connection successful!";
