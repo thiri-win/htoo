@@ -1,6 +1,6 @@
 <?php
 
-// echo "hello, world<br>";
+echo "hello, world<br>";
 // try {
 //     $pdo = new PDO('sqlite:' . __DIR__ . '/../database/database.sqlite');
 //     echo "SQLite connection successful!";
@@ -8,8 +8,8 @@
 //     echo "SQLite connection failed: " . $e->getMessage();
 //     die(); // Stop execution if the connection fails
 // }
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
