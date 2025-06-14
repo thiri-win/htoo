@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="js">
 import { ref, nextTick } from 'vue';
 import html2pdf from 'html2pdf.js';
 

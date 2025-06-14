@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="js">
 import { usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 

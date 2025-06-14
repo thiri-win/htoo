@@ -1,4 +1,4 @@
-<script setup lang="js">
+<script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/vue3';
 import { computed, watch } from 'vue';
