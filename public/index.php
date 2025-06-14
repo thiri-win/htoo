@@ -1,5 +1,8 @@
 <?php
 
+echo "hello, world<br>";
+die("here");
+
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 
