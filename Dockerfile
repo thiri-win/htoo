@@ -20,6 +20,9 @@ WORKDIR /app
 # Copy files
 COPY . .
 
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
 # Install Node deps & build
 RUN npm install && npm run build
 
