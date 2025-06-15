@@ -21,6 +21,9 @@ RUN npm install && npm run build
 # Set Laravel permissions
 RUN chmod -R 775 storage bootstrap/cache
 
+# Copy .env file
+COPY .env .env
+
 # Set permissions
 RUN chmod 777 .env
 
