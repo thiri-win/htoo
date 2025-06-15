@@ -23,28 +23,3 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/vouchers/{voucher}/print', [VoucherPrintController::class, 'print'])->name('vouchers.print');
-
-
-
-Route::get('/logs', function () {
-    if (app()->environment('production')) {
-        return 'Not allowed in production'; // Prevent access in production
-    }
-
-    $logContent = Storage::get('logs/laravel.log');
-    return '<pre>' . e($logContent) . '</pre>'; // e() for escaping HTML
-});
-
-
-Route::get('/db-test', function () {
-    try {
-        DB::connection()->getPdo();
-        return 'Database connection successful. Database name: ' . DB::connection()->getDatabaseName();
-    } catch (\Exception $e) {
-        return 'Database connection failed: ' . $e->getMessage();
-    }
-});
-
-Route::get('/env-test', function () {
-    return 'APP_NAME: ' . env('APP_NAME');
-});
