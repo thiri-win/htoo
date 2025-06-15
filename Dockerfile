@@ -1,36 +1,58 @@
-FROM laravelsail/php82-composer
+FROM php:8.2-fpm-alpine
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    libpng-dev libjpeg-dev libfreetype6-dev \
-    zip unzip git curl \
-    sqlite3 libsqlite3-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_sqlite
+# Install system dependencies
+RUN apk update && apk add --no-cache \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    sqlite \
+    sqlite-dev \
+    libzip-dev
 
-# Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
+RUN docker-php-ext-install -j$(nproc) gd pdo_sqlite zip
 
-# Install Composer (redundant if already in base image, but safe)
+# Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Install Node.js and npm
+RUN apk add --no-cache nodejs npm
+
+# Set working directory
 WORKDIR /app
 
-# Copy files
+# Copy application files
 COPY . .
 
-# Install dependencies
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Install Node deps & build
-RUN npm install && npm run build
+# Install Node dependencies and build assets
+RUN npm install
+RUN npm run build
 
-# Cache config
-RUN php artisan config:cache && php artisan view:cache && php artisan route:cache
+# Create SQLite database file and set permissions
+RUN touch database/database.sqlite && \
+    chmod 777 database/database.sqlite
 
-# Create SQLite db file
-RUN touch database/database.sqlite
+# Set file permissions for storage and bootstrap cache
+RUN chmod -R 777 storage bootstrap/cache
 
-EXPOSE 8000
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Clear cache
+RUN php artisan config:clear
+RUN php artisan route:clear
+RUN php artisan view:clear
+
+# Expose port 9000 for FPM
+EXPOSE 9000
+
+# Set the user to www-data
+USER www-data
+
+# Start PHP-FPM server
+CMD ["php-fpm"]
