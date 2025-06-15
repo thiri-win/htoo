@@ -1,31 +1,46 @@
-# Dockerfile
-FROM laravelsail/php82-composer
+# Base PHP image with Apache
+FROM php:8.2-apache
 
-# Install system dependencies (SQLite, Node.js, npm, etc.)
-RUN apt-get update && apt-get install -y \
-    sqlite3 libsqlite3-dev \
-    nodejs npm unzip git curl
+# Enable Apache mod_rewrite (important for Laravel routes)
+RUN a2enmod rewrite
 
 # Set working directory
-WORKDIR /app
+WORKDIR /var/www/html
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    unzip \
+    libzip-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    sqlite3 \
+    libsqlite3-dev
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql zip mbstring xml
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Copy project files
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Give correct permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
-# Install Node modules (for Vue frontend)
-RUN npm install && npm run build
+# Copy Laravel .env.production as .env (Render uses production environment)
+RUN if [ -f .env.production ]; then cp .env.production .env; fi
 
-# Set Laravel permissions
-RUN chmod -R 775 storage bootstrap/cache
+# Install Laravel dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-# Copy .env file
-COPY .env .env
+# Laravel commands for production setup
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
 
-# Set permissions
-RUN chmod 777 .env
-
-# Generate key
-RUN php artisan key:generate
+# Default Apache command will run and serve Laravel
