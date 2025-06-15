@@ -1,5 +1,5 @@
-# # Dockerfile
-# FROM laravelsail/php82-composer
+# Dockerfile
+FROM laravelsail/php82-composer
 
 # # Install system dependencies (SQLite, Node.js, npm, etc.)
 # RUN apt-get update && apt-get install -y \
@@ -30,7 +30,7 @@
 # # Generate key
 # RUN php artisan key:generate
 
-FROM php:8.2-apache-alpine
+# FROM php:8.2-apache-alpine
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
