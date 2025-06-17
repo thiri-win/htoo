@@ -3,6 +3,7 @@ services:
     name: htoo-web
     env: docker
     buildCommand: composer install
+    dockerfilePath: Dockerfile
     plan: free
     branch: main
     autoDeploy: true
