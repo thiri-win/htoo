@@ -9,6 +9,7 @@ WORKDIR /var/www
 # Install dependencies
 RUN apk add --no-cache --virtual .build-deps \
     $PHPIZE_DEPS \
+    sqlite-dev \
     zip \
     unzip
 
