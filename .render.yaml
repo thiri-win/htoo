@@ -1,7 +1,8 @@
 services:
   - type: web
     name: laravel-vue-sqlite
-    env: docker
+    env: native
     plan: free
     branch: main
     autoDeploy: true
+    startCommand: php artisan serve --host 0.0.0.0 --port 80
