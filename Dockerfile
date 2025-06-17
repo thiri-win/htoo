@@ -5,7 +5,7 @@ FROM php:8.2-apache
 RUN a2enmod rewrite
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR /public
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
