@@ -1,12 +1,7 @@
 services:
   - type: web
-    name: htoo-web
+    name: laravel-vue-sqlite
     env: docker
-    buildCommand: composer install
-    dockerfilePath: Dockerfile
     plan: free
     branch: main
     autoDeploy: true
-    envVars:
-      - key: PORT
-        value: 10000
