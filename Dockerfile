@@ -1,31 +1,48 @@
-FROM php:8.2-fpm-alpine
-
-# Copy composer.lock and composer.json
-COPY composer.lock composer.json /var/www/
-
-# Set working directory
-WORKDIR /var/www
+FROM laravelsail/php82-composer
 
 # Install dependencies
-RUN apk add --no-cache --virtual .build-deps \
-    $PHPIZE_DEPS \
-    sqlite-dev \
-    zip \
-    unzip
+RUN apt-get update && apt-get install -y \
+    libpng-dev libjpeg-dev libfreetype6-dev \
+    zip unzip git curl \
+    sqlite3 libsqlite3-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd pdo pdo_sqlite
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
 
-# Copy existing application source code
-COPY . /var/www
+WORKDIR /app
 
-RUN docker-php-ext-install pdo_sqlite
+# Copy files
+COPY . .
 
-RUN composer install --no-ansi --no-dev --no-interaction --no-scripts --optimize-autoloader
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Change current user to www
-USER www-data
+# Create necessary directories and set permissions
+RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
+    && mkdir -p bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache
 
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+# Install Node dependencies and build
+RUN npm ci --only=production && npm run build
+
+# Create SQLite database
+RUN mkdir -p database && touch database/database.sqlite \
+    && chmod 664 database/database.sqlite
+
+# Generate app key if not exists
+RUN php artisan key:generate --no-interaction
+
+# Run Laravel optimizations
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
+
+# Run migrations
+RUN php artisan migrate --force --no-interaction
+
+EXPOSE 8000
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
