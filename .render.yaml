@@ -1,8 +1,30 @@
 services:
   - type: web
     name: laravel-vue-sqlite
-    env: docker
+    env: native
+    runtime: php
+    buildCommand: |
+      composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+      npm install
+      npm run build
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
     plan: free
     region: oregon
-    buildCommand: ""
-    startCommand: ""
+    envVars:
+      - key: APP_NAME
+        value: Laravel
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_DEBUG
+        value: false
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: NODE_VERSION
+        value: 18.x
+    healthCheckPath: /
+    autoDeploy: true
