@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-alpine
+FROM php:8.2-fpm-alpine
 
 # Copy composer.lock and composer.json
 COPY composer.lock composer.json /var/www/
@@ -16,16 +16,10 @@ RUN apk add --no-cache --virtual .build-deps \
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy existing application source code (TRY THIS TEMPORARILY FOR DIAGNOSIS)
+# Copy existing application source code
 COPY . /var/www
 
-# Clear Composer cache
-RUN composer clear-cache
-
 RUN docker-php-ext-install pdo_sqlite
-
-# Update dependencies (TRY THIS)
-RUN composer update --no-ansi --no-dev --no-interaction --no-scripts --optimize-autoloader
 
 RUN composer install --no-ansi --no-dev --no-interaction --no-scripts --optimize-autoloader
 
