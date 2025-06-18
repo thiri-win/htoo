@@ -1,48 +1,35 @@
+# Dockerfile
 FROM laravelsail/php82-composer
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    libpng-dev libjpeg-dev libfreetype6-dev \
-    zip unzip git curl \
-    sqlite3 libsqlite3-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_sqlite
+    nodejs \
+    npm \
+    sqlite3 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs
-
+# Set working directory
 WORKDIR /app
 
-# Copy files
+# Copy code
 COPY . .
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-# Create necessary directories and set permissions
-RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
-    && mkdir -p bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache \
-    && chown -R www-data:www-data storage bootstrap/cache
+# Install Node dependencies & build assets
+RUN npm install && npm run build
 
-# Install Node dependencies and build
-RUN npm ci --only=production && npm run build
+# Generate key
+RUN php artisan key:generate
 
-# Create SQLite database
-RUN mkdir -p database && touch database/database.sqlite \
-    && chmod 664 database/database.sqlite
+# Cache configs
+RUN php artisan config:cache && php artisan view:cache && php artisan route:cache
 
-# Generate app key if not exists
-RUN php artisan key:generate --no-interaction
+# Create SQLite file if not exists
+RUN touch database/database.sqlite
 
-# Run Laravel optimizations
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
-
-# Run migrations
-RUN php artisan migrate --force --no-interaction
-
+# Expose port for Laravel app
 EXPOSE 8000
+
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
