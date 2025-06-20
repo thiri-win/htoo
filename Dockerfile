@@ -1,52 +1,43 @@
-# Use official PHP image with Apache
-FROM php:8.2-apache
+# Set the base image for subsequent instructions
+FROM php:8.2-fpm
 
 # Install dependencies
-# RUN apt-get update && apt-get install -y \
-#     git \
-#     curl \
-#     libpng-dev \
-#     libonig-dev \
-#     libxml2-dev \
-#     zip \
-#     unzip \
-#     sqlite3 \
-#     libsqlite3-dev \
-#     && docker-php-ext-install pdo pdo_sqlite mbstring exif pcntl bcmath gd
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    curl \
+    unzip \
+    git \
+    libzip-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev && \
+    docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# # Install Node.js
-# RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
-# RUN apt-get install -y nodejs
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# # Install Composer
-# RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# # Set working directory
-# WORKDIR /var/www/html
+# Set working directory
+WORKDIR /var/www
 
-# # Copy existing application directory contents
-# COPY . .
+# Remove default server definition
+RUN rm -rf /var/www/html
 
-# # Install PHP dependencies
-# RUN composer install --optimize-autoloader --no-dev
+# Copy existing application directory contents
+COPY . /var/www
 
-# # Install npm dependencies and build assets
-# RUN npm install && npm run prod
+# Copy existing application directory permissions
+COPY --chown=www-data:www-data . /var/www
 
-# # Set permissions
-# RUN chown -R www-data:www-data /var/www/html/storage
-# RUN chown -R www-data:www-data /var/www/html/bootstrap/cache
-# RUN chmod -R 775 /var/www/html/storage
-# RUN chmod -R 775 /var/www/html/bootstrap/cache
+# Change current user to www
+USER www-data
 
-# # Enable Apache mod_rewrite
-# RUN a2enmod rewrite
-
-# # Copy custom Apache config
-# COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
-
-# # Expose port 80
-# EXPOSE 80
-
-# # Start Apache
-CMD ["apache2-foreground"]
+# Expose port 9000 and start php-fpm server
+EXPOSE 9000
+CMD ["php-fpm"]
