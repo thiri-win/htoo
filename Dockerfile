@@ -5,6 +5,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
     zip \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    libpq-dev \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
@@ -22,13 +30,5 @@ COPY . .
 # Install dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-
-# Expose port 9000 for PHP-FPM
-EXPOSE 9000
-
-# Command to run PHP-FPM
-CMD ["php-fpm"]
+# Set permissions (optional but recommended)
+RUN chown -R www-data:www-data storage bootstrap/cache
