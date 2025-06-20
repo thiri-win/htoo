@@ -1,7 +1,7 @@
 services:
   - type: web
     name: laravel-vue-sqlite
-    env: native
+    env: docker
     runtime: php
     plan: free
     region: oregon
