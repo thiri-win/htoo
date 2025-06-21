@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
     zip \
+    curl \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -13,6 +14,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libzip-dev \
     libpq-dev \
     build-essential \
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
@@ -32,3 +35,9 @@ RUN composer install --no-interaction --optimize-autoloader --no-dev
 
 # Set permissions (optional but recommended)
 RUN chown -R www-data:www-data storage bootstrap/cache
+
+# Expose port
+EXPOSE 8000
+
+# Start Laravel using PHP's built-in server
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
