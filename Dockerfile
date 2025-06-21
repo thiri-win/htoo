@@ -33,6 +33,9 @@ COPY . .
 # Install dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
+#npm
+RUN npm install && npm run build
+
 # Set permissions (optional but recommended)
 RUN chown -R www-data:www-data storage bootstrap/cache
 
