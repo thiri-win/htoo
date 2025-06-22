@@ -34,7 +34,7 @@ COPY . .
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
 #npm
-# RUN npm install && npm run build
+RUN npm install && npm run build
 
 # Laravel optimization & permissions
 RUN php artisan storage:link \

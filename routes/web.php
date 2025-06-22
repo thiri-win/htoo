@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 
-Route::get('/', function(){ return 'hello'; });
+// Route::get('/', function(){ return 'hello'; });
 
-// Route::get('/', function () {
-//     return Inertia::render('Welcome');
-// })->name('home');
+Route::get('/', function () {
+    return Inertia::render('Welcome');
+})->name('home');
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
