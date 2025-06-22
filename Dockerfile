@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    zlib1g-dev \
     libpq-dev \
     build-essential \
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
