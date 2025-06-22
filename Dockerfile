@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath
+RUN docker-php-ext-install pdo pdo_sqlite mbstring exif pcntl bcmath zip
 
 # Get Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -30,17 +30,22 @@ WORKDIR /var/www/html
 # Copy project files
 COPY . .
 
-# Install dependencies
+# Install PHP dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-#npm
+# Build frontend (Vue)
 RUN npm install && npm run build
 
-# Set permissions (optional but recommended)
-RUN chown -R www-data:www-data storage bootstrap/cache
+# Laravel optimization & permissions
+RUN php artisan storage:link \
+    && php artisan config:clear \
+    && php artisan route:clear \
+    && php artisan view:clear \
+    && php artisan optimize \
+    && chmod -R 775 storage bootstrap/cache
 
-# Expose port
-EXPOSE 8000
+# Expose port 8080 (Render requires this)
+EXPOSE 8080
 
 # Start Laravel using PHP's built-in server
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]

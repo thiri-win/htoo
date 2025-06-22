@@ -1,22 +1,20 @@
 services:
   - type: web
-    name: laravel-vue-sqlite
+    name: htooautomobileservice
     env: docker
-    runtime: php
-    plan: free
     region: oregon
+    plan: free
+    autoDeploy: true
     envVars:
-      - key: APP_NAME
-        value: Laravel
       - key: APP_ENV
         value: production
-      - key: APP_KEY
-        generateValue: true
       - key: APP_DEBUG
         value: true
+      - key: APP_NAME
+        value: Laravel
+      - key: APP_KEY
+        generateValue: true
       - key: DB_CONNECTION
         value: sqlite
       - key: NODE_VERSION
         value: 18.x
-    healthCheckPath: /
-    autoDeploy: true
