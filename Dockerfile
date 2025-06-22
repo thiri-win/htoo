@@ -12,7 +12,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
-    zlib1g-dev \
     libpq-dev \
     build-essential \
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
@@ -20,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_sqlite mbstring exif pcntl bcmath zip
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath
 
 # Get Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -31,10 +30,10 @@ WORKDIR /var/www/html
 # Copy project files
 COPY . .
 
-# Install PHP dependencies
+# Install dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# Build frontend (Vue)
+#npm
 RUN npm install && npm run build
 
 # Laravel optimization & permissions
@@ -45,7 +44,10 @@ RUN php artisan storage:link \
     && php artisan optimize \
     && chmod -R 775 storage bootstrap/cache
 
-# Expose port 8080 (Render requires this)
+# # Set permissions (optional but recommended)
+# RUN chown -R www-data:www-data storage bootstrap/cache
+
+# Expose port
 EXPOSE 8080
 
 # Start Laravel using PHP's built-in server
