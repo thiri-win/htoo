@@ -34,13 +34,13 @@ COPY . .
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
 #npm
-RUN npm install && npm run build
+RUN npm install --legacy-peer-deps && npm run build
 
 # Laravel optimization & permissions
 RUN php artisan storage:link \
-    && php artisan config:clear \
-    && php artisan route:clear \
-    && php artisan view:clear \
+    && php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache \
     && php artisan optimize \
     && chmod -R 775 storage bootstrap/cache
 
