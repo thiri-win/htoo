@@ -1,5 +1,8 @@
 FROM php:8.2-fpm
 
+# Ensure apt is in non-interactive mode
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
@@ -38,9 +41,9 @@ RUN npm install --legacy-peer-deps && npm run build
 
 # Laravel optimization & permissions
 RUN php artisan storage:link \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache \
+    && php artisan config:clear \
+    && php artisan route:clear \
+    && php artisan view:clear \
     && php artisan optimize \
     && chmod -R 775 storage bootstrap/cache
 
