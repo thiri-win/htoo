@@ -18,15 +18,14 @@ onMounted(() => {
 </script>
 <template>
     <AppLayout>
-        <h1>All Category</h1>
-        <Link :href="route('categories.create')">+New</Link>
+        <Link :href="route('categories.create')" class="new-btn">+New</Link>
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Remark</th>
+                    <th>အကြောင်းအရာ</th>
+                    <th>စာရင်းတွက်ရန်</th>
+                    <th>မှတ်ချက်</th>
                     <th></th>
                 </tr>
             </thead>

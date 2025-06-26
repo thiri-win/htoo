@@ -199,10 +199,10 @@ th {
 }
 
 label {
-    @apply inline-block p-1;
+    @apply inline-block py-1;
 }
 
-input {
+input, select {
     @apply w-full border-0 border-b p-1 outline-0;
 }
 
@@ -227,7 +227,7 @@ table input {
 }
 
 .new-btn {
-    @apply rounded border border-gray-500 px-4 py-2 no-underline hover:bg-gray-300;
+    @apply rounded border border-gray-500 px-4 py-2 no-underline hover:bg-gray-300 hover:text-black mb-5 inline-block;
 }
 
 .show-btn {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\RecordController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\VoucherPrintController;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,7 @@ require __DIR__.'/auth.php';
 Route::middleware('auth')->group(function () {
     Route::resource('vouchers', VoucherController::class);
     Route::resource('categories', CategoryController::class);
+    Route::resource('records', RecordController::class);
 });
 
 Route::get('/vouchers/{voucher}/print', [VoucherPrintController::class, 'print'])->name('vouchers.print');

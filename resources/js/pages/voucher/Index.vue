@@ -18,7 +18,6 @@ onMounted(() => {
 </script>
 <template>
     <AppLayout>
-        <h1>All Voucher</h1>
         <Link :href="route('vouchers.create')" class="new-btn">+New</Link>
         <table class="!w-full">
             <thead>
