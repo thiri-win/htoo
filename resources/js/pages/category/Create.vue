@@ -23,16 +23,16 @@ const submit = () => {
 </script>
 <template>
     <AppLayout>
-        <h1>{{ category.id ? 'Update Category' : 'Create New Category'}}</h1>
+        <h1>{{ category.id ? 'အမျိုးအစားကို ပြုပြင်ရန်' : 'အမျိုးအစား အသစ်ထည့်မယ်'}}</h1>
         <form action="" method="post" v-on:submit.prevent="submit">
-            <input type="text" name="title" id="title" placeholder="Category Title" class="my-3" v-model="form.title" autofocus>
+            <input type="text" name="title" id="title" placeholder="အကြောင်းအရာ" class="my-3" v-model="form.title" autofocus>
             <p class="text-sm text-red-500" v-text="form.errors.title"></p>
-            <label for="sum"><input type="radio" name="status" value="sum" id="sum" class="me-2" v-model="form.status">Sum</label>
-            <label for="sub"><input type="radio" name="status" value="sub" id="sub" class="me-2" v-model="form.status">Sub</label>
+            <label for="sum" class="mr-2"><input type="radio" name="status" value="sum" id="sum" class="me-2" v-model="form.status">ပေါင်းရန်</label>
+            <label for="sub"><input type="radio" name="status" value="sub" id="sub" class="me-2" v-model="form.status">နှုတ်ရန်</label>
             <p class="text-sm text-red-500" v-text="form.errors.status"></p>
-            <input type="text" name="remark" id="remark" placeholder="Remark" class="my-3" v-model="form.remark">
+            <input type="text" name="remark" id="remark" placeholder="မှတ်ချက်" class="my-3" v-model="form.remark">
             <p class="text-sm text-red-500" v-text="form.errors.remark"></p>
-            <button type="submit" class="submit-btn">Send</button>
+            <button type="submit" class="submit-btn">Submit</button>
         </form>
     </AppLayout>
 </template>
