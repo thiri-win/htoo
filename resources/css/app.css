@@ -206,6 +206,10 @@ input {
     @apply w-full border-0 border-b p-1 outline-0;
 }
 
+input[type='radio'] {
+    @apply w-auto border-0;
+}
+
 textarea {
     @apply mb-1 w-full border p-1;
 }
