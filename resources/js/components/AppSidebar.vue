@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { LayoutGrid, ListCheckIcon, ListCollapse, NotebookPen } from 'lucide-vue-next';
+import { Download, LayoutGrid, ListCheckIcon, ListCollapse, NotebookPen } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -28,6 +28,11 @@ const mainNavItems: NavItem[] = [
         title: 'အမျိုးအစားများ',
         href: '/categories',
         icon: ListCheckIcon,
+    },
+    {
+        title: 'Database Backup',
+        href: "route('backup-database')",
+        icon: Download,
     },
 
 ];

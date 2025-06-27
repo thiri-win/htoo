@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\VoucherPrintController;
@@ -26,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('vouchers', VoucherController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('records', RecordController::class);
+    Route::get('/backup-database', [DatabaseBackupController::class, 'download'])->name('backup-database');
 });
 
 Route::get('/vouchers/{voucher}/print', [VoucherPrintController::class, 'print'])->name('vouchers.print');
