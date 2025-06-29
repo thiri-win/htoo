@@ -1,6 +1,5 @@
-<script setup lang="ts">
+<script setup>
 import { ref, nextTick } from 'vue';
-import html2pdf from 'html2pdf.js';
 
 const printSection = ref(null);
 
@@ -8,8 +7,14 @@ defineProps({
     voucher: Object
 })
 
+const formatNumber = (value) => {
+    if(value===null || value===undefined) return 0;
+    return new Intl.NumberFormat().format(value);
+}
+
 // ✅ Preview in new tab
 const previewPDF = async () => {
+    const { default: html2pdf } = await import('html2pdf.js');
     await nextTick();
     const element = printSection.value;
     if (!element) return;
@@ -29,6 +34,7 @@ const previewPDF = async () => {
 
 // ✅ Direct download
 const downloadPDF = async () => {
+    const { default: html2pdf } = await import('html2pdf.js');
     await nextTick();
     const element = printSection.value;
     if (!element) return;
@@ -105,21 +111,22 @@ const downloadPDF = async () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="sale in voucher.sales" :key="sale.id">
+                    <tr v-for="(sale,index) in voucher.sales" :key="sale.id">
+                        <td>{{ index+1 }}</td>
                         <td>{{ sale.description }}</td>
                         <td class="text-right">{{ sale.quantity }}</td>
-                        <td class="text-right">{{ sale.unit_price }}</td>
-                        <td class="text-right">{{ sale.sub_total }}</td>
+                        <td class="text-right">{{ formatNumber(sale.unit_price) }}</td>
+                        <td class="text-right">{{ formatNumber(sale.sub_total) }}</td>
                     </tr>
                 </tbody>
                 <tfoot style="border-top: 2px solid white;">
                     <tr>
                         <td colspan="4" class="text-right poppins">Discount</td>
-                        <td class="text-right">{{ voucher.discount }}</td>
+                        <td class="text-right">{{ formatNumber(voucher.discount) }}</td>
                     </tr>
                     <tr>
                         <td colspan="4" class="text-right poppins">Total</td>
-                        <td class="text-right">{{ voucher.total }}</td>
+                        <td class="text-right">{{ formatNumber(voucher.total) }}</td>
                     </tr>
                 </tfoot>
             </table>
