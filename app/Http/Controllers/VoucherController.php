@@ -108,7 +108,7 @@ class VoucherController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Updated Voucher');
+        return redirect()->route('vouchers.index')->with('success', 'Updated Voucher');
     }
 
     /**
