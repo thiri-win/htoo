@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DatabaseBackupController;
+use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\VoucherPrintController;

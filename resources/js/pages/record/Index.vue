@@ -12,7 +12,7 @@ onMounted(()=> {
     $('table').DataTable({
     order: [[1, 'desc']],
     autoWidth: false,
-    scrollX: true,
+    // scrollX: true,
 });
 })
 
@@ -24,8 +24,9 @@ onMounted(()=> {
         <Link :href="route('records.create')" class="new-btn">+ New</Link>
         <table>
             <thead>
-                <tr>
+                <tr>        
                     <th>ID</th>
+                    <th>Date</th>
                     <th>Title</th>
                     <th>Amount</th>
                     <th>Remark</th>
@@ -35,6 +36,7 @@ onMounted(()=> {
             <tbody>
                 <tr v-for="record in records" v-bind:key="record.id">
                     <td v-text="record.id"></td>
+                    <td v-text="record.date"></td>
                     <td v-text="record.title"></td>
                     <td v-text="record.amount"></td>
                     <td v-text="record.remark"></td>

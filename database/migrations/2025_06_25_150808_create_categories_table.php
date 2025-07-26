@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->enum('status', ['sum', 'sub']);
+            $table->enum('status', ['sum', 'sub'])->default('sum');
             $table->string('remark')->nullable();
             $table->timestamps();
         });

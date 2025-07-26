@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('records', function (Blueprint $table) {
             $table->id();
+            $table->date('date');
             $table->string('title');
             $table->integer('category_id');
             $table->integer('amount');
