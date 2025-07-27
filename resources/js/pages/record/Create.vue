@@ -16,7 +16,7 @@ const form = useForm({
 })
 
 const submit = () => {
-    if(props.record.id) {
+    if (props.record.id) {
         form.put(route('records.update', props.record.id))
     } else {
         form.post(route('records.store'))
@@ -42,7 +42,8 @@ const submit = () => {
             <p class="text-red-500 mb-3" v-text="form.errors.amount"></p>
             <input type="text" name="remark" id="remark" placeholder="မှတ်ချက်" class="mb-3" v-model="form.remark" :class="form.errors.remark ? 'border-red-300' : ''">
             <p class="text-red-500 mb-3" v-text="form.errors.remark"></p>
-            <button type="submit" class="submit-btn">Submit</button>
+            <button type="submit" class="submit-btn mr-2">Submit</button>
+            <a href="/dashboard" class="new-btn my-5 inline-block">Back to Dashboard</a>
         </form>
     </AppLayout>
 </template>

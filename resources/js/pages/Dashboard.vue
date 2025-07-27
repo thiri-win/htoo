@@ -50,6 +50,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <th>Date</th>
                     <th>Title</th>
                     <th>Amount</th>
+                    <th>Category</th>
                     <th></th>
                 </tr>
             </thead>
@@ -58,6 +59,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <td v-text="record.date"></td>
                     <td v-text="record.title"></td>
                     <td v-text="record.amount"></td>
+                    <td v-text="record.category.title"></td>
                     <td>
                         <Link :href="route('records.show', record)" class="show-btn text-sm">View</Link>
                         <Link :href="route('records.edit', record)" class="edit-btn text-sm">Edit</Link>
@@ -67,6 +69,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <td v-text="voucher.date"></td>
                     <td v-text="voucher.car_number"></td>
                     <td v-text="voucher.total"></td>
+                    <td>Voucher</td>
                     <td>
                         <Link :href="route('vouchers.show', voucher)" class="show-btn text-sm">View</Link>
                         <Link :href="route('vouchers.edit', voucher)" class="edit-btn text-sm">Edit</Link>

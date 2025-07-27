@@ -21,7 +21,7 @@ Route::get('/', function () {
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard', [
-        'records' => Record::all(),
+        'records' => Record::with('category')->get(),
         'vouchers' => Voucher::all(),
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');

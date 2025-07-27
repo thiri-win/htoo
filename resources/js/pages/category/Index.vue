@@ -33,7 +33,9 @@ onMounted(() => {
             <tbody>
                 <tr v-for="category in categories" v-bind:key="category.id">
                     <td>{{ category.id }}</td>
-                    <td>{{ category.title }}</td>
+                    <td>
+                        <a :href="route('categories.show', category)">{{ category.title }}</a>
+                    </td>
                     <td>
                         <PlusCircleIcon v-if="category.status == 'sum'" class="inline-block text-green-500" />
                         <MinusCircleIcon v-else class="inline-block text-red-500" />
@@ -41,7 +43,8 @@ onMounted(() => {
                     </td>
                     <td>{{ category.remark }}</td>
                     <td>
-                        <Link :href="route('categories.edit', category)" class="edit-btn text-sm me-2">Edit</Link>
+                        <Link :href="route('categories.show', category)" class="show-btn text-sm me-2">Show</Link>
+                        <Link :href="route('categories.edit', category)" class="edit-btn text-sm">Edit</Link>
                     </td>
                 </tr>
             </tbody>

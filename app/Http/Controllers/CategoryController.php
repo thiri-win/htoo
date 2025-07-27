@@ -46,7 +46,9 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        return Inertia::render('category/Show',[
+            'category' => $category->load('records')
+        ]);
     }
 
     /**

@@ -51,7 +51,9 @@ class RecordController extends Controller
      */
     public function show(Record $record)
     {
-        //
+        return Inertia::render('record/Show', [
+            'record' => $record->load('category')
+        ]);
     }
 
     /**
@@ -76,7 +78,7 @@ class RecordController extends Controller
             'amount' => 'required',
             'remark' => 'sometimes',
         ]));
-        return redirect()->route('records.index')->with('success', 'Record Updated Successfully');
+        return redirect()->back()->with('success', 'Record Updated Successfully');
     }
 
     /**
