@@ -38,6 +38,7 @@ class RecordController extends Controller
     public function store(Request $request)
     {
         Record::create($request->validate([
+            'date' => 'required',
             'title' => 'required',
             'category_id' => 'required',
             'amount' => 'required',
@@ -73,6 +74,7 @@ class RecordController extends Controller
     public function update(Request $request, Record $record)
     {
         $record->update($request->validate([
+            'date' => 'required',
             'title' => 'required',
             'category_id' => 'required',
             'amount' => 'required',

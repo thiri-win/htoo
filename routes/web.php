@@ -6,12 +6,11 @@ use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\VoucherPrintController;
+use App\Models\Category;
 use App\Models\Record;
 use App\Models\Voucher;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
 
 // Route::get('/', function(){ return 'hello'; });
 
@@ -20,9 +19,18 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('dashboard', function () {
+    $now = now();
+    $startOfMonth = $now->copy()->startOfMonth();
+    $endOfMonth = $now->copy()->endOfMonth();
+
+    $categorySums = Category::withSum(['records' => function ($query) use ($startOfMonth, $endOfMonth) {
+        $query->whereBetween('date', [$startOfMonth->toDateString(), $endOfMonth->toDateString()]);
+    }], 'amount')->get();
+
     return Inertia::render('Dashboard', [
         'records' => Record::with('category')->get(),
         'vouchers' => Voucher::all(),
+        'categorySums' => $categorySums,
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 

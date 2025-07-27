@@ -17,9 +17,17 @@ const form = useForm({
 
 const submit = () => {
     if (props.record.id) {
-        form.put(route('records.update', props.record.id))
+        form.put(route('records.update', props.record.id), {
+            onSuccess: () => {
+                form.reset()
+            }
+        })
     } else {
-        form.post(route('records.store'))
+        form.post(route('records.store'), {
+            onSuccess: () => {
+                form.reset()
+            }
+        })
     }
 }
 

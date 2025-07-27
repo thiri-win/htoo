@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Record;
 use App\Models\User;
+use Carbon\Carbon;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,7 @@ class DatabaseSeeder extends Seeder
             fgetcsv($handle); // header row skip ပါမယ်
             while (($data = fgetcsv($handle)) !== FALSE) {
                 Record::create([
-                    'date' => $data[0],
+                    'date' => Carbon::createFromFormat('Y/m/d', $data[0]),
                     'title' => $data[1],
                     'category_id' => $data[2],
                     'amount' => $data[3],

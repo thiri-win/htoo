@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Record extends Model
 {
-    protected $fillable = ['title', 'category_id', 'amount', 'remark'];
+    protected $fillable = ['date', 'title', 'category_id', 'amount', 'remark'];
 
     public function category()
     {

@@ -17,7 +17,7 @@ onMounted(()=> {
 </script>
 <template>
     <AppLayout>
-        <h1>{{ category.title }} အသုံးပြုမှုများ</h1>
+        <h1>{{ category.title }}</h1>
         <table>
             <thead>
                 <tr>
@@ -29,13 +29,13 @@ onMounted(()=> {
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="record in category.records">
+                <tr v-for="record in category.records" :key="record.id">
                     <td>{{ record.date }}</td>
                     <td>{{ record.title }}</td>
                     <td>{{ record.amount }}</td>
                     <td>{{ record.remark }}</td>
                     <td>
-                        <Link href="route(records.show, record)" class="show-btn">Show</Link>
+                        <Link :href="route('records.show', record)" class="show-btn">Show</Link>
                     </td>
                 </tr>
             </tbody>

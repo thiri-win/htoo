@@ -3,12 +3,14 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { DownloadCloud, PlusIcon } from 'lucide-vue-next';
+import PieChart from '@/components/PieChart.vue';
 
-defineProps({
+const props = defineProps({
     records: Array,
     vouchers: Array,
+    categorySums: Array,
 })
 
 onMounted(() => {
@@ -25,6 +27,28 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
 ];
+
+const chartData = computed(() => {
+    // if (!Array.isArray(categorySums) || categorySums.length === 0) {
+    //     return {
+    //         labels: [],
+    //         datasets: []
+    //     }
+    // }
+    return {
+        labels: props.categorySums.map(c => c.title),
+        datasets: [
+            {
+                label: 'Category Amount',
+                data: props.categorySums.map(c => c.records_sum_amount || 0),
+                backgroundColor: [
+                    '#f87171', '#60a5fa', '#fbbf24', '#34d399', '#a78bfa', '#f472b6', '#facc15', '#38bdf8', '#fb7185', '#4ade80'
+                ],
+            }
+        ]
+    }
+});
+
 </script>
 
 <template>
@@ -32,13 +56,18 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
+
+        <div class="w-full border">
+            <div class="w-1/3 border p-5">
+                <PieChart :chartData="chartData"></PieChart>
+            </div>
+        </div>
+
         <Link :href="route('records.create')" class="new-btn mr-2">
-            <PlusIcon class="inline-block"></PlusIcon>
-            <span>စာရင်းအသစ်ထည့်ရန်</span>
-        </Link>
+        <PlusIcon class="inline-block"></PlusIcon>စာရင်းအသစ်ထည့်ရန်</Link>
         <Link :href="route('vouchers.create')" class="new-btn mr-2">
-            <PlusIcon class="inline-block"></PlusIcon>
-            <span>ဘောက်ချာအသစ်ဖွင့်ရန်</span>
+        <PlusIcon class="inline-block"></PlusIcon>
+        <span>ဘောက်ချာအသစ်ဖွင့်ရန်</span>
         </Link>
         <a href="/backup-database" class="new-btn">
             <DownloadCloud class="inline-block"></DownloadCloud>
