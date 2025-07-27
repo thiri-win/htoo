@@ -1,6 +1,7 @@
 <script setup>
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
+import { MinusCircleIcon, PlusCircleIcon } from 'lucide-vue-next';
 import { onMounted } from 'vue';
 
 defineProps({
@@ -33,7 +34,11 @@ onMounted(() => {
                 <tr v-for="category in categories" v-bind:key="category.id">
                     <td>{{ category.id }}</td>
                     <td>{{ category.title }}</td>
-                    <td>{{ category.status }}</td>
+                    <td>
+                        <PlusCircleIcon v-if="category.status == 'sum'" class="inline-block text-green-500" />
+                        <MinusCircleIcon v-else class="inline-block text-red-500" />
+                        {{ category.status }}
+                    </td>
                     <td>{{ category.remark }}</td>
                     <td>
                         <Link :href="route('categories.edit', category)" class="edit-btn text-sm me-2">Edit</Link>

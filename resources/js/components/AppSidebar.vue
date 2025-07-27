@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { DollarSign, DollarSignIcon, Download, LayoutGrid, ListCheckIcon, ListCollapse, NotebookPen } from 'lucide-vue-next';
+import { Download, LayoutGrid, ListCheckIcon, NotebookPen, Plus, PrinterIcon } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -15,26 +15,34 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'ဘောက်ချာများ',
-        href: '/vouchers',
-        icon: ListCollapse,
+        title: 'ဘောက်ချာအသစ်ဖွင့်ရန်',
+        href: '/vouchers/create',
+        icon: Plus,
     },
     {
-        title: 'နေ့စဥ်စာရင်းများ',
-        href: '/records',
+        title: 'ဘောက်ချာprintထုတ်ရန်',
+        href: '/vouchers',
+        icon: PrinterIcon,
+    },
+    {
+        title: 'စာရင်းအသစ်ထည့်ရန်',
+        href: '/records/create',
         icon: NotebookPen,
     },
+
+];
+
+const settingNavItems: NavItem[] = [
     {
-        title: 'အမျိုးအစားများ',
+        title: 'အကြောင်းအရာများ',
         href: '/categories',
         icon: ListCheckIcon,
     },
-    {
-        title: 'Database Backup',
-        href: route('backup-database'),
-        icon: Download,
-        is_inertia_link: false,
-    },
+    // {
+    //     title: 'Database Backup',
+    //     href: route('backup-database'),
+    //     icon: Download,
+    // },
 
 ];
 
@@ -67,7 +75,8 @@ const footerNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <NavMain title="MAIN" :items="mainNavItems" />
+            <NavMain title="SETTING" :items="settingNavItems" />
         </SidebarContent>
 
         <SidebarFooter>

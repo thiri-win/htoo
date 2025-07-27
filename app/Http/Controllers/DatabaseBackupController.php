@@ -12,6 +12,6 @@ class DatabaseBackupController extends Controller
         if(!file_exists($path)) {
             abort(404, 'Database file not found');
         }
-        return response()->download($path, 'database.sqlite');
+        return response()->download($path, 'backup_database.sqlite');
     }
 }

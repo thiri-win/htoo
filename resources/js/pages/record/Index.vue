@@ -5,7 +5,8 @@ import { Link } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
 
 defineProps({
-    records: Array
+    records: Array,
+    vouchers: Array,
 })
 
 onMounted(()=> {
@@ -29,7 +30,6 @@ onMounted(()=> {
                     <th>Date</th>
                     <th>Title</th>
                     <th>Amount</th>
-                    <th>Remark</th>
                     <th></th>
                 </tr>
             </thead>
@@ -39,10 +39,16 @@ onMounted(()=> {
                     <td v-text="record.date"></td>
                     <td v-text="record.title"></td>
                     <td v-text="record.amount"></td>
-                    <td v-text="record.remark"></td>
                     <td>
                         <Link :href="route('records.edit', record)" class="edit-btn text-sm">Edit</Link>
                     </td>
+                </tr>
+                <tr v-for="voucher in vouchers" v-bind:key="voucher.id">
+                    <td v-text="voucher.id"></td>
+                    <td v-text="voucher.date"></td>
+                    <td v-text="voucher.car_number"></td>
+                    <td v-text="voucher.total"></td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>

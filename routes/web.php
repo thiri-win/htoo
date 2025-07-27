@@ -6,6 +6,8 @@ use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\VoucherPrintController;
+use App\Models\Record;
+use App\Models\Voucher;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,11 +20,14 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
+    return Inertia::render('Dashboard', [
+        'records' => Record::all(),
+        'vouchers' => Voucher::all(),
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
 
 Route::middleware('auth')->group(function () {
     Route::resource('vouchers', VoucherController::class);

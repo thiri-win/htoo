@@ -26,26 +26,26 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('pass')
         ]);
 
-        if (($handle = fopen("storage/daily.csv", "r")) !== FALSE) {
-            fgetcsv($handle); // header row skip ပါမယ်
-            while (($data = fgetcsv($handle)) !== FALSE) {
-                Record::create([
-                    'date' => $data[0],
-                    'title' => $data[1],
-                    'category_id' => $data[2],
-                    'amount' => $data[3],
-                    'remark' => $data[4]
-                ]);
-            }
-            fclose($handle);
-        }
-
-        if (($handle = fopen("storage/categories.csv", "r")) !== FALSE) {
-            fgetcsv($handle); // header row skip ပါမယ်
-            while (($data = fgetcsv($handle)) !== FALSE) {
-                Category::create(['title' => $data[0]]);
-            }
-            fclose($handle);
-        }
+        // notion ထဲက data ရွှေ့ဖို့သုံးထားတာပါ
+        // if (($handle = fopen("storage/daily.csv", "r")) !== FALSE) {
+        //     fgetcsv($handle); // header row skip ပါမယ်
+        //     while (($data = fgetcsv($handle)) !== FALSE) {
+        //         Record::create([
+        //             'date' => $data[0],
+        //             'title' => $data[1],
+        //             'category_id' => $data[2],
+        //             'amount' => $data[3],
+        //             'remark' => $data[4]
+        //         ]);
+        //     }
+        //     fclose($handle);
+        // }
+        // if (($handle = fopen("storage/categories.csv", "r")) !== FALSE) {
+        //     fgetcsv($handle); // header row skip ပါမယ်
+        //     while (($data = fgetcsv($handle)) !== FALSE) {
+        //         Category::create(['title' => $data[0]]);
+        //     }
+        //     fclose($handle);
+        // }
     }
 }

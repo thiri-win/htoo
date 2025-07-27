@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Record;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,7 +16,8 @@ class RecordController extends Controller
     public function index()
     {
         return Inertia::render('record/Index',[
-            'records' => Record::all()
+            'records' => Record::all(),
+            'vouchers' => Voucher::all(),
         ]);
     }
 
@@ -41,7 +43,7 @@ class RecordController extends Controller
             'amount' => 'required',
             'remark' => 'sometimes'
         ]));
-        return redirect()->route('records.index')->with('success', 'Record Added Successfully');
+        return redirect()->route('records.create')->with('success', 'Record Added Successfully');
     }
 
     /**
