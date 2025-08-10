@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('discount');
             $table->integer('total');
             $table->text('note')->nullable();
+            $table->integer('category_id')->default(6);
             $table->timestamps();
         });
     }

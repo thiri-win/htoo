@@ -6,19 +6,13 @@ import { Link } from '@inertiajs/vue3';
 import { computed, onMounted } from 'vue';
 import { DownloadCloud, PlusIcon } from 'lucide-vue-next';
 import PieChart from '@/components/PieChart.vue';
+import BarChart from '@/components/BarChart.vue';
 
 const props = defineProps({
     records: Array,
     vouchers: Array,
     categorySums: Array,
-})
-
-onMounted(() => {
-    $('table').DataTable({
-        order: [[1, 'desc']],
-        autoWidth: false,
-        // scrollX: true,
-    });
+    categorySumsThisYear: Object,
 })
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -49,6 +43,47 @@ const chartData = computed(() => {
     }
 });
 
+const barChartData = computed(() => {
+    if (!props.categorySumsThisYear || Object.keys(props.categorySumsThisYear).length === 0) {
+        return { labels: [], datasets: [] };
+    }
+
+    const year = Object.keys(props.categorySumsThisYear)[0];
+    const monthlyData = props.categorySumsThisYear[year];
+    const months = Object.keys(monthlyData);
+
+    if (months.length === 0 || !monthlyData[months[0]]) {
+        return { labels: [], datasets: [] };
+    }
+
+    const categoryTitles = monthlyData[months[0]].map(cat => cat.title);
+
+    const datasets = categoryTitles.map(title => {
+        const data = months.map(month => {
+            const categoryDataForMonth = monthlyData[month].find(cat => cat.title === title);
+            return categoryDataForMonth ? categoryDataForMonth.sum : 0;
+        });
+
+        const r = Math.floor(Math.random() * 255);
+        const g = Math.floor(Math.random() * 255);
+        const b = Math.floor(Math.random() * 255);
+        const color = `rgb(${r}, ${g}, ${b})`;
+
+        return {
+            label: title,
+            data: data,
+            borderColor: color,
+            backgroundColor: color,
+            fill: false,
+        };
+    });
+
+    return {
+        labels: months,
+        datasets: datasets
+    };
+});
+
 </script>
 
 <template>
@@ -56,12 +91,6 @@ const chartData = computed(() => {
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-
-        <div class="w-full border">
-            <div class="w-1/3 border p-5">
-                <PieChart :chartData="chartData"></PieChart>
-            </div>
-        </div>
 
         <Link :href="route('records.create')" class="new-btn mr-2">
         <PlusIcon class="inline-block"></PlusIcon>စာရင်းအသစ်ထည့်ရန်</Link>
@@ -73,38 +102,15 @@ const chartData = computed(() => {
             <DownloadCloud class="inline-block"></DownloadCloud>
             Download DB
         </a>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Title</th>
-                    <th>Amount</th>
-                    <th>Category</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="record in records" v-bind:key="record.id">
-                    <td v-text="record.date"></td>
-                    <td v-text="record.title"></td>
-                    <td v-text="record.amount"></td>
-                    <td v-text="record.category.title"></td>
-                    <td>
-                        <Link :href="route('records.show', record)" class="show-btn text-sm">View</Link>
-                        <Link :href="route('records.edit', record)" class="edit-btn text-sm">Edit</Link>
-                    </td>
-                </tr>
-                <tr v-for="voucher in vouchers" v-bind:key="voucher.id">
-                    <td v-text="voucher.date"></td>
-                    <td v-text="voucher.car_number"></td>
-                    <td v-text="voucher.total"></td>
-                    <td>Voucher</td>
-                    <td>
-                        <Link :href="route('vouchers.show', voucher)" class="show-btn text-sm">View</Link>
-                        <Link :href="route('vouchers.edit', voucher)" class="edit-btn text-sm">Edit</Link>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mb-5">
+            <div class="border p-5">
+                <PieChart :chartData="chartData"></PieChart>
+            </div>
+
+            <div class="border p-5 col-span-3">
+                <BarChart :chartData="barChartData" class="w-full"></BarChart>
+            </div>
+        </div>
     </AppLayout>
 </template>

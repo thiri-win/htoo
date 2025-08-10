@@ -12,4 +12,9 @@ class Category extends Model
     {
         return $this->hasMany(Record::class);
     }
+
+    public function vouchers()
+    {
+        return $this->hasMany(Voucher::class);
+    }
 }

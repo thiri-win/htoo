@@ -5,8 +5,8 @@ import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js'
 ChartJS.register(Title, Tooltip, Legend, ArcElement)
 
 defineProps({
-    chartData: String,
-    chartOptions: String,
+    chartData: Object,
+    chartOptions: Object,
 })
 </script>
 

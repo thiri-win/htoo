@@ -12,4 +12,9 @@ class Voucher extends Model
     {
         return $this->hasMany(Sale::class);
     }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
