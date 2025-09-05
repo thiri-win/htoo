@@ -15,6 +15,8 @@ services:
       - key: APP_KEY
         generateValue: true
       - key: DB_CONNECTION
-        value: sqlite
+        value: pgsql
+      - key: DB_URL
+        value: 'postgresql://neondb_owner:npg_z2jgqW4oYRBc@ep-still-wind-adu1ytsu-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
       - key: NODE_VERSION
         value: 18.x
