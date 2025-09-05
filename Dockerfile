@@ -45,7 +45,7 @@ RUN php artisan storage:link \
     && php artisan route:clear \
     && php artisan view:clear \
     && php artisan optimize \
-    && chmod -R 775 storage bootstrap/cache
+    && chmod -R 775 storage bootstrap/cache \
     && php artisan migrate:fresh
 
 # # Set permissions (optional but recommended)
