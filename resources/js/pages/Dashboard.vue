@@ -23,12 +23,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const chartData = computed(() => {
-    // if (!Array.isArray(categorySums) || categorySums.length === 0) {
-    //     return {
-    //         labels: [],
-    //         datasets: []
-    //     }
-    // }
+    if (!Array.isArray(categorySums) || categorySums.length === 0) {
+        return {
+            labels: [],
+            datasets: []
+        }
+    }
     return {
         labels: props.categorySums.map(c => c.title),
         datasets: [
