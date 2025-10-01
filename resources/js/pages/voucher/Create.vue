@@ -2,30 +2,33 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/vue3';
 import { computed, watch } from 'vue';
+import Voucher from '../print/Voucher.vue';
 
 const props = defineProps({
     voucher: Object
 })
 
+
 const form = useForm({
     'date': props.voucher.date ? new Date(props.voucher.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-    'customer_name': props.voucher.customer_name || '',
-    'customer_phone': props.voucher.customer_phone || '',
-    'car_brand': props.voucher.car_brand || '',
-    'car_model': props.voucher.car_model || '',
-    'car_number': props.voucher.car_number || '',
+    'customer_name': props.voucher.car.customer_name || '',
+    'customer_phone': props.voucher.car.customer_phone || '',
+    'car_brand': props.voucher.car.car_brand || '',
+    'car_model': props.voucher.car.car_model || '',
+    'car_number': props.voucher.car.car_number || '',
     'sales': props.voucher.sales || [
         {
             'id': 1,
             'description': '',
             'quantity': 1,
             'unit_price': 0,
-            'sub_total': 0,
+            'total': 0,
         }
     ],
     'discount': props.voucher.discount || 0,
-    'total': props.voucher.total || 0,
-    'note': props.voucher.note || null
+    'sub_total': props.voucher.sub_total || 0,
+    'grand_total': props.voucher.grand_total || 0,
+    'remark': props.voucher.remark || null
 })
 
 const addSale = () => {
@@ -33,7 +36,7 @@ const addSale = () => {
         description: form.sales.description,
         quantity: form.sales.quantity || 1,
         unit_price: form.sales.unit_price || 0,
-        sub_total: form.sales.sub_total
+        total: form.sales.total
     });
 };
 
@@ -41,22 +44,28 @@ const removeSale = (sale) => {
     form.sales = form.sales.filter(s => s.id != sale.id)
 }
 
-const subTotal = () => {
+const total = () => {
     form.sales.forEach((sale) => {
-        return sale.sub_total = (sale.quantity || 1) * (sale.unit_price || 0)
+        return sale.total = (sale.quantity || 1) * (sale.unit_price || 0)
     })
 }
 
-watch(() => [form.sales, form.discount], subTotal, { deep: true, immediate: true });
+watch(() => [form.sales, form.discount], total, { deep: true, immediate: true });
 
-form.total = computed(() => {
+form.sub_total = computed(() => {
+    return form.sales.reduce((sum, item) => {
+        return sum + (item.quantity * item.unit_price)
+    }, 0)
+})
+
+form.grand_total = computed(() => {
     return form.sales.reduce((sum, item) => {
         return sum + (item.quantity * item.unit_price)
     }, 0) - form.discount
 })
 
 const submit = () => {
-    if(props.voucher.car_number) {
+    if(props.voucher.id) {
         form.put(route('vouchers.update', props.voucher.id))
     } else {
         form.post(route('vouchers.store'));
@@ -68,8 +77,7 @@ const submit = () => {
     <!-- <AppLayout :breadcrumbs="breadcrumbs"> -->
     <AppLayout>
         <form action="" method="" @submit.prevent="submit">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 gap-y-5 bg-neutral-100 dark:bg-stone-900 p-5 rounded-lg">
-
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 gap-y-5 bg-neutral-100 dark:bg-(--sidebar-background) p-5 rounded-lg">
                 <div>
                     <input type="date" name="date" id="date" v-model="form.date" :class="form.errors.date ? 'border-red-300' : ''">
                 </div>
@@ -89,7 +97,7 @@ const submit = () => {
                     <input type="text" name="car_number" id="car_number" placeholder="Car Number" v-model="form.car_number" :class="form.errors.car_number ? 'border-red-300' : ''">
                 </div>
             </div>
-            <div class="bg-neutral-100 dark:bg-stone-900 my-5 p-5 rounded-lg">
+            <div class="bg-neutral-100 dark:bg-(--sidebar-background) my-5 p-5 rounded-lg">
                 <table class="w-full">
                     <thead>
                         <tr>
@@ -97,7 +105,7 @@ const submit = () => {
                             <th>Description</th>
                             <th>Quantity</th>
                             <th>unit_price</th>
-                            <th>Sub_Total</th>
+                            <th>Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -130,6 +138,14 @@ const submit = () => {
                     <tfoot>
                         <tr>
                             <td colspan="4">
+                                <label for="sub_total">Sub Total</label>
+                            </td>
+                            <td>
+                                {{ form.sub_total }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
                                 <label for="discount">Discount</label>
                             </td>
                             <td>
@@ -138,10 +154,10 @@ const submit = () => {
                         </tr>
                         <tr>
                             <td colspan="4">
-                                <label for="total">Total</label>
+                                <label for="total">Grand Total</label>
                             </td>
                             <td>
-                                {{ form.total }}
+                                {{ form.grand_total }}
                             </td>
                         </tr>
                     </tfoot>
@@ -149,13 +165,13 @@ const submit = () => {
             </div>
 
             <div class="bg-neutral-100 dark:bg-stone-900 my-5 p-5 rounded-lg">
-                <label for="note">Note:</label>
-                <textarea name="note" id="note" v-model="form.note"></textarea>
+                <label for="remark">Note:</label>
+                <textarea name="remark" id="remark" v-model="form.remark"></textarea>
             </div>
 
             <div class="text-right">
-                <button type="submit" :class="props.voucher.car_number ? 'edit-btn' : 'submit-btn'">
-                    {{ props.voucher.car_number ? 'Update' : 'Submit' }}
+                <button type="submit" :class="props.voucher.id ? 'edit-btn' : 'submit-btn'">
+                    {{ props.voucher.id ? 'Update' : 'Submit' }}
                 </button>
             </div>
         </form>

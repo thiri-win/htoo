@@ -1,0 +1,93 @@
+// Step 1: Get all categories and add "Voucher" as a virtual category
+    // $categories = DB::table('categories')->pluck('title')->push('Voucher')->toArray();
+
+    // Step 2: Get sums from records, grouped by category and month
+    // $recordsData = DB::table('categories')
+    //     ->join('records', 'categories.id', '=', 'records.category_id')
+    //     ->select(
+    //         'categories.title',
+    //         DB::raw("strftime('%m', records.date) as month_num"),
+    //         DB::raw('SUM(records.amount) as sum')
+    //     )
+    //     ->whereBetween('records.date', [$startOfThisYear, $endOfThisYear])
+    //     ->groupBy('categories.title', DB::raw("strftime('%m', records.date)"))
+    //     ->get();
+
+    // Step 2b: Get sums from vouchers, grouped by month
+    // $vouchersData = DB::table('vouchers')
+    //     ->select(
+    //         DB::raw("'Voucher' as title"),
+    //         DB::raw("strftime('%m', date) as month_num"),
+    //         DB::raw('SUM(total) as sum')
+    //     )
+    //     ->whereBetween('date', [$startOfThisYear, $endOfThisYear])
+    //     ->groupBy(DB::raw("strftime('%m', date)"))
+    //     ->get();
+
+    // Step 2c: Merge both data collections
+    // $data = $recordsData->merge($vouchersData);
+
+    // Step 3: Prepare all months
+    // $months = collect(range(1, 12))->map(function ($m) {
+    //     return Carbon::create()->month($m)->format('F');
+    // });
+
+    // Step 4: Build final result, ensuring all categories (including Voucher) are present for each month
+    // $categorySumsThisYear = [
+    //     $startOfThisYear->year => $months->mapWithKeys(function ($monthName) use ($categories, $data) {
+    //         $monthNum = Carbon::parse($monthName)->format('m');
+    //         $cats = collect($categories)->map(function ($cat) use ($data, $monthNum) {
+    //             $found = $data->first(function ($row) use ($cat, $monthNum) {
+    //                 return $row->title === $cat && $row->month_num === $monthNum;
+    //             });
+    //             return [
+    //                 'title' => $cat,
+    //                 'sum'   => $found ? (float) $found->sum : 0
+    //             ];
+    //         })->toArray();
+    //         return [$monthName => $cats];
+    //     })->toArray()
+    // ];
+
+
+
+    const barChartData = computed(() => {
+    if (!props.monthlyProfitThisYear || Object.keys(props.monthlyProfitThisYear).length === 0) {
+        return { labels: [], datasets: [] };
+    }
+
+    const year = Object.keys(props.monthlyProfitThisYear)[0];
+    const monthlyData = props.monthlyProfitThisYear[year];
+    const months = Object.keys(monthlyData);
+
+    if (months.length === 0 || !monthlyData[months[0]]) {
+        return { labels: [], datasets: [] };
+    }
+
+    const categoryTitles = monthlyData[months[0]].map(cat => cat.title);
+
+    const datasets = categoryTitles.map(title => {
+        const data = months.map(month => {
+            const categoryDataForMonth = monthlyData[month].find(cat => cat.title === title);
+            return categoryDataForMonth ? categoryDataForMonth.sum : 0;
+        });
+
+        const r = Math.floor(Math.random() * 255);
+        const g = Math.floor(Math.random() * 255);
+        const b = Math.floor(Math.random() * 255);
+        const color = `rgb(${r}, ${g}, ${b})`;
+
+        return {
+            label: title,
+            data: data,
+            borderColor: color,
+            backgroundColor: color,
+            fill: false,
+        };
+    });
+
+    return {
+        labels: months,
+        datasets: datasets
+    };
+});

@@ -21,7 +21,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'ဘောက်ချာအသစ်ဖွင့်ရန်',
-        href: '/vouchers/create',
+        href: '/records/vouchers/create',
         icon: Plus,
     },
     {

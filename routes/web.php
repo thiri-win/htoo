@@ -28,78 +28,47 @@ Route::get('dashboard', function () {
 
     $categorySums = Category::withSum(['records' => function ($query) use ($startOfMonth, $endOfMonth) {
         $query->whereBetween('date', [$startOfMonth->toDateString(), $endOfMonth->toDateString()]);
-    }], 'amount')->get();
+    }], 'grand_total')->get();
 
-    return 'hello';
+    $startOfThisYear = now()->startOfYear();
+    $endOfThisYear   = now()->endOfYear();
 
-    // $startOfThisYear = now()->startOfYear();
-    // $endOfThisYear   = now()->endOfYear();
+    $monthlyProfitThisYear = Record::with('category')->whereYear('date', now()->year)
+        ->get()
+        ->groupBy(function ($record) {
+            return $record->date->format('Y-m');
+        })
+        ->map(function ($recordsInMonth) {
+            return $recordsInMonth->reduce(function ($carry, $record) {
+                if ($record->category && $record->category->status == 'sum') {
+                    return $carry + $record->grand_total;
+                }
+                return $carry - $record->grand_total;
+            }, 0);
+        });
 
-    // // Step 1: Get all categories and add "Voucher" as a virtual category
-    // $categories = DB::table('categories')->pluck('title')->push('Voucher')->toArray();
+    $allMonths = collect(range(1, 12))->mapWithKeys(function ($month) {
+        $key = now()->year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT);
+        return [$key => 0];
+    });
 
-    // // Step 2: Get sums from records, grouped by category and month
-    // // $recordsData = DB::table('categories')
-    // //     ->join('records', 'categories.id', '=', 'records.category_id')
-    // //     ->select(
-    // //         'categories.title',
-    // //         DB::raw("strftime('%m', records.date) as month_num"),
-    // //         DB::raw('SUM(records.amount) as sum')
-    // //     )
-    // //     ->whereBetween('records.date', [$startOfThisYear, $endOfThisYear])
-    // //     ->groupBy('categories.title', DB::raw("strftime('%m', records.date)"))
-    // //     ->get();
+    $monthlyProfitThisYear = $allMonths->merge($monthlyProfitThisYear)->sortKeys();
 
-    // // Step 2b: Get sums from vouchers, grouped by month
-    // $vouchersData = DB::table('vouchers')
-    //     ->select(
-    //         DB::raw("'Voucher' as title"),
-    //         DB::raw("strftime('%m', date) as month_num"),
-    //         DB::raw('SUM(total) as sum')
-    //     )
-    //     ->whereBetween('date', [$startOfThisYear, $endOfThisYear])
-    //     ->groupBy(DB::raw("strftime('%m', date)"))
-    //     ->get();
-
-    // // Step 2c: Merge both data collections
-    // // $data = $recordsData->merge($vouchersData);
-
-    // // Step 3: Prepare all months
-    // $months = collect(range(1, 12))->map(function ($m) {
-    //     return Carbon::create()->month($m)->format('F');
-    // });
-
-    // // Step 4: Build final result, ensuring all categories (including Voucher) are present for each month
-    // $categorySumsThisYear = [
-    //     $startOfThisYear->year => $months->mapWithKeys(function ($monthName) use ($categories, $data) {
-    //         $monthNum = Carbon::parse($monthName)->format('m');
-    //         $cats = collect($categories)->map(function ($cat) use ($data, $monthNum) {
-    //             $found = $data->first(function ($row) use ($cat, $monthNum) {
-    //                 return $row->title === $cat && $row->month_num === $monthNum;
-    //             });
-    //             return [
-    //                 'title' => $cat,
-    //                 'sum'   => $found ? (float) $found->sum : 0
-    //             ];
-    //         })->toArray();
-    //         return [$monthName => $cats];
-    //     })->toArray()
-    // ];
-
-    // return Inertia::render('Dashboard', [
-    //     'records' => Record::with('category')->get(),
-    //     'vouchers' => Voucher::all(),
-    //     'categorySums' => $categorySums,
-    //     'categorySumsThisYear' => $categorySumsThisYear,
-    // ]);
+    return Inertia::render('Dashboard', [
+        // 'records' => Record::with('category')->get(),
+        // 'vouchers' => Voucher::all(),
+        // 'categorySumsThisYear' => $categorySumsThisYear,
+        'categorySums' => $categorySums,
+        'monthlyProfitThisYear' => $monthlyProfitThisYear,
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
 
 Route::middleware('auth')->group(function () {
-    Route::resource('vouchers', VoucherController::class);
     Route::resource('categories', CategoryController::class);
+    Route::resource('records/vouchers', VoucherController::class);
     Route::resource('records', RecordController::class);
     Route::get('/backup-database', [DatabaseBackupController::class, 'download'])->name('backup-database');
 });

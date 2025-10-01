@@ -190,8 +190,13 @@ h1 {
 }
 
 td,
-th {
+th,
+label {
     @apply px-3 py-2;
+}
+
+form label {
+    @apply p-0;
 }
 
 th {
@@ -202,7 +207,8 @@ label {
     @apply inline-block py-1;
 }
 
-input, select {
+input,
+select {
     @apply w-full border-0 border-b p-1 outline-0;
 }
 

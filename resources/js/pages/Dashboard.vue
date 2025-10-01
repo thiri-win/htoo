@@ -9,10 +9,10 @@ import PieChart from '@/components/PieChart.vue';
 import BarChart from '@/components/BarChart.vue';
 
 const props = defineProps({
-    records: Array,
-    vouchers: Array,
+    // records: Array,
+    // vouchers: Array,
     categorySums: Array,
-    categorySumsThisYear: Object,
+    monthlyProfitThisYear: Array,
 })
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -44,46 +44,22 @@ const chartData = computed(() => {
 });
 
 const barChartData = computed(() => {
-    if (!props.categorySumsThisYear || Object.keys(props.categorySumsThisYear).length === 0) {
+    if (!props.monthlyProfitThisYear || Object.keys(props.monthlyProfitThisYear).length === 0) {
         return { labels: [], datasets: [] };
     }
-
-    const year = Object.keys(props.categorySumsThisYear)[0];
-    const monthlyData = props.categorySumsThisYear[year];
-    const months = Object.keys(monthlyData);
-
-    if (months.length === 0 || !monthlyData[months[0]]) {
-        return { labels: [], datasets: [] };
-    }
-
-    const categoryTitles = monthlyData[months[0]].map(cat => cat.title);
-
-    const datasets = categoryTitles.map(title => {
-        const data = months.map(month => {
-            const categoryDataForMonth = monthlyData[month].find(cat => cat.title === title);
-            return categoryDataForMonth ? categoryDataForMonth.sum : 0;
-        });
-
-        const r = Math.floor(Math.random() * 255);
-        const g = Math.floor(Math.random() * 255);
-        const b = Math.floor(Math.random() * 255);
-        const color = `rgb(${r}, ${g}, ${b})`;
-
-        return {
-            label: title,
-            data: data,
-            borderColor: color,
-            backgroundColor: color,
-            fill: false,
-        };
-    });
-
     return {
-        labels: months,
-        datasets: datasets
-    };
+        labels: Object.keys(props.monthlyProfitThisYear),
+        datasets: [
+            {
+                label: 'Monthly Profit',
+                data: Object.values(props.monthlyProfitThisYear),
+                backgroundColor: [
+                    '#f87171', '#60a5fa', '#fbbf24', '#34d399', '#a78bfa', '#f472b6', '#facc15', '#38bdf8', '#fb7185', '#4ade80'
+                ],
+            }
+        ]
+    }
 });
-
 </script>
 
 <template>

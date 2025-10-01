@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Sale extends Model
 {
-    protected $fillable = ['description', 'quantity', 'unit_price', 'sub_total'];
+    protected $fillable = ['description', 'quantity', 'unit_price', 'total'];
 
-    public function voucher()
-    {
-        return $this->belongsTo(Voucher::class);
-    }
+    // public function voucher()
+    // {
+    //     return $this->belongsTo(Voucher::class);
+    // }
 }

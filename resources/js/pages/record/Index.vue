@@ -9,12 +9,12 @@ defineProps({
     vouchers: Array,
 })
 
-onMounted(()=> {
+onMounted(() => {
     $('table').DataTable({
-    order: [[1, 'desc']],
-    autoWidth: false,
-    // scrollX: true,
-});
+        order: [[1, 'desc']],
+        autoWidth: false,
+        // scrollX: true,
+    });
 })
 
 
@@ -25,10 +25,10 @@ onMounted(()=> {
         <Link :href="route('records.create')" class="new-btn">+ New</Link>
         <table>
             <thead>
-                <tr>        
+                <tr>
                     <th>ID</th>
                     <th>Date</th>
-                    <th>Title</th>
+                    <th>Description</th>
                     <th>Amount</th>
                     <th></th>
                 </tr>
@@ -37,18 +37,11 @@ onMounted(()=> {
                 <tr v-for="record in records" v-bind:key="record.id">
                     <td v-text="record.id"></td>
                     <td v-text="record.date"></td>
-                    <td v-text="record.title"></td>
-                    <td v-text="record.amount"></td>
+                    <td v-text="record.description"></td>
+                    <td v-text="record.grand_total"></td>
                     <td>
-                        <Link :href="route('records.edit', record)" class="edit-btn text-sm">Edit</Link>
+                        <Link :href="route('records.show', record)" class="show-btn text-sm">View</Link>
                     </td>
-                </tr>
-                <tr v-for="voucher in vouchers" v-bind:key="voucher.id">
-                    <td v-text="voucher.id"></td>
-                    <td v-text="voucher.date"></td>
-                    <td v-text="voucher.car_number"></td>
-                    <td v-text="voucher.total"></td>
-                    <td></td>
                 </tr>
             </tbody>
         </table>

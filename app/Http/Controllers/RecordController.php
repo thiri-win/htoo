@@ -37,14 +37,28 @@ class RecordController extends Controller
      */
     public function store(Request $request)
     {
-        Record::create($request->validate([
+        $validated = $request->validate([
             'date' => 'required',
-            'title' => 'required',
-            'category_id' => 'required',
-            'amount' => 'required',
-            'remark' => 'sometimes'
-        ]));
-        return redirect()->route('records.create')->with('success', 'Record Added Successfully');
+            'records' => 'required|array',
+            'records.*.description' => 'required',
+            'records.*.category_id' => 'required',
+            'records.*.grand_total' => 'required',
+            'records.*.remark' => 'sometimes',
+        ]);
+
+        foreach ($validated['records'] as $recordData) {
+            Record::create([
+                'date' => $validated['date'],
+                'description' => $recordData['description'],
+                'category_id' => $recordData['category_id'],
+                'sub_total' => 0,
+                'discount' => 0,
+                'grand_total' => $recordData['grand_total'],
+                'remark' => $recordData['remark'] ?? null,
+            ]);
+        }
+
+        return redirect()->route('records.index')->with('success', 'Record Added Successfully');
     }
 
     /**
@@ -53,7 +67,7 @@ class RecordController extends Controller
     public function show(Record $record)
     {
         return Inertia::render('record/Show', [
-            'record' => $record->load('category')
+            'record' => $record->load('category')->load('sales')->load('car')
         ]);
     }
 
@@ -62,9 +76,9 @@ class RecordController extends Controller
      */
     public function edit(Record $record)
     {
-        return Inertia::render('record/Create', [
+        return Inertia::render('record/Edit', [
             'categories' => Category::all(),
-            'record' => $record
+            'record' => $record->load('sales')->load('category')
         ]);
     }
 
@@ -75,12 +89,12 @@ class RecordController extends Controller
     {
         $record->update($request->validate([
             'date' => 'required',
-            'title' => 'required',
+            'description' => 'required',
             'category_id' => 'required',
-            'amount' => 'required',
+            'grand_total' => 'required',
             'remark' => 'sometimes',
         ]));
-        return redirect()->back()->with('success', 'Record Updated Successfully');
+        return redirect()->route('records.index')->with('success', 'Record Updated Successfully');
     }
 
     /**
