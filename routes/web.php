@@ -8,11 +8,8 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\VoucherPrintController;
 use App\Models\Category;
 use App\Models\Record;
-use App\Models\Voucher;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 // Route::get('/', function(){ return 'hello'; });
 
@@ -68,8 +65,8 @@ require __DIR__ . '/auth.php';
 
 Route::middleware('auth')->group(function () {
     Route::resource('categories', CategoryController::class);
-    Route::resource('records/vouchers', VoucherController::class);
     Route::resource('records', RecordController::class);
+    Route::resource('records/vouchers', VoucherController::class);
     Route::get('/backup-database', [DatabaseBackupController::class, 'download'])->name('backup-database');
 });
 

@@ -8,7 +8,7 @@ const props = defineProps({
 })
 
 const form = useForm({
-    "date": props.record.date ? new Date(props.record.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+    "date": props.record?.date ? new Date(props.record.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
     'records': props.records || [
         {
             'id': 1,

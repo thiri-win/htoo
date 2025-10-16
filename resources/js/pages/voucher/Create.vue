@@ -8,14 +8,13 @@ const props = defineProps({
     voucher: Object
 })
 
-
 const form = useForm({
     'date': props.voucher.date ? new Date(props.voucher.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-    'customer_name': props.voucher.car.customer_name || '',
-    'customer_phone': props.voucher.car.customer_phone || '',
-    'car_brand': props.voucher.car.car_brand || '',
-    'car_model': props.voucher.car.car_model || '',
-    'car_number': props.voucher.car.car_number || '',
+    'customer_name': props.voucher.car?.customer_name || '',
+    'customer_phone': props.voucher.car?.customer_phone || '',
+    'car_brand': props.voucher.car?.car_brand || '',
+    'car_model': props.voucher.car?.car_model || '',
+    'car_number': props.voucher.car?.car_number || '',
     'sales': props.voucher.sales || [
         {
             'id': 1,

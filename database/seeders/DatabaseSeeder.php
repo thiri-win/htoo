@@ -26,6 +26,16 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => Hash::make('pass')
         ]);
+        User::factory()->create([
+            'name' => 'Aung Ko Hein',
+            'email' => 'akh@gmail.com',
+            'password' => Hash::make('pass')
+        ]);
+        User::factory()->create([
+            'name' => 'Jonny',
+            'email' => 'user@gmail.com',
+            'password' => Hash::make('pass')
+        ]);
 
         $categories = ['ဝင်ငွေ', 'ပစ္စည်းဝယ်', 'ကယ်ရီခ', 'လုပ်အားခ', 'သုံးငွေ', 'မိန်းမအပ်ငွေ', 'ဆီဖိုး'];
 

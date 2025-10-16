@@ -23,7 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const chartData = computed(() => {
-    if (!Array.isArray(categorySums) || categorySums.length === 0) {
+    if (!Array.isArray(props.categorySums) || props.categorySums.length === 0) {
         return {
             labels: [],
             datasets: []
@@ -81,7 +81,7 @@ const barChartData = computed(() => {
 
         <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mb-5">
             <div class="border p-5">
-                <PieChart :chartData="chartData"></PieChart>
+                <PieChart :chartData="chartData" class="w-full"></PieChart>
             </div>
 
             <div class="border p-5 col-span-3">

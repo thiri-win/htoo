@@ -16,13 +16,14 @@ const page = usePage<SharedData>();
         <SidebarGroupLabel>{{ title }}</SidebarGroupLabel>
         <SidebarMenu>
             <SidebarMenuItem v-for="item in items" :key="item.title">
-                <SidebarMenuButton 
-                    as-child :is-active="item.href === page.url"
-                    :tooltip="item.title"
-                >
-                    <Link :href="item.href">
+                <SidebarMenuButton as-child :is-active="item.href === page.url" :tooltip="item.title">
+                    <a v-if="item.href == '/chatify'" :href="item.href" target="_blank">
                         <component :is="item.icon" />
                         <span>{{ item.title }}</span>
+                    </a>
+                    <Link v-else :href="item.href">
+                    <component :is="item.icon" />
+                    <span>{{ item.title }}</span>
                     </Link>
                 </SidebarMenuButton>
             </SidebarMenuItem>

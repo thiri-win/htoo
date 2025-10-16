@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { Download, LayoutGrid, List, ListCheckIcon, NotebookPen, Plus, PrinterIcon } from 'lucide-vue-next';
+import { Download, LayoutGrid, List, ListCheckIcon, MessageCircle, NotebookPen, Plus, PrinterIcon } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -25,15 +25,16 @@ const mainNavItems: NavItem[] = [
         icon: Plus,
     },
     {
-        title: 'ဘောက်ချာprintထုတ်ရန်',
-        href: '/vouchers',
-        icon: PrinterIcon,
-    },
-    {
         title: 'စာရင်းအသစ်ထည့်ရန်',
         href: '/records/create',
         icon: NotebookPen,
     },
+    {
+        title: 'Message',
+        href: '/chatify',
+        icon: MessageCircle,
+    },
+
 
 ];
 

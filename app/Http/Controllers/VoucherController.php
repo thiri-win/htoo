@@ -51,14 +51,14 @@ class VoucherController extends Controller
             'sales.*.unit_price' => 'required',
             'sales.*.total' => 'required',
         ]);
-        $validated['description'] = "Invoice";
+        $validated['description'] = $validated['car_number'];
         $validated['category_id'] = 1;
 
         $record = Record::create($validated);
         $record->sales()->createMany($validated['sales']);
         $record->car()->create($validated);
         
-        return redirect()->route('vouchers.index')->with('success', 'Added New Voucher');
+        return redirect()->route('records.index')->with('success', 'Added New Voucher');
     }
 
     /**

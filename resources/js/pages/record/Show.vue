@@ -1,6 +1,8 @@
 <script setup>
 
 import AppLayout from '@/layouts/AppLayout.vue';
+import dayjs from 'dayjs';
+
 defineProps({
     'record': Object
 })
@@ -11,7 +13,7 @@ defineProps({
         <h1>စာရင်းအသေးစိတ်</h1>
         <div class="mb-3">
             <label class="w-38">Date: </label>
-            <span class="px-3 py-2">{{ record.date }}</span>
+            <span class="px-3 py-2">{{ dayjs(record.date).format('DD-MM-YYYY') }}</span>
         </div>
         <div class="mb-3" v-if="record.sales.length < 1">
             <div>
