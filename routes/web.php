@@ -27,9 +27,6 @@ Route::get('dashboard', function () {
         $query->whereBetween('date', [$startOfMonth->toDateString(), $endOfMonth->toDateString()]);
     }], 'grand_total')->get();
 
-    $startOfThisYear = now()->startOfYear();
-    $endOfThisYear   = now()->endOfYear();
-
     $monthlyProfitThisYear = Record::with('category')->whereYear('date', now()->year)
         ->get()
         ->groupBy(function ($record) {
@@ -51,12 +48,34 @@ Route::get('dashboard', function () {
 
     $monthlyProfitThisYear = $allMonths->merge($monthlyProfitThisYear)->sortKeys();
 
+    $categoryTitle = Category::pluck('title');
+
+    $categorySumByMonth = Record::with('category')->whereYear('date', now()->year)
+        ->get()
+        ->groupBy(function ($record) {
+            return $record->date->format('n');
+        })
+        ->sortKeys()
+        ->map(function ($recordsInMonth) use ($categoryTitle) {
+            $sumsForThisMonth = $recordsInMonth
+                ->groupBy('category.title')
+                ->map(function ($recordsInCategory) {
+                    return $recordsInCategory->sum('grand_total');
+                });
+
+            $allCategoriesWithZero = $categoryTitle->mapWithKeys(fn($title) => [$title => 0]);
+
+            return $allCategoriesWithZero->merge($sumsForThisMonth);
+        });
+        // dd($categorySumByMonth);
+
     return Inertia::render('Dashboard', [
         // 'records' => Record::with('category')->get(),
         // 'vouchers' => Voucher::all(),
         // 'categorySumsThisYear' => $categorySumsThisYear,
         'categorySums' => $categorySums,
         'monthlyProfitThisYear' => $monthlyProfitThisYear,
+        'categorySumByMonth' => $categorySumByMonth,
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 

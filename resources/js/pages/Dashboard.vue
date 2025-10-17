@@ -3,16 +3,18 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { DownloadCloud, PlusIcon } from 'lucide-vue-next';
 import PieChart from '@/components/PieChart.vue';
 import BarChart from '@/components/BarChart.vue';
+import { validators } from 'tailwind-merge';
 
 const props = defineProps({
     // records: Array,
     // vouchers: Array,
     categorySums: Array,
     monthlyProfitThisYear: Array,
+    categorySumByMonth: Object,
 })
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -57,9 +59,14 @@ const barChartData = computed(() => {
                     '#f87171', '#60a5fa', '#fbbf24', '#34d399', '#a78bfa', '#f472b6', '#facc15', '#38bdf8', '#fb7185', '#4ade80'
                 ],
             }
-        ]
+        ],
+        options: {
+            borderColor: 'rgba(255,255,0,1)',
+            backgroundColor: 'rgba(255,0,255,1)',
+        }
     }
 });
+
 </script>
 
 <template>
@@ -86,6 +93,27 @@ const barChartData = computed(() => {
 
             <div class="border p-5 col-span-3">
                 <BarChart :chartData="barChartData" class="w-full"></BarChart>
+            </div>
+
+            <div class="border p-5 col-span-3 overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 border">Month</th>
+                            <th v-for="categoryTitle in Object.keys(props.categorySumByMonth['1'] || {})" :key="categoryTitle" class="px-6 py-3 text-right border">
+                                {{ categoryTitle }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(sums, month) in props.categorySumByMonth" :key="month">
+                            <th class="px-6 py-4 font-medium whitespace-nowrap border">{{ parseInt(month, 10) }}</th>
+                            <td v-for="(total, category) in sums" :key="category" class="px-6 py-4 text-right border">
+                                {{ total.toLocaleString() }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </AppLayout>
