@@ -10,7 +10,7 @@ defineProps({
 
 onMounted(() => {
     $('table').DataTable({
-        order: [[1, 'desc']],
+        order: [[0, 'asc']],
         autoWidth: false,
         scrollX: true,
     });
