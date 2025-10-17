@@ -9,6 +9,7 @@ use Carbon\Carbon;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
 use function PHPUnit\Framework\isArray;
@@ -21,32 +22,34 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        User::factory()->create([
-            'name' => 'Thiri Win',
-            'email' => 'admin@gmail.com',
-            'password' => Hash::make('pass')
-        ]);
-        User::factory()->create([
-            'name' => 'Aung Ko Hein',
-            'email' => 'akh@gmail.com',
-            'password' => Hash::make('pass')
-        ]);
-        User::factory()->create([
-            'name' => 'Jonny',
-            'email' => 'user@gmail.com',
-            'password' => Hash::make('pass')
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Thiri Win',
+        //     'email' => 'admin@gmail.com',
+        //     'password' => Hash::make('pass')
+        // ]);
+        // User::factory()->create([
+        //     'name' => 'Aung Ko Hein',
+        //     'email' => 'akh@gmail.com',
+        //     'password' => Hash::make('pass')
+        // ]);
+        // User::factory()->create([
+        //     'name' => 'Jonny',
+        //     'email' => 'user@gmail.com',
+        //     'password' => Hash::make('pass')
+        // ]);
 
-        $categories = ['ဝင်ငွေ', 'ပစ္စည်းဝယ်', 'ကယ်ရီခ', 'လုပ်အားခ', 'သုံးငွေ', 'မိန်းမအပ်ငွေ', 'ဆီဖိုး'];
+        // $categories = ['ဝင်ငွေ', 'ပစ္စည်းဝယ်', 'ကယ်ရီခ', 'လုပ်အားခ', 'သုံးငွေ', 'မိန်းမအပ်ငွေ', 'ဆီဖိုး'];
 
-        foreach ($categories as $category) {
-            Category::create([
-                'title' => $category,
-                'status' => $category == 'ဝင်ငွေ' ? 'sum' : 'sub',
-            ]);
-        }
+        // foreach ($categories as $category) {
+        //     Category::create([
+        //         'title' => $category,
+        //         'status' => $category == 'ဝင်ငွေ' ? 'sum' : 'sub',
+        //     ]);
+        // }
 
-
+        $filepath = database_path('../htoo.sql');
+        $sql = File::get($filepath);
+        DB::unprepared($sql);
 
         // notion ထဲက data ရွှေ့ဖို့သုံးထားတာပါ
         // if (($handle = fopen("storage/daily.csv", "r")) !== FALSE) {
