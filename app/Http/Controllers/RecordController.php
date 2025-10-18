@@ -16,8 +16,7 @@ class RecordController extends Controller
     public function index()
     {
         return Inertia::render('record/Index',[
-            'records' => Record::all(),
-            'vouchers' => Voucher::all(),
+            'records' => Record::all()->load('category'),
         ]);
     }
 

@@ -39,6 +39,7 @@ onMounted(() => {
                     <td>{{ record.id }}</td>
                     <td>{{ dayjs(record.date).format('DD-MM-YYYY') }}</td>
                     <td>{{ record.description }}</td>
+                    <td>{{ record.category.title }}</td>
                     <td>{{ record.grand_total }}</td>
                     <td>
                         <Link :href="route('records.show', record)" class="show-btn text-sm">View</Link>
