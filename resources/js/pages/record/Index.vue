@@ -30,6 +30,7 @@ onMounted(() => {
                     <th>ID</th>
                     <th>Date</th>
                     <th>Description</th>
+                    <th>Category</th>
                     <th>Amount</th>
                     <th></th>
                 </tr>
