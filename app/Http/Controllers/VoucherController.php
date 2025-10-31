@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Record;
-use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,9 +13,9 @@ class VoucherController extends Controller
      */
     public function index()
     {
-        return Inertia::render('voucher/Index', [
-            'vouchers' => Voucher::orderBy('date', 'desc')->get()
-        ]);
+        // return Inertia::render('voucher/Index', [
+        //     'vouchers' => Voucher::orderBy('date', 'desc')->get()
+        // ]);
     }
 
     /**
@@ -35,16 +34,19 @@ class VoucherController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'date' => 'required',
+            // cars
             'customer_name' => 'sometimes',
             'customer_phone' => 'sometimes',
             'car_brand' => 'sometimes',
             'car_model' => 'sometimes',
             'car_number' => 'sometimes',
+            // record
+            'date' => 'required',
             'sub_total' => 'required',
             'discount' => 'required',
             'grand_total' => 'required',
             'remark' => 'sometimes',
+            // record items
             'sales' => 'required|array',
             'sales.*.description' => 'required',
             'sales.*.quantity' => 'required',
@@ -55,7 +57,7 @@ class VoucherController extends Controller
         $validated['category_id'] = 1;
 
         $record = Record::create($validated);
-        $record->sales()->createMany($validated['sales']);
+        $record->items()->createMany($validated['sales']);
         $record->car()->create($validated);
         
         return redirect()->route('records.index')->with('success', 'Added New Voucher');
@@ -87,16 +89,19 @@ class VoucherController extends Controller
     public function update(Request $request, Record $voucher)
     {
         $validated = $request->validate([
-            'date' => 'required',
+            // car
             'customer_name' => 'sometimes',
             'customer_phone' => 'sometimes',
             'car_brand' => 'required',
             'car_model' => 'required',
             'car_number' => 'required',
+            // record
+            'date' => 'required',
             'sub_total' => 'required',
             'discount' => 'required',
             'grand_total' => 'required',
             'remark' => 'sometimes',
+            // record items
             'sales' => 'required|array',
             'sales.*.id' => 'sometimes',
             'sales.*.description' => 'required',
@@ -104,14 +109,9 @@ class VoucherController extends Controller
             'sales.*.unit_price' => 'required',
             'sales.*.total' => 'required',
         ]);
-        
-        // $voucher->update($validated);
-
-        // return $voucher->sales;   
 
         $salesData = $validated['sales'];
 
-        return $salesData;
         foreach ($salesData as $sale) {
             if (isset($sale['id'])) {
                 $voucher->sales()->find($sale['id'])->update($sale);
@@ -126,8 +126,8 @@ class VoucherController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Voucher $voucher)
-    {
-        //
-    }
+    // public function destroy(Voucher $voucher)
+    // {
+    //     //
+    // }
 }

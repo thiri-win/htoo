@@ -2,7 +2,6 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/vue3';
 import { computed, watch } from 'vue';
-import Voucher from '../print/Voucher.vue';
 
 const props = defineProps({
     voucher: Object

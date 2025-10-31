@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Record;
-use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -35,28 +34,27 @@ class RecordController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+    {   
         $validated = $request->validate([
             'date' => 'required',
-            'records' => 'required|array',
-            'records.*.description' => 'required',
-            'records.*.category_id' => 'required',
-            'records.*.grand_total' => 'required',
-            'records.*.remark' => 'sometimes',
+            'description' => 'sometimes',
+            'category_id' => 'required',
+            'sub_total' => 'required',
+            'discount' => 'required',
+            'grand_total' => 'required',
+            'remark' => 'required',
+            // record items
+            'items' => 'required|array',
+            'items.*.description' => 'required',
+            'items.*.quantity' => 'required',
+            'items.*.unit_price' => 'required',
+            'items.*.total' => 'required',
+
         ]);
-
-        foreach ($validated['records'] as $recordData) {
-            Record::create([
-                'date' => $validated['date'],
-                'description' => $recordData['description'],
-                'category_id' => $recordData['category_id'],
-                'sub_total' => 0,
-                'discount' => 0,
-                'grand_total' => $recordData['grand_total'],
-                'remark' => $recordData['remark'] ?? null,
-            ]);
-        }
-
+        
+        $record = Record::create($validated);
+        $record->items()->createMany($validated['items']);
+        
         return redirect()->route('records.index')->with('success', 'Record Added Successfully');
     }
 

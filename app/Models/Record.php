@@ -20,8 +20,8 @@ class Record extends Model
         return $this->hasOne(Car::class);
     }
 
-    public function sales()
+    public function items()
     {
-        return $this->hasMany(Sale::class);
+        return $this->hasMany(Item::class);
     }
 }

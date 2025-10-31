@@ -7,11 +7,8 @@ import { computed } from 'vue';
 import { DownloadCloud, PlusIcon } from 'lucide-vue-next';
 import PieChart from '@/components/PieChart.vue';
 import BarChart from '@/components/BarChart.vue';
-import { validators } from 'tailwind-merge';
 
 const props = defineProps({
-    // records: Array,
-    // vouchers: Array,
     categorySums: Array,
     monthlyProfitThisYear: Array,
     categorySumByMonth: Object,
@@ -36,7 +33,7 @@ const chartData = computed(() => {
         datasets: [
             {
                 label: 'Category Amount',
-                data: props.categorySums.map(c => c.records_sum_amount || 0),
+                data: props.categorySums.map(c => c.records_sum_grand_total || 0),
                 backgroundColor: [
                     '#f87171', '#60a5fa', '#fbbf24', '#34d399', '#a78bfa', '#f472b6', '#facc15', '#38bdf8', '#fb7185', '#4ade80'
                 ],

@@ -11,8 +11,6 @@ use App\Models\Record;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Route::get('/', function(){ return 'hello'; });
-
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
@@ -67,12 +65,8 @@ Route::get('dashboard', function () {
 
             return $allCategoriesWithZero->merge($sumsForThisMonth);
         });
-        // dd($categorySumByMonth);
 
     return Inertia::render('Dashboard', [
-        // 'records' => Record::with('category')->get(),
-        // 'vouchers' => Voucher::all(),
-        // 'categorySumsThisYear' => $categorySumsThisYear,
         'categorySums' => $categorySums,
         'monthlyProfitThisYear' => $monthlyProfitThisYear,
         'categorySumByMonth' => $categorySumByMonth,
@@ -86,6 +80,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('records', RecordController::class);
     Route::resource('records/vouchers', VoucherController::class);
+    Route::get('/salary-calculate', function() {
+        return Inertia::render('SalaryCalculate');
+    });
     Route::get('/backup-database', [DatabaseBackupController::class, 'download'])->name('backup-database');
 });
 
