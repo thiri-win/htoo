@@ -232,6 +232,7 @@ CREATE TABLE `items` (
 
 LOCK TABLES `items` WRITE;
 /*!40000 ALTER TABLE `items` DISABLE KEYS */;
+INSERT INTO `items` VALUES (1,435,'ပန်ကာကြိုးလဲ၊ ရေတိုင်ကီဖြုတ်တပ်',1,20000,20000,'2025-10-25 00:01:03','2025-10-25 00:01:03'),(2,436,'ပန်ကာကြိုးလဲ၊ ရေတိုင်ကီဖြုတ်တပ်',1,20000,20000,'2025-10-25 00:01:04','2025-10-25 00:01:04'),(3,437,'ရှေ့ရှော့',2,220000,440000,'2025-10-25 00:20:00','2025-10-25 00:20:00'),(4,437,'ဒူးဇစ်',2,80000,160000,'2025-10-25 00:20:00','2025-10-25 00:20:00'),(5,437,'Link',2,22000,44000,'2025-10-25 00:20:00','2025-10-25 00:20:00'),(6,437,'Balljoint',2,30000,60000,'2025-10-25 00:20:00','2025-10-25 00:20:00'),(7,437,'Brake pad F',1,45000,45000,'2025-10-25 00:20:00','2025-10-25 00:20:00'),(8,437,'ရှေ့ဟက်ဘော + press',1,75000,75000,'2025-10-25 00:20:00','2025-10-25 00:20:00'),(9,437,'ဒူးဇစ်ဆီ',1,9000,9000,'2025-10-25 00:20:00','2025-10-25 00:20:00'),(10,437,'နောက်ရှော့ပြင်',1,10000,10000,'2025-10-25 00:20:00','2025-10-25 00:20:00'),(11,437,'လက်ခ',1,50000,50000,'2025-10-25 00:20:00','2025-10-25 00:20:00'),(12,447,'ရှော့ဘား၊ ရာဘာအခံ',1,60000,60000,'2025-10-25 02:45:52','2025-10-25 02:45:52'),(13,447,'လက်ခ',1,25000,25000,'2025-10-25 02:45:52','2025-10-25 02:45:52'),(14,448,'Computer စစ်+Abs wiring',1,25000,25000,'2025-10-25 20:28:58','2025-10-25 20:28:58');
 /*!40000 ALTER TABLE `items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -377,36 +378,6 @@ INSERT INTO `records` VALUES (1,'2024-12-01','City Mart စျေးဝယ် (�
 UNLOCK TABLES;
 
 --
--- Table structure for table `sales`
---
-
-DROP TABLE IF EXISTS `sales`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sales` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `record_id` int NOT NULL,
-  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `quantity` int NOT NULL,
-  `unit_price` int NOT NULL,
-  `total` int NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sales`
---
-
-LOCK TABLES `sales` WRITE;
-/*!40000 ALTER TABLE `sales` DISABLE KEYS */;
-INSERT INTO `sales` VALUES (1,435,'ပန်ကာကြိုးလဲ၊ ရေတိုင်ကီဖြုတ်တပ်',1,20000,20000,'2025-10-25 06:31:03','2025-10-25 06:31:03'),(2,436,'ပန်ကာကြိုးလဲ၊ ရေတိုင်ကီဖြုတ်တပ်',1,20000,20000,'2025-10-25 06:31:04','2025-10-25 06:31:04'),(3,437,'ရှေ့ရှော့',2,220000,440000,'2025-10-25 06:50:00','2025-10-25 06:50:00'),(4,437,'ဒူးဇစ်',2,80000,160000,'2025-10-25 06:50:00','2025-10-25 06:50:00'),(5,437,'Link',2,22000,44000,'2025-10-25 06:50:00','2025-10-25 06:50:00'),(6,437,'Balljoint',2,30000,60000,'2025-10-25 06:50:00','2025-10-25 06:50:00'),(7,437,'Brake pad F',1,45000,45000,'2025-10-25 06:50:00','2025-10-25 06:50:00'),(8,437,'ရှေ့ဟက်ဘော + press',1,75000,75000,'2025-10-25 06:50:00','2025-10-25 06:50:00'),(9,437,'ဒူးဇစ်ဆီ',1,9000,9000,'2025-10-25 06:50:00','2025-10-25 06:50:00'),(10,437,'နောက်ရှော့ပြင်',1,10000,10000,'2025-10-25 06:50:00','2025-10-25 06:50:00'),(11,437,'လက်ခ',1,50000,50000,'2025-10-25 06:50:00','2025-10-25 06:50:00'),(12,447,'ရှော့ဘား၊ ရာဘာအခံ',1,60000,60000,'2025-10-25 09:15:52','2025-10-25 09:15:52'),(13,447,'လက်ခ',1,25000,25000,'2025-10-25 09:15:52','2025-10-25 09:15:52'),(14,448,'Computer စစ်+Abs wiring',1,25000,25000,'2025-10-26 02:58:58','2025-10-26 02:58:58');
-/*!40000 ALTER TABLE `sales` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `sessions`
 --
 
@@ -432,7 +403,7 @@ CREATE TABLE `sessions` (
 
 LOCK TABLES `sessions` WRITE;
 /*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-INSERT INTO `sessions` VALUES ('hF1XrP8mrslGjwbQSyQpMpSg4DLw3RwrnePTpQwB',1,'127.0.0.1','Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:145.0) Gecko/20100101 Firefox/145.0','YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSWNDSlBNZVplR2xrTHgzNkVqUTdBbDFGY0pjNklsT1BLb1BReEdoRyI7czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czoyOToiaHR0cDovL2xvY2FsaG9zdDo4MDAwL3JlY29yZHMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19',1762001680);
+INSERT INTO `sessions` VALUES ('hF1XrP8mrslGjwbQSyQpMpSg4DLw3RwrnePTpQwB',1,'127.0.0.1','Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:145.0) Gecko/20100101 Firefox/145.0','YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSWNDSlBNZVplR2xrTHgzNkVqUTdBbDFGY0pjNklsT1BLb1BReEdoRyI7czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czo0MDoiaHR0cDovL2xvY2FsaG9zdDo4MDAwL3JlY29yZHMvYXZhdGFyLnBuZyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=',1762005139);
 /*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -480,4 +451,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-01 19:32:03
+-- Dump completed on 2025-11-02  9:04:15
