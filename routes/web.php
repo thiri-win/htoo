@@ -4,6 +4,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\RecordController;
+use App\Http\Controllers\RecordExpenseController;
+use App\Http\Controllers\RecordSalaryController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\VoucherPrintController;
 use App\Models\Category;
@@ -79,10 +81,9 @@ require __DIR__ . '/auth.php';
 Route::middleware('auth')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('records', RecordController::class);
+    Route::resource('records/expenses', RecordExpenseController::class)->except('index', 'destroy');
     Route::resource('records/vouchers', VoucherController::class);
-    Route::get('/salary-calculate', function() {
-        return Inertia::render('SalaryCalculate');
-    });
+    Route::resource('records/salary', RecordSalaryController::class)->only('create', 'store');
     Route::get('/backup-database', [DatabaseBackupController::class, 'download'])->name('backup-database');
 });
 

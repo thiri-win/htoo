@@ -10,12 +10,12 @@ defineProps({
 </script>
 <template>
     <AppLayout>
-        <h1>စာရင်းအသေးစိတ်</h1>
-        <div class="mb-3">
-            <label class="w-38">Date: </label>
-            <span class="px-3 py-2">{{ dayjs(record.date).format('DD-MM-YYYY') }}</span>
-        </div>
-        <div class="mb-3" v-if="record.sales.length < 1">
+        <h1>စာရင်းအသေးစိတ် - {{ record.category.title }}</h1>
+        <div class="mb-3" v-if="record.items.length < 1">
+            <div class="mb-3">
+                <label class="w-38">Date: </label>
+                <span class="px-3 py-2">{{ dayjs(record.date).format('DD-MM-YYYY') }}</span>
+            </div>
             <div>
                 <label class="w-38">အကြောင်းအရာ :</label>
                 <span class="px-3 py-2">{{ record.description }}</span>
@@ -36,20 +36,20 @@ defineProps({
         <div v-else>
             <table v-if="record.car" class="w-full mb-5">
                 <tr>
+                    <td class="w-38 italic">Date</td>
+                    <td class="font-semibold border-b border-b-neutral-500">{{ dayjs(record.date).format('DD-MM-YYYY') }}</td>
                     <td class="w-38 italic">Customer Name</td>
-                    <td class="font-semibold">{{ record.car.customer_name }}</td>
+                    <td class="font-semibold border-b border-b-neutral-500">{{ record.car.customer_name }}</td>
                     <td class="w-38 italic">Customer Phone</td>
-                    <td class="font-semibold">{{ record.car.customer_phone }}</td>
-                    <td class="w-38 italic"></td>
-                    <td class="font-semibold"></td>
+                    <td class="font-semibold border-b border-b-neutral-500">{{ record.car.customer_phone }}</td>
                 </tr>
                 <tr>
                     <td class="w-38 italic">Car Number</td>
-                    <td class="font-semibold">{{ record.car.car_number }}</td>
+                    <td class="font-semibold border-b border-b-neutral-500">{{ record.car.car_number }}</td>
                     <td class="w-38 italic">Car Brand</td>
-                    <td class="font-semibold">{{ record.car.car_brand }}</td>
+                    <td class="font-semibold border-b border-b-neutral-500">{{ record.car.car_brand }}</td>
                     <td class="w-38 italic font">Car Model</td>
-                    <td class="font-semibold">{{ record.car.car_model }}</td>
+                    <td class="font-semibold border-b border-b-neutral-500">{{ record.car.car_model }}</td>
                 </tr>
             </table>
             <table class="w-full">
@@ -63,12 +63,12 @@ defineProps({
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(sale, index) in record.sales" :key="sale.id">
+                    <tr v-for="(item, index) in record.items" :key="item.id">
                         <td>{{ index + 1 }}</td>
-                        <td>{{ sale.description }}</td>
-                        <td class="text-right">{{ sale.quantity }}</td>
-                        <td class="text-right">{{ sale.unit_price }}</td>
-                        <td class="text-right">{{ sale.total }}</td>
+                        <td>{{ item.description }}</td>
+                        <td class="text-right">{{ item.quantity }}</td>
+                        <td class="text-right">{{ item.unit_price }}</td>
+                        <td class="text-right">{{ item.total }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -91,8 +91,11 @@ defineProps({
                 </tfoot>
             </table>
         </div>
-        <div v-if="record.sales.length > 0" class="inline-block">
+        <div v-if="record.category.id == 1" class="inline-block">
             <a :href="route('vouchers.edit', record)" class="edit-btn my-5 inline-block mr-2">Edit</a>
+        </div>
+        <div v-else-if="record.category.id == 2" class="inline-block">
+            <a :href="route('expenses.edit', record)" class="edit-btn my-5 inline-block mr-2">Edit</a>
         </div>
         <div v-else class="inline-block">
             <a :href="route('records.edit', record)" class="edit-btn my-5 inline-block mr-2">Edit</a>

@@ -35,25 +35,16 @@ class RecordController extends Controller
      */
     public function store(Request $request)
     {   
+        return $request->all();
         $validated = $request->validate([
             'date' => 'required',
-            'description' => 'sometimes',
+            'description' => 'required',
             'category_id' => 'required',
-            'sub_total' => 'required',
-            'discount' => 'required',
             'grand_total' => 'required',
-            'remark' => 'required',
-            // record items
-            'items' => 'required|array',
-            'items.*.description' => 'required',
-            'items.*.quantity' => 'required',
-            'items.*.unit_price' => 'required',
-            'items.*.total' => 'required',
-
+            'remark' => 'sometimes',
         ]);
         
         $record = Record::create($validated);
-        $record->items()->createMany($validated['items']);
         
         return redirect()->route('records.index')->with('success', 'Record Added Successfully');
     }
@@ -64,7 +55,7 @@ class RecordController extends Controller
     public function show(Record $record)
     {
         return Inertia::render('record/Show', [
-            'record' => $record->load('category')->load('sales')->load('car')
+            'record' => $record->load('category')->load('items')->load('car')
         ]);
     }
 

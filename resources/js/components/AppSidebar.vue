@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { Calculator, Download, LayoutGrid, List, ListCheckIcon, MessageCircle, NotebookPen, Plus, PrinterIcon } from 'lucide-vue-next';
+import { Calculator, DollarSign, LayoutGrid, List, ListCheckIcon, MessageCircle, NotebookPen, Plus } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -19,28 +19,32 @@ const mainNavItems: NavItem[] = [
         href: '/records',
         icon: List,
     },
+];
+
+const incomeNavItems: NavItem[] = [
     {
         title: 'ဘောက်ချာအသစ်ဖွင့်ရန်',
         href: '/records/vouchers/create',
         icon: Plus,
     },
+];
+
+const expenseNavItems: NavItem[] = [
     {
-        title: 'စာရင်းအသစ်ထည့်ရန်',
-        href: '/records/create',
+        title: 'ပစ္စည်းဝယ်စာရင်း',
+        href: '/records/expenses/create',
         icon: NotebookPen,
     },
     {
-        title: 'လုပ်အားခတွက်ချက်ရန်',
-        href: '/salary-calculate',
-        icon: Calculator,
+        title: 'အသုံးစာရင်း',
+        href: '/records/create',
+        icon: DollarSign,
     },
     {
-        title: 'Message',
-        href: '/chatify',
-        icon: MessageCircle,
+        title: 'လုပ်အားခတွက်ချက်ရန်',
+        href: '/records/salary/create',
+        icon: Calculator,
     },
-
-
 ];
 
 const settingNavItems: NavItem[] = [
@@ -48,6 +52,11 @@ const settingNavItems: NavItem[] = [
         title: 'အကြောင်းအရာများ',
         href: '/categories',
         icon: ListCheckIcon,
+    },
+    {
+        title: 'Message',
+        href: '/chatify',
+        icon: MessageCircle,
     },
     // {
     //     title: 'Database Backup',
@@ -78,7 +87,7 @@ const footerNavItems: NavItem[] = [
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
                         <Link :href="route('dashboard')">
-                            <AppLogo />
+                        <AppLogo />
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -87,6 +96,8 @@ const footerNavItems: NavItem[] = [
 
         <SidebarContent>
             <NavMain title="MAIN" :items="mainNavItems" />
+            <NavMain title="INCOME" :items="incomeNavItems" />
+            <NavMain title="EXPENSE" :items="expenseNavItems" />
             <NavMain title="SETTING" :items="settingNavItems" />
         </SidebarContent>
 

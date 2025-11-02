@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 
 const form = useForm({
-    'name': '',
+    'date': new Date().toISOString().split('T')[0],
+    'description': '',
     'basic_salary': 0,
     'working_days': 31,
     'paid_leave_days': 0,
     'unpaid_leave_days': 0,
     'fine': 0,
     'bonus': 0,
+    'grand_total': 0,
 })
 
 const dailySalary = computed(() => {
@@ -27,30 +29,25 @@ const dailySalary = computed(() => {
 const unpaidAmount = computed(() => {
     const unpaidDays = parseInt(form.unpaid_leave_days);
     if (!isNaN(dailySalary.value) && !isNaN(unpaidDays)) {
-        return (dailySalary.value * unpaidDays).toFixed(2);
+        return (dailySalary.value * unpaidDays).toLocaleString(undefined, { maximumFractionDigits: 0 });
     } else {
         return 0;
     }
 })
 
 const total = computed(() => {
-    if(!isNaN(parseInt(form.basic_salary)) && !isNaN(parseInt(form.bonus)) && !isNaN(unpaidAmount.value) && !isNaN(parseInt(form.fine))) {
-        return (form.basic_salary + form.bonus - unpaidAmount.value - form.fine).toFixed(2);
+    
+    // to fixed here
+    if (!isNaN(parseInt(form.basic_salary)) && !isNaN(parseInt(form.bonus)) && !isNaN(unpaidAmount.value) && !isNaN(parseInt(form.fine))) {
+        return (form.basic_salary + form.bonus - unpaidAmount.value - form.fine).toLocaleString(undefined, { maximumFractionDigits: 0 });
     } else {
         return 0;
     }
 })
 
 const submit = () => {
-    form.transform((data) => ({
-        ...data,
-        records: [{
-            description: `${data.name} လစာ`,
-            category_id: 1, // Assuming '1' is the ID for a relevant category like 'Salary'
-            grand_total: total.value,
-            remark: `Basic: ${data.basic_salary}, Bonus: ${data.bonus}, Unpaid: ${unpaidAmount.value}, Fine: ${data.fine}`
-        }]
-    })).post(route('records.store'));
+    form.grand_total = total.value;
+    form.post(route('salary.store'));
 }
 
 </script>
@@ -62,9 +59,14 @@ const submit = () => {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div>
                     <div class="mb-3">
-                        <label for="name">ဝန်ထမ်းအမည်</label>
-                        <input type="text" name="name" id="name" placeholder="အမည်" v-model="form.name" autofocus>
-                        <p class="text-sm text-red-500" v-text="form.errors.name"></p>
+                        <label for="date">Date:</label>
+                        <input type="date" name="date" id="date" v-model="form.date">
+                        <p class="text-sm text-red-500" v-text="form.errors.date"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description">ဝန်ထမ်းအမည်</label>
+                        <input type="text" name="description" id="description" placeholder="အမည်" v-model="form.description" autofocus>
+                        <p class="text-sm text-red-500" v-text="form.errors.description"></p>
                     </div>
                     <div class="mb-3">
                         <label for="days">အခြေခံလစာ</label>
@@ -103,31 +105,36 @@ const submit = () => {
                         <table>
                             <tbody>
                                 <tr>
+                                    <td>Date</td>
+                                    <td class="text-right min-w-50">{{ form.date }}</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
                                     <td>ဝန်ထမ်းအမည်</td>
                                     <td class="text-right min-w-50">{{ form.name }}</td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td>အခြေခံလစာ</td>
-                                    <td v-if="form.basic_salary" class="text-right min-w-50">{{ form.basic_salary }}</td>
+                                    <td v-if="form.basic_salary" class="text-right min-w-50">{{ form.basic_salary.toLocaleString() }}</td>
                                     <td v-else class="text-right min-w-50">0</td>
                                     <td v-if="form.basic_salary && form.working_days">{{ form.basic_salary }} / {{ form.working_days }} = {{ dailySalary }}/day</td>
                                 </tr>
                                 <tr>
                                     <td>လစာမဲ့ခွင့်</td>
-                                    <td class="text-right min-w-50" v-if="form.unpaid_leave_days">- {{ unpaidAmount }}</td>
+                                    <td class="text-right min-w-50" v-if="form.unpaid_leave_days"> - {{ unpaidAmount }}</td>
                                     <td class="text-right min-w-50" v-else>0</td>
                                     <td v-if="form.unpaid_leave_days && dailySalary">{{ dailySalary }} x {{ form.unpaid_leave_days.toLocaleString() }}</td>
                                 </tr>
                                 <tr>
                                     <td>ဒဏ်ကြေး</td>
-                                    <td v-if="form.fine" class="text-right min-w-50">- {{ form.fine }}</td>
+                                    <td v-if="form.fine" class="text-right min-w-50">- {{ form.fine.toLocaleString() }}</td>
                                     <td v-else class="text-right">0</td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td>ဆုကြေး</td>
-                                    <td v-if="form.bonus" class="text-right min-w-50">{{ form.bonus }}</td>
+                                    <td v-if="form.bonus" class="text-right min-w-50">{{ form.bonus.toLocaleString() }}</td>
                                     <td v-else class="text-right">0</td>
                                     <td></td>
                                 </tr>
