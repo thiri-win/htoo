@@ -35,22 +35,24 @@ defineProps({
         </div>
         <div v-else>
             <table v-if="record.car" class="w-full mb-5">
-                <tr>
-                    <td class="w-38 italic">Date</td>
-                    <td class="font-semibold border-b border-b-neutral-500">{{ dayjs(record.date).format('DD-MM-YYYY') }}</td>
-                    <td class="w-38 italic">Customer Name</td>
-                    <td class="font-semibold border-b border-b-neutral-500">{{ record.car.customer_name }}</td>
-                    <td class="w-38 italic">Customer Phone</td>
-                    <td class="font-semibold border-b border-b-neutral-500">{{ record.car.customer_phone }}</td>
-                </tr>
-                <tr>
-                    <td class="w-38 italic">Car Number</td>
-                    <td class="font-semibold border-b border-b-neutral-500">{{ record.car.car_number }}</td>
-                    <td class="w-38 italic">Car Brand</td>
-                    <td class="font-semibold border-b border-b-neutral-500">{{ record.car.car_brand }}</td>
-                    <td class="w-38 italic font">Car Model</td>
-                    <td class="font-semibold border-b border-b-neutral-500">{{ record.car.car_model }}</td>
-                </tr>
+                <tbody>
+                    <tr>
+                        <td class="w-38 italic">Date</td>
+                        <td class="font-semibold border-b border-b-neutral-500">{{ dayjs(record.date).format('DD-MM-YYYY') }}</td>
+                        <td class="w-38 italic">Customer Name</td>
+                        <td class="font-semibold border-b border-b-neutral-500">{{ record.car.customer_name }}</td>
+                        <td class="w-38 italic">Customer Phone</td>
+                        <td class="font-semibold border-b border-b-neutral-500">{{ record.car.customer_phone }}</td>
+                    </tr>
+                    <tr>
+                        <td class="w-38 italic">Car Number</td>
+                        <td class="font-semibold border-b border-b-neutral-500">{{ record.car.car_number }}</td>
+                        <td class="w-38 italic">Car Brand</td>
+                        <td class="font-semibold border-b border-b-neutral-500">{{ record.car.car_brand }}</td>
+                        <td class="w-38 italic font">Car Model</td>
+                        <td class="font-semibold border-b border-b-neutral-500">{{ record.car.car_model }}</td>
+                    </tr>
+                </tbody>
             </table>
             <table class="w-full">
                 <thead>

@@ -18,11 +18,9 @@ class RecordSalaryController extends Controller
         $validated = $request->validate([
             'date' => 'required',
             'description' => 'required',
-            'category_id' => 'required',
             'grand_total' => 'required',
-            'remark' => 'sometimes',
         ]);
-
+        $validated['category_id'] = 4;
         Record::create($validated);
         return redirect()->route('records.index')->with('success', 'Salary Added Successfully');
     }

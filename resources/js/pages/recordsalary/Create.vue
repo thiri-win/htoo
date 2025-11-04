@@ -8,7 +8,6 @@ const form = useForm({
     'description': '',
     'basic_salary': 0,
     'working_days': 31,
-    'paid_leave_days': 0,
     'unpaid_leave_days': 0,
     'fine': 0,
     'bonus': 0,
@@ -16,33 +15,28 @@ const form = useForm({
 })
 
 const dailySalary = computed(() => {
-    const basicSalary = parseInt(form.basic_salary);
-    const workingDays = parseInt(form.working_days);
-    if (!isNaN(basicSalary) && !isNaN(workingDays)) {
-        return (basicSalary / workingDays).toFixed(2);
-    } else {
-        return 0;
-    }
+    // const basicSalary = parseInt(form.basic_salary);
+    // const workingDays = parseInt(form.working_days);
+    // if (!isNaN(parseInt(form.basic_salary)) && !isNaN(workingDays)) {
+    return (parseInt(form.basic_salary) / parseInt(form.working_days)).toFixed(2);
+    // } else {
+    // return 0;
+    // }
 })
 
-
 const unpaidAmount = computed(() => {
-    const unpaidDays = parseInt(form.unpaid_leave_days);
-    if (!isNaN(dailySalary.value) && !isNaN(unpaidDays)) {
-        return (dailySalary.value * unpaidDays).toLocaleString(undefined, { maximumFractionDigits: 0 });
-    } else {
-        return 0;
-    }
+    // console.log(parseInt(dailySalary.value));
+    // console.log(form.unpaid_leave_days);
+    // console.log(!isNaN(dailySalary.value) && form.unpaid_leave_days ? 'hello' : 'no');
+    // if (!isNaN(dailySalary.value) && form.unpaid_leave_days) {
+    return (dailySalary.value * parseInt(form.unpaid_leave_days));
+    // } else {
+    // return 0;
+    // }
 })
 
 const total = computed(() => {
-    
-    // to fixed here
-    if (!isNaN(parseInt(form.basic_salary)) && !isNaN(parseInt(form.bonus)) && !isNaN(unpaidAmount.value) && !isNaN(parseInt(form.fine))) {
-        return (form.basic_salary + form.bonus - unpaidAmount.value - form.fine).toLocaleString(undefined, { maximumFractionDigits: 0 });
-    } else {
-        return 0;
-    }
+    return form.basic_salary + form.bonus - unpaidAmount.value - form.fine;
 })
 
 const submit = () => {
@@ -78,11 +72,6 @@ const submit = () => {
                         <input type="number" name="working_days" id="working_days" placeholder="30, 31 စသဖြင့် ဖြည့်ရန်" v-model="form.working_days">
                         <p class="text-sm text-red-500" v-text="form.errors.working_days"></p>
                     </div>
-                    <!-- <div class="mb-3">
-                        <label for="days">လစာပြည့်ခွင့်</label>
-                        <input type="number" name="paid_leave_days" id="paid_leave_days" placeholder="စုစုပေါင်းခွင့်ယူရက်" v-model="form.paid_leave_days">
-                        <p class="text-sm text-red-500" v-text="form.errors.paid_leave_days"></p>
-                    </div> -->
                     <div class="mb-3">
                         <label for="days">လစာမဲ့ခွင့်ရက်</label>
                         <input type="number" name="unpaid_leave_days" id="unpaid_leave_days" placeholder="ခွင့်မဲ့ပျက်ရက်" v-model="form.unpaid_leave_days">
@@ -111,7 +100,7 @@ const submit = () => {
                                 </tr>
                                 <tr>
                                     <td>ဝန်ထမ်းအမည်</td>
-                                    <td class="text-right min-w-50">{{ form.name }}</td>
+                                    <td class="text-right min-w-50">{{ form.description }}</td>
                                     <td></td>
                                 </tr>
                                 <tr>
@@ -122,19 +111,19 @@ const submit = () => {
                                 </tr>
                                 <tr>
                                     <td>လစာမဲ့ခွင့်</td>
-                                    <td class="text-right min-w-50" v-if="form.unpaid_leave_days"> - {{ unpaidAmount }}</td>
+                                    <td class="text-right min-w-50" v-if="form.unpaid_leave_days"> - {{ unpaidAmount.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0}) }}</td>
                                     <td class="text-right min-w-50" v-else>0</td>
-                                    <td v-if="form.unpaid_leave_days && dailySalary">{{ dailySalary }} x {{ form.unpaid_leave_days.toLocaleString() }}</td>
+                                    <td v-if="form.unpaid_leave_days && dailySalary">{{ dailySalary }} x {{ form.unpaid_leave_days }} = {{ unpaidAmount.toLocaleString(undefined, {minimumFractionDigits: 2,maximumFractionDigits: 2}) }}</td>
                                 </tr>
                                 <tr>
                                     <td>ဒဏ်ကြေး</td>
-                                    <td v-if="form.fine" class="text-right min-w-50">- {{ form.fine.toLocaleString() }}</td>
+                                    <td v-if="form.fine" class="text-right min-w-50">- {{ form.fine.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0}) }}</td>
                                     <td v-else class="text-right">0</td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td>ဆုကြေး</td>
-                                    <td v-if="form.bonus" class="text-right min-w-50">{{ form.bonus.toLocaleString() }}</td>
+                                    <td v-if="form.bonus" class="text-right min-w-50">{{ form.bonus.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0}) }}</td>
                                     <td v-else class="text-right">0</td>
                                     <td></td>
                                 </tr>
@@ -142,7 +131,7 @@ const submit = () => {
                             <tfoot>
                                 <tr>
                                     <td>စုစုပေါင်းရငွေ</td>
-                                    <td class="text-right min-w-50">{{ total }}</td>
+                                    <td class="text-right min-w-50">{{ total.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0}) }}</td>
                                     <td></td>
                                 </tr>
                             </tfoot>

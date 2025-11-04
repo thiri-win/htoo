@@ -16,9 +16,9 @@ return new class extends Migration
             $table->date('date');
             $table->string('description');
             $table->integer('category_id');
-            $table->integer('sub_total');
+            $table->integer('sub_total')->default(0);
             $table->integer('discount')->default(0);
-            $table->integer('grand_total');
+            $table->integer('grand_total')->default(0);
             $table->string('remark')->nullable();
             $table->timestamps();
         });
