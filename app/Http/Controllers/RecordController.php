@@ -35,7 +35,6 @@ class RecordController extends Controller
      */
     public function store(Request $request)
     {   
-        return $request->all();
         $validated = $request->validate([
             'date' => 'required',
             'description' => 'required',
@@ -64,9 +63,9 @@ class RecordController extends Controller
      */
     public function edit(Record $record)
     {
-        return Inertia::render('record/Edit', [
+        return Inertia::render('record/Create', [
             'categories' => Category::all(),
-            'record' => $record->load('sales')->load('category')
+            'record' => $record->load('items')->load('category')
         ]);
     }
 
