@@ -39,7 +39,7 @@ class VoucherController extends Controller
             'customer_phone' => 'sometimes',
             'car_brand' => 'sometimes',
             'car_model' => 'sometimes',
-            'car_number' => 'sometimes',
+            'car_number' => 'required',
             // record
             'date' => 'required',
             'sub_total' => 'required',
