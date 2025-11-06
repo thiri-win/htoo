@@ -64,7 +64,7 @@ const submit = () => {
     // if (props.record.id) {
     //     form.put(route('records.update', props.record.id))
     // } else {
-        form.post(route('records.store'));
+        form.post(route('expenses.store'));
     // }
 }
 
