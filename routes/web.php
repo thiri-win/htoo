@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DatabaseBackupController;
-use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\RecordExpenseController;
 use App\Http\Controllers\RecordSalaryController;
@@ -10,8 +9,10 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\VoucherPrintController;
 use App\Models\Category;
 use App\Models\Record;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -87,4 +88,26 @@ Route::middleware('auth')->group(function () {
     Route::get('/backup-database', [DatabaseBackupController::class, 'download'])->name('backup-database');
 });
 
-Route::get('/vouchers/{voucher}/print', [VoucherPrintController::class, 'print'])->name('vouchers.print');
+Route::get('/records/vouchers/{record}/print', function (Record $record) {
+    return Pdf::view('quotation.show', ['quotation' => $record])
+        ->headerView('partials._invoiceheader', ['quotation' => $record])
+        ->footerView('partials._footer')
+        ->format('A4')
+        ->margins(95, 10, 30, 10)
+        ->name('invoice.pdf');
+})->name('vouchers.print');
+
+Route::get('/prepare/quotation', function () {
+    return Inertia::render('prepare/Quotation');
+})->name('prepare-quotation');
+
+Route::get('/pdf/quotation', function (Request $request) {
+
+    $quotationData = $request->all();
+    return Pdf::view('quotation.show', ['quotation' => $quotationData])
+        ->headerView('partials._quotationheader', ['quotation' => $quotationData])
+        ->footerView('partials._footer')
+        ->format('A4')
+        ->margins(95, 10, 30, 10)
+        ->name('quotation.pdf');
+})->name('pdf-quotation');
