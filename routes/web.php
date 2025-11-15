@@ -6,7 +6,6 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\RecordExpenseController;
 use App\Http\Controllers\RecordSalaryController;
 use App\Http\Controllers\VoucherController;
-use App\Http\Controllers\VoucherPrintController;
 use App\Models\Category;
 use App\Models\Record;
 use Illuminate\Http\Request;
