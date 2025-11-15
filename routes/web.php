@@ -92,7 +92,7 @@ Route::get('/records/vouchers/{record}/print', function (Record $record) {
     return Pdf::view('quotation.show', ['quotation' => $record])
         ->headerView('partials._invoiceheader', ['quotation' => $record])
         ->footerView('partials._footer')
-        ->browsershot(function (Browsershot $browsershot) {
+        ->browser(function (Browsershot $browsershot) {
             $browsershot->setNodeBinary('/usr/bin/node');
         })
         ->format('A4')
@@ -110,7 +110,7 @@ Route::get('/pdf/quotation', function (Request $request) {
     return Pdf::view('quotation.show', ['quotation' => $quotationData])
         ->headerView('partials._quotationheader', ['quotation' => $quotationData])
         ->footerView('partials._footer')
-        ->browsershot(function (Browsershot $browsershot) {
+        ->browser(function (Browsershot $browsershot) {
             $browsershot->setNodeBinary('/usr/bin/node');
         })
         ->format('A4')
