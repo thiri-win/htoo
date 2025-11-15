@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
-use Spatie\Browsershot\Browsershot;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -92,9 +91,6 @@ Route::get('/records/vouchers/{record}/print', function (Record $record) {
     return Pdf::view('quotation.show', ['quotation' => $record])
         ->headerView('partials._invoiceheader', ['quotation' => $record])
         ->footerView('partials._footer')
-        ->browsershotConfiguration(function (Browsershot $browsershot) {
-            $browsershot->setNodeBinary('/usr/bin/node');
-        })
         ->format('A4')
         ->margins(95, 10, 30, 10)
         ->name('invoice.pdf');
@@ -110,9 +106,6 @@ Route::get('/pdf/quotation', function (Request $request) {
     return Pdf::view('quotation.show', ['quotation' => $quotationData])
         ->headerView('partials._quotationheader', ['quotation' => $quotationData])
         ->footerView('partials._footer')
-        ->browsershotConfiguration(function (Browsershot $browsershot) {
-            $browsershot->setNodeBinary('/usr/bin/node');
-        })
         ->format('A4')
         ->margins(95, 10, 30, 10)
         ->name('quotation.pdf');
