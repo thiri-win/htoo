@@ -23,8 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(UrlGenerator $url): void
     {
         if (App::environment('production', 'live', 'staging')) {
-            // Laravel Cloud Server များအတွက် သတ်မှတ်ထားသော Node Path
-            Browsershot::setNodeBinary('/usr/bin/node');
+            (new Browsershot())->setNodeBinary('/usr/bin/node');
         }
         if (env('APP_ENV') == 'production') {
             $url->forceScheme('https');
