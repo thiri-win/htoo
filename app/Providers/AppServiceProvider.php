@@ -22,15 +22,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(UrlGenerator $url): void
     {
+        // Force Browsershot to use the correct binary paths for Node and npm.
+        // This is the most reliable way to configure it, especially for production environments.
+        Pdf::defaultBrowsershot(function () {
+            $nodePath = '/var/www/.nvm/versions/node/22/bin/node';
+            $npmPath = '/var/www/.nvm/versions/node/22/bin/npm';
+
+            return new Browsershot($nodePath, $npmPath);
+        });
         if (env('APP_ENV') == 'production') {
-            // Force Browsershot to use the correct binary paths for Node and npm on production.
-            // This is the most reliable way to configure it, bypassing any config caching issues.
-            Pdf::defaultBrowsershot(function () {
-                return new Browsershot(
-                    nodeBinary: '/var/www/.nvm/versions/node/22/bin/node',
-                    npmBinary: '/var/www/.nvm/versions/node/22/bin/npm'
-                ))->noSandbox();
-            });
             $url->forceScheme('https');
         }
     }
