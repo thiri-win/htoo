@@ -24,5 +24,7 @@ return [
          */
         'write_options_to_file' => env('LARAVEL_PDF_WRITE_OPTIONS_TO_FILE', false),
         'no_sandbox' => env('LARAVEL_PDF_NO_SANDBOX', false),
+
+        'timeout' =>60,
     ],
 ];
