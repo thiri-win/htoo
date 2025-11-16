@@ -14,7 +14,7 @@ class RecordController extends Controller
      */
     public function index()
     {
-        return Inertia::render('record/Index',[
+        return Inertia::render('record/Index', [
             'records' => Record::all()->load('category'),
         ]);
     }
@@ -24,7 +24,7 @@ class RecordController extends Controller
      */
     public function create()
     {
-        return Inertia::render('record/Create',[
+        return Inertia::render('record/Create', [
             'categories' => Category::all(),
             'record' => []
         ]);
@@ -34,7 +34,7 @@ class RecordController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {   
+    {
         $validated = $request->validate([
             'date' => 'required',
             'description' => 'required',
@@ -42,9 +42,9 @@ class RecordController extends Controller
             'grand_total' => 'required',
             'remark' => 'sometimes',
         ]);
-        
+
         $record = Record::create($validated);
-        
+
         return redirect()->route('records.index')->with('success', 'Record Added Successfully');
     }
 
@@ -89,6 +89,9 @@ class RecordController extends Controller
      */
     public function destroy(Record $record)
     {
-        //
+        $record->car()->delete();
+        $record->items()->delete();
+        $record->delete();
+        return redirect()->route('records.index')->with('warngin', 'Record Deleted');
     }
 }

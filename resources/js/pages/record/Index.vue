@@ -43,7 +43,18 @@ onMounted(() => {
                     <td>{{ record.category.title }}</td>
                     <td>{{ record.grand_total }}</td>
                     <td>
-                        <Link :href="route('records.show', record)" class="show-btn text-sm">View</Link>
+                        <a :href="route('records.show', record)" class="show-btn my-5 inline-block mr-1 text-xs">View</a>
+                        <div v-if="record.category.id == 1" class="inline-block">
+                            <a :href="route('vouchers.edit', record)" class="edit-btn my-5 inline-block mr-1 text-xs">Edit</a>
+                        </div>
+                        <div v-else-if="record.category.id == 2" class="inline-block">
+                            <a :href="route('expenses.edit', record)" class="edit-btn my-5 inline-block mr-1 text-xs">Edit</a>
+                        </div>
+                        <div v-else class="inline-block">
+                            <a :href="route('records.edit', record)" class="edit-btn my-5 inline-block mr-1 text-xs">Edit</a>
+                        </div>
+                        <a :href="route('vouchers.print', record)" class="print-btn my-5 inline-block mr-1 text-xs">Print</a>
+                        <a :href="route('records.destroy', record)" class="edit-btn my-5 inline-block mr-1 text-xs">Delete</a>
                     </td>
                 </tr>
             </tbody>
