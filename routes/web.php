@@ -92,8 +92,10 @@ Route::get('/records/vouchers/{record}/print', function (Record $record) {
     return Pdf::view('quotation.show', ['quotation' => $record])
         ->headerView('partials._invoiceheader', ['quotation' => $record])
         ->footerView('partials._footer')
-        ->withBrowsershot(function (Browsershot $browsershot) { // @phpstan-ignore-line
-            $browsershot->setNodeBinary('/var/www/.nvm/versions/node/22/bin/node')->scale(0.8);
+        ->withBrowsershot(function (Browsershot $browsershot) {
+            $browsershot->setNodeBinary('/var/www/.nvm/versions/node/22/bin/node')
+                ->setNodeModulePath(base_path('node_modules'))
+                ->scale(0.8);
         })
         ->format('A4')
         ->margins(95, 10, 30, 10)
@@ -111,7 +113,9 @@ Route::get('/pdf/quotation', function (Request $request) {
         ->headerView('partials._quotationheader', ['quotation' => $quotationData])
         ->footerView('partials._footer')
         ->withBrowsershot(function (Browsershot $browsershot) {
-            $browsershot->setNodeBinary('/var/www/.nvm/versions/node/22/bin/node')->scale(0.8);
+            $browsershot->setNodeBinary('/var/www/.nvm/versions/node/22/bin/node')
+                ->setNodeModulePath(base_path('node_modules'))
+                ->scale(0.8);
         })
         ->format('A4')
         ->margins(95, 10, 30, 10)
