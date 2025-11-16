@@ -117,3 +117,12 @@ Route::get('/pdf/quotation', function (Request $request) {
         ->margins(95, 10, 30, 10)
         ->name('quotation.pdf');
 })->name('pdf-quotation');
+
+Route::get('/find-node', function () {
+    $path = shell_exec('which node');
+    if ($path) {
+        return "Node.js executable found at: <pre>" . trim($path) . "</pre> Please use this path.";
+    }
+
+    return "Could not find Node.js executable using 'which node'. You may need to contact laravel.cloud support to get the correct path.";
+});
