@@ -19,11 +19,7 @@ return [
         'bin_path' => env('LARAVEL_PDF_BIN_PATH', base_path('vendor/bin')),
         'temp_path' => env('LARAVEL_PDF_TEMP_PATH'),
 
-        /*
-         * Other Browsershot configuration options.
-         */
-        'write_options_to_file' => env('LARAVEL_PDF_WRITE_OPTIONS_TO_FILE', false),
-        'no_sandbox' => env('LARAVEL_PDF_NO_SANDBOX', false),
+        'no_sandbox' => env('LARAVEL_PDF_NO_SANDBOX', true),
 
         'timeout' =>60,
     ],
