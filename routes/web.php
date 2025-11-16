@@ -92,9 +92,11 @@ Route::get('/records/vouchers/{record}/print', function (Record $record) {
     return Pdf::view('quotation.show', ['quotation' => $record])
         ->headerView('partials._invoiceheader', ['quotation' => $record])
         ->footerView('partials._footer')
-        ->withBrowsershot(function (Browsershot $browsershot) {
-            $browsershot->setNodeBinary('/var/www/.nvm/versions/node/22/bin/node')
-                ->setNodeModulePath(base_path('node_modules'))
+        ->withBrowsershot(function (Browsershot $browsershot) { // @phpstan-ignore-line
+            // Use the npm binary path for production on Laravel Cloud
+            // and fall back to a default for local development.
+            $npmPath = app()->isProduction() ? '/var/www/.nvm/versions/node/22/bin/npm' : 'npm';
+            $browsershot->setNpmBinary($npmPath)
                 ->scale(0.8);
         })
         ->format('A4')
@@ -112,9 +114,11 @@ Route::get('/pdf/quotation', function (Request $request) {
     return Pdf::view('quotation.show', ['quotation' => $quotationData])
         ->headerView('partials._quotationheader', ['quotation' => $quotationData])
         ->footerView('partials._footer')
-        ->withBrowsershot(function (Browsershot $browsershot) {
-            $browsershot->setNodeBinary('/var/www/.nvm/versions/node/22/bin/node')
-                ->setNodeModulePath(base_path('node_modules'))
+        ->withBrowsershot(function (Browsershot $browsershot) { // @phpstan-ignore-line
+            // Use the npm binary path for production on Laravel Cloud
+            // and fall back to a default for local development.
+            $npmPath = app()->isProduction() ? '/var/www/.nvm/versions/node/22/bin/npm' : 'npm';
+            $browsershot->setNpmBinary($npmPath)
                 ->scale(0.8);
         })
         ->format('A4')
