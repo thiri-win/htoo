@@ -131,7 +131,6 @@ Route::get('/pdf/quotation', function (Request $request) {
 Route::get('/find-node', function () {
     $path = shell_exec('which node');
     if ($path) {
-        echo $PATH;
         return "<br>Node.js executable found at: <pre>" . trim($path) . "</pre> Please use this path.";
     }
 
