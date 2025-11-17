@@ -112,9 +112,8 @@ Route::get('/pdf/quotation', function (Request $request) {
 
     // 2. Browsershot ကို တိုက်ရိုက်အသုံးပြုပြီး PDF ထုတ်ခြင်း
     $pdfData = Browsershot::html($html)
-        // PATH ပြဿနာကို ကျော်လွှားရန် Node နှင့် Npm ၏ လမ်းကြောင်းအပြည့်အစုံကို တိုက်ရိုက်သတ်မှတ်ပေးခြင်း
-        ->setNodeBinary('/var/www/.nvm/versions/node/22/bin/node')
-        ->setNpmBinary('/var/www/.nvm/versions/node/22/bin/npm')
+        // PATH ကို override လုပ်ပြီး လမ်းကြောင်းအမှန်ကို ထည့်သွင်းပေးခြင်း
+        ->setIncludePath('$PATH:/var/www/.nvm/versions/node/22/bin')
         ->noSandbox() // Server environment များအတွက် မဖြစ်မနေလိုအပ်သည်
         ->headerHtml($headerHtml)
         ->footerHtml($footerHtml)
