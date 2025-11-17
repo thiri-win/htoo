@@ -114,6 +114,7 @@ Route::get('/pdf/quotation', function (Request $request) {
     $pdfData = Browsershot::html($html)
         // PATH ကို override လုပ်ပြီး လမ်းကြောင်းအမှန်ကို ထည့်သွင်းပေးခြင်း
         ->setIncludePath('$PATH:/var/www/.nvm/versions/node/22/bin')
+        ->setNodeModulePath(base_path('node_modules')) // Puppeteer module ကို ရှာတွေ့ရန်
         ->noSandbox() // Server environment များအတွက် မဖြစ်မနေလိုအပ်သည်
         ->headerHtml($headerHtml)
         ->footerHtml($footerHtml)
