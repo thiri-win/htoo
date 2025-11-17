@@ -112,12 +112,15 @@ Route::get('/pdf/quotation', function (Request $request) {
 
     // 2. Browsershot ကို တိုက်ရိုက်အသုံးပြုပြီး PDF ထုတ်ခြင်း
     $pdfData = Browsershot::html($html)
-        ->setIncludePath(config('laravel-pdf.browsershot.include_path')) // Server ပေါ်က PATH ပြဿနာကို ဖြေရှင်းရန်
-        ->noSandbox(config('laravel-pdf.browsershot.no_sandbox'))
+        // PATH ပြဿနာကို ကျော်လွှားရန် Node နှင့် Npm ၏ လမ်းကြောင်းအပြည့်အစုံကို တိုက်ရိုက်သတ်မှတ်ပေးခြင်း
+        ->setNodeBinary('/var/www/.nvm/versions/node/22/bin/node')
+        ->setNpmBinary('/var/www/.nvm/versions/node/22/bin/npm')
+        ->noSandbox() // Server environment များအတွက် မဖြစ်မနေလိုအပ်သည်
         ->headerHtml($headerHtml)
         ->footerHtml($footerHtml)
         ->format('A4')
         ->margins(95, 10, 30, 10, 'mm') // margin unit ကို mm လို့ သတ်မှတ်ပေးခြင်း
+        ->scale(0.8)
         ->pdf();
 
     // 3. PDF ကို browser မှာ download လုပ်ရန်အတွက် Response ပြန်ပေးခြင်း
