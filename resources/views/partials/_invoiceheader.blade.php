@@ -75,7 +75,7 @@
         <tbody>
             <tr>
                 <td>Date:</td>
-                <td style="border-bottom: 1px solid #f1f2f3;">{{ $quotation->date }}</td>
+                <td style="border-bottom: 1px solid #f1f2f3;">{{ date_format($quotation->date, 'd-M-Y') }}</td>
 
                 <td>Customer Name:</td>
                 <td style="border-bottom: 1px solid #f1f2f3;">{{ $quotation->car->customer_name }}</td>
