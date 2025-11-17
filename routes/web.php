@@ -114,7 +114,6 @@ Route::get('/pdf/quotation', function (Request $request) {
     $pdfData = Browsershot::html($html)
         // PATH ကို override လုပ်ပြီး လမ်းကြောင်းအမှန်ကို ထည့်သွင်းပေးခြင်း
         ->setIncludePath('$PATH:/var/www/.nvm/versions/node/22/bin')
-        ->setNodeModulePath(base_path('node_modules')) // Puppeteer module ကို ရှာတွေ့ရန်
         ->noSandbox() // Server environment များအတွက် မဖြစ်မနေလိုအပ်သည်
         ->headerHtml($headerHtml)
         ->footerHtml($footerHtml)
@@ -132,7 +131,8 @@ Route::get('/pdf/quotation', function (Request $request) {
 Route::get('/find-node', function () {
     $path = shell_exec('which node');
     if ($path) {
-        return "Node.js executable found at: <pre>" . trim($path) . "</pre> Please use this path.";
+        echo $PATH;
+        return "<br>Node.js executable found at: <pre>" . trim($path) . "</pre> Please use this path.";
     }
 
     return "Could not find Node.js executable using 'which node'. You may need to contact laravel.cloud support to get the correct path.";
