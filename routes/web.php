@@ -104,12 +104,26 @@ Route::get('/prepare/quotation', function () {
 Route::get('/pdf/quotation', function (Request $request) {
 
     $quotationData = $request->all();
-    return Pdf::view('quotation.show', ['quotation' => $quotationData])
-        ->headerView('partials._quotationheader', ['quotation' => $quotationData])
-        ->footerView('partials._footer')
+
+    // 1. Blade view တွေကို HTML string အဖြစ် ပြောင်းလဲခြင်း
+    $html = view('quotation.show', ['quotation' => $quotationData])->render();
+    $headerHtml = view('partials._quotationheader', ['quotation' => $quotationData])->render();
+    $footerHtml = view('partials._footer')->render();
+
+    // 2. Browsershot ကို တိုက်ရိုက်အသုံးပြုပြီး PDF ထုတ်ခြင်း
+    $pdfData = Browsershot::html($html)
+        ->setIncludePath(config('laravel-pdf.browsershot.include_path')) // Server ပေါ်က PATH ပြဿနာကို ဖြေရှင်းရန်
+        ->noSandbox(config('laravel-pdf.browsershot.no_sandbox'))
+        ->headerHtml($headerHtml)
+        ->footerHtml($footerHtml)
         ->format('A4')
-        ->margins(95, 10, 30, 10)
-        ->name('quotation.pdf');
+        ->margins(95, 10, 30, 10, 'mm') // margin unit ကို mm လို့ သတ်မှတ်ပေးခြင်း
+        ->pdf();
+
+    // 3. PDF ကို browser မှာ download လုပ်ရန်အတွက် Response ပြန်ပေးခြင်း
+    return response($pdfData)
+        ->header('Content-Type', 'application/pdf')
+        ->header('Content-Disposition', 'inline; filename="quotation.pdf"');
 })->name('pdf-quotation');
 
 Route::get('/find-node', function () {

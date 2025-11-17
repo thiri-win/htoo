@@ -3,9 +3,13 @@
         font-family: "Roboto Mono";
     }
 
+    table {
+        font-size: 12px;
+    }
+
     th,
     td {
-        padding: 8px;
+        padding: 5px;
         background-color: #f1f2f380;
     }
 

@@ -3,8 +3,8 @@
         padding: 0;
         margin: 0;
         box-sizing: border-box;
-        line-height: 1.7;
-        font-size: 16px;
+        line-height: 1.5;
+        font-size: 14px;
         font-family: "Poppins";
         font-weight: 400;
     }
@@ -65,33 +65,34 @@
             <h2>Htoo Automobile Service</h2>
             <p>(29/B), Shwe Ta Gar St, Bon Shay Gone Ward</p>
             <p>Shwe Pyi Thar Township, Yangon</p>
-            <p>09 443067898, 09 795355487</p>
+            <p>&phone; 09 443067898, &phone; 09 795355487</p>
         </div>
     </div>
 
     <h1>Invoice</h1>
 
-    <table>
+    <table style="width: 100%;">
         <tbody>
             <tr>
-                <td>Date:</td>
-                <td style="border-bottom: 1px solid #f1f2f3;">{{ date_format($quotation->date, 'd-M-Y') }}</td>
+                <td style="font-size: 12px; max-width:60px;">Date:</td>
+                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px;px;">
+                    {{ date_format($quotation->date, 'd-M-Y') }}</td>
 
-                <td>Customer Name:</td>
-                <td style="border-bottom: 1px solid #f1f2f3;">{{ $quotation->car->customer_name }}</td>
+                <td style="font-size: 12px; max-width:60px;">Customer Name:</td>
+                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px;">{{ $quotation->car->customer_name }}</td>
 
-                <td>Customer Phone:</td>
-                <td style="border-bottom: 1px solid #f1f2f3;">{{ $quotation->car->customer_phone }}</td>
+                <td style="font-size: 12px; max-width:60px;">Customer Phone:</td>
+                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px;">{{ $quotation->car->customer_phone }}</td>
             </tr>
             <tr>
-                <td>Car Number:</td>
-                <td style="border-bottom: 1px solid #f1f2f3;">{{ $quotation->car->car_number }}</td>
+                <td style="font-size: 12px; max-width:60px;">Car Number:</td>
+                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px;">{{ $quotation->car->car_number }}</td>
 
-                <td>Car Brand:</td>
-                <td style="border-bottom: 1px solid #f1f2f3;">{{ $quotation->car->car_brand }}</td>
+                <td style="font-size: 12px; max-width:60px;">Car Brand:</td>
+                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px;">{{ $quotation->car->car_brand }}</td>
 
-                <td>Car Model:</td>
-                <td style="border-bottom: 1px solid #f1f2f3;">{{ $quotation->car->car_model }}</td>
+                <td style="font-size: 12px; max-width:60px;">Car Model:</td>
+                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px;">{{ $quotation->car->car_model }}</td>
             </tr>
         </tbody>
 
