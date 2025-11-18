@@ -3,8 +3,8 @@
         padding: 0;
         margin: 0;
         box-sizing: border-box;
-        line-height: 1.7;
-        font-size: 16px;
+        line-height: 1.5;
+        font-size: 14px;
         font-family: "Poppins";
         font-weight: 400;
     }
@@ -39,56 +39,45 @@
     h2 {
         font-family: "Poppins";
         font-weight: 600;
-    }
-
-    .info {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-    }
-
-    .footer {
-        width: 100%;
-        padding: 10mm;
         font-size: 16px;
-        text-align: center;
-        font-family: Poppins;
     }
 
+    td {
+        padding: 5px;
+    }
+
+    .content p,
+    .content strong {
+        font-size: 12px;
+    }
 </style>
 
-<div class="header">
-
+<header class="header">
     <div class="container">
         <div>
             <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('image/htoo_logo_green.png'))) }}"
-                alt="" style="height: 120px">
+                alt="" style="height: 150px;">
         </div>
         <div class="content">
             <h2>Htoo Automobile Service</h2>
             <p>(29/B), Shwe Ta Gar St, Bon Shay Gone Ward</p>
             <p>Shwe Pyi Thar Township, Yangon</p>
-            <p>09 443067898, 09 795355487</p>
+            <p>&#9742; 09 443067898, &#9742;09 795355487</p>
+            <p style="font-family: Poppins;">&blacktriangleright; UAB Bank -
+                <strong style="font-family: Poppins;">0243 3010 0011 287</strong>
+                [<strong>AUNG KO HEIN</strong>]
+            </p>
+            <p style="font-family: Poppins;">&blacktriangleright; KBZ Bank -
+                <strong style="font-family: Poppins;">2353 0105 7008 30201</strong>
+                [<strong>THIRI WIN</strong>]
+            </p>
+            <p style="font-family: Poppins;">&blacktriangleright; AYA Bank -
+                <strong style="font-family: Poppins;">2000 4254 047</strong>
+                [<strong>THIRI WIN</strong>]
+            </p>
         </div>
     </div>
 
-    <h1>Sales Quotation</h1>
+    <h1>Quotation</h1>
 
-    <div class="info">
-        <div>
-            <p>
-                <span>Date:</span>
-                <strong>{{ $quotation['date'] }}</strong>
-            </p>
-            <p>
-                <span>Subject:</span>
-                <strong>{{ $quotation['subject'] }}</strong>
-            </p>
-        </div>
-        <div>
-            <span>To:</span><br>
-            <strong>{{ $quotation['to'] }}</strong>
-        </div>
-    </div>
-
-</div>
+</header>

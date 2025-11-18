@@ -89,8 +89,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/records/vouchers/{record}/print', function (Record $record) {
-    return Pdf::view('quotation.show', ['quotation' => $record])
-        ->headerView('partials._invoiceheader', ['quotation' => $record])
+    return Pdf::view('quotation.show', ['data' => $record])
+        ->headerView('partials._invoiceheader', ['data' => $record])
         ->footerView('partials._footer')
         ->format('A4')
         ->margins(95, 10, 30, 10)
@@ -102,31 +102,19 @@ Route::get('/prepare/quotation', function () {
 })->name('prepare-quotation');
 
 Route::get('/pdf/quotation', function (Request $request) {
-
     $quotationData = $request->all();
-
-    // 1. Blade view တွေကို HTML string အဖြစ် ပြောင်းလဲခြင်း
-    $html = view('quotation.show', ['quotation' => $quotationData])->render();
-    $headerHtml = view('partials._quotationheader', ['quotation' => $quotationData])->render();
-    $footerHtml = view('partials._footer')->render();
-
-    // 2. Browsershot ကို တိုက်ရိုက်အသုံးပြုပြီး PDF ထုတ်ခြင်း
-    $pdfData = Browsershot::html($html)
-        // PATH ကို override လုပ်ပြီး လမ်းကြောင်းအမှန်ကို ထည့်သွင်းပေးခြင်း
-        ->setIncludePath('$PATH:/var/www/.nvm/versions/node/22/bin')
-        ->setNodeModulePath(base_path('node_modules')) // Puppeteer module ကို ရှာတွေ့ရန်
-        ->noSandbox() // Server environment များအတွက် မဖြစ်မနေလိုအပ်သည်
-        ->headerHtml($headerHtml)
-        ->footerHtml($footerHtml)
+    $nodePath = trim(shell_exec('which node'));
+    $chromePath = '/usr/bin/chromium-browser';
+    $pdf = Pdf::view('quotation.show', ['data' => $quotationData])
+        ->setNodeBinary($nodePath)
+        ->setChromePath($chromePath)
+        ->setOption('args', ['--no-sandbox', '--disable-setuid-sandbox']);
+    return $pdf
+        ->headerView('partials._quotationheader', ['data' => $quotationData])
+        ->footerView('partials._footer')
         ->format('A4')
-        ->margins(95, 10, 30, 10, 'mm') // margin unit ကို mm လို့ သတ်မှတ်ပေးခြင်း
-        ->scale(0.8)
-        ->pdf();
-
-    // 3. PDF ကို browser မှာ download လုပ်ရန်အတွက် Response ပြန်ပေးခြင်း
-    return response($pdfData)
-        ->header('Content-Type', 'application/pdf')
-        ->header('Content-Disposition', 'inline; filename="quotation.pdf"');
+        ->margins(75, 10, 30, 10)
+        ->name('invoice.pdf');
 })->name('pdf-quotation');
 
 Route::get('/find-node', function () {
@@ -134,6 +122,5 @@ Route::get('/find-node', function () {
     if ($path) {
         return "<br>Node.js executable found at: <pre>" . trim($path) . "</pre> Please use this path.";
     }
-
     return "Could not find Node.js executable using 'which node'. You may need to contact laravel.cloud support to get the correct path.";
 });

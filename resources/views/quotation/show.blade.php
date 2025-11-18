@@ -1,6 +1,7 @@
 <style>
     * {
         font-family: "Roboto Mono";
+        line-height: 1.5;
     }
 
     table {
@@ -48,14 +49,6 @@
         opacity: 0.2;
         width: 500px;
     }
-
-    .payment-info {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        margin: 10mm 0;
-        page-break-inside: avoid;
-    }
 </style>
 
 <div class="main">
@@ -70,7 +63,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($quotation['items'] as $item)
+            @foreach ($data['items'] as $item)
                 <tr>
                     <td style="font-family: Poppins;">{{ $item['description'] }}</td>
                     <td>{{ $item['quantity'] }}</td>
@@ -80,38 +73,21 @@
             @endforeach
             <tr>
                 <td colspan="3">SubTotal</td>
-                <td style="font-weight: 600;">{{ number_format($quotation['sub_total']) }}</td>
+                <td style="font-weight: 600;">{{ number_format($data['sub_total']) }}</td>
             </tr>
             <tr>
                 <td colspan="3">Discount</td>
-                <td style="font-weight: 600;">{{ number_format($quotation['discount']) }}</td>
+                <td style="font-weight: 600;">{{ number_format($data['discount']) }}</td>
             </tr>
             <tr>
                 <td colspan="3">Total</td>
-                <td style="font-weight: 600;">{{ number_format($quotation['grand_total']) }}</td>
+                <td style="font-weight: 600;">{{ number_format($data['grand_total']) }}</td>
             </tr>
         </tbody>
     </table>
 
-    <div class="payment-info">
-        <div>
-            <h3>Payment Information</h3>
-            <div style="font-family: monospace">
-                <p style="font-family: monospace">KBZ Bank -
-                    <strong style="font-family: monospace">2353 0105 7008 30201</strong>
-                    (<strong style="font-family: monospace">THIRI WIN</strong>)
-                </p>
-                <p style="font-family: monospace">AYA Bank -
-                    <strong style="font-family: monospace">2000 4254 047</strong>
-                    (<strong style="font-family: monospace">THIRI WIN</strong>)
-                </p>
-                <p style="font-family: monospace">UAB Bank -
-                    <strong style="font-family: monospace">0243 3010 0011 287</strong>
-                    (<strong style="font-family: monospace">AUNG KO HEIN</strong>)
-                </p>
-            </div>
-        </div>
-        <div style="text-align: center;">
+    <div style="text-align: right;">
+        <div style="text-align: center; display: inline-block">
             <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('image/signature.png'))) }}"
                 alt="" height="70">
             <p style="font-family: Poppins; font-family: 500;">AUNG KO HEIN</p>
