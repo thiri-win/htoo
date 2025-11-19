@@ -109,7 +109,7 @@ Route::get('/pdf/quotation', function (Request $request) {
         ->withBrowsershot(function (Browsershot $bs) {
             $bs->setNodeBinary(env('LARAVEL_PDF_NODE_BINARY'))
                 // ->setNpmBinary(config('laravel-pdf.browsershot.npm_binary'))
-                ->setChromePath(env('BROWSERSHOT_CHROME_PATH'))
+                ->setChromePath(env('LARAVEL_PDF_CHROME_PATH'))
                 ->addChromiumArguments([
                     '--no-sandbox',
                     '--disable-setuid-sandbox'
