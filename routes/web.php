@@ -106,6 +106,15 @@ Route::get('/pdf/quotation', function (Request $request) {
     return Pdf::view('quotation.show', ['data' => $quotationData])
         ->headerView('partials._quotationheader', ['data' => $quotationData])
         ->footerView('partials._footer')
+        ->withBrowsershot(function (Browsershot $bs) {
+            $bs->setNodeBinary(config('laravel-pdf.browsershot.node_binary'))
+                ->setNpmBinary(config('laravel-pdf.browsershot.npm_binary'))
+                ->setChromePath(config('laravel-pdf.browsershot.chrome_path'))
+                ->addChromiumArguments([
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox'
+                ]);
+        })
         ->format('A4')
         ->margins(75, 10, 30, 10)
         ->name('invoice.pdf');
