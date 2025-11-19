@@ -107,9 +107,9 @@ Route::get('/pdf/quotation', function (Request $request) {
         ->headerView('partials._quotationheader', ['data' => $quotationData])
         ->footerView('partials._footer')
         ->withBrowsershot(function (Browsershot $bs) {
-            $bs->setNodeBinary(config('laravel-pdf.browsershot.node_binary'))
-                ->setNpmBinary(config('laravel-pdf.browsershot.npm_binary'))
-                ->setChromePath(config('laravel-pdf.browsershot.chrome_path'))
+            $bs->setNodeBinary(env('LARAVEL_PDF_NODE_BINARY'))
+                // ->setNpmBinary(config('laravel-pdf.browsershot.npm_binary'))
+                ->setChromePath(env('BROWSERSHOT_CHROME_PATH'))
                 ->addChromiumArguments([
                     '--no-sandbox',
                     '--disable-setuid-sandbox'
