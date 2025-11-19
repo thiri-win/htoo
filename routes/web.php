@@ -103,13 +103,7 @@ Route::get('/prepare/quotation', function () {
 
 Route::get('/pdf/quotation', function (Request $request) {
     $quotationData = $request->all();
-    $nodePath = trim(shell_exec('which node'));
-    $chromePath = '/usr/bin/chromium-browser';
-    $pdf = Pdf::view('quotation.show', ['data' => $quotationData])
-        ->setNodeBinary($nodePath)
-        ->setChromePath($chromePath)
-        ->setOption('args', ['--no-sandbox', '--disable-setuid-sandbox']);
-    return $pdf
+    return Pdf::view('quotation.show', ['data' => $quotationData])
         ->headerView('partials._quotationheader', ['data' => $quotationData])
         ->footerView('partials._footer')
         ->format('A4')
