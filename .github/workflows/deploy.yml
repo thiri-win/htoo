@@ -19,7 +19,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2' # သင့် Server ရဲ့ PHP Version ကို ပြောင်းပါ။
+          php-version: '8.3' # သင့် Server ရဲ့ PHP Version ကို ပြောင်းပါ။
           tools: composer:v2
           coverage: none
       
@@ -79,6 +79,6 @@ jobs:
             php artisan migrate:fresh --force
             
             # Web Server ကို Restart လုပ်ရန် (လိုအပ်ပါက)
-            # sudo systemctl reload nginx
+            sudo systemctl reload nginx
 
 
