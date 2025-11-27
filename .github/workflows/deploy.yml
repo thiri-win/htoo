@@ -76,7 +76,7 @@ jobs:
             php artisan config:cache
             
             # Database Migration (လိုအပ်ပါက)
-            # php artisan migrate --force
+            php artisan migrate:fresh --force
             
             # Web Server ကို Restart လုပ်ရန် (လိုအပ်ပါက)
             # sudo systemctl reload nginx
