@@ -59,7 +59,7 @@ jobs:
             # ----------------------------------------------------
             
             # Project Directory သို့ သွားခြင်း
-            cd /var/www/mylaravelserver # သင့် Project ရဲ့ Path
+            cd /var/www/htoo # သင့် Project ရဲ့ Path
 
             # Code အသစ် (Assets အပါအဝင်) ကို ဆွဲချခြင်း
             git pull origin main       
