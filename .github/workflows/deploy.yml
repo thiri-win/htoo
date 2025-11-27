@@ -80,5 +80,3 @@ jobs:
             
             # Web Server ကို Restart လုပ်ရန် (လိုအပ်ပါက)
             sudo systemctl reload nginx
-
-
