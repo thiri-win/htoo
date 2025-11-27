@@ -1,0 +1,82 @@
+name: Optimized Laravel Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main  # သင့်ရဲ့ main branch ကို သုံးပါ။
+  workflow_dispatch: # Manual Deploy ခေါ်ဖို့
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10 # Deployment အတွက် အများဆုံး 10 မိနစ်သာ သုံးမည်။
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      # Step 1: PHP Dependencies Cache (Minutes တွေ လျှော့ချဖို့)
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2' # သင့် Server ရဲ့ PHP Version ကို ပြောင်းပါ။
+          tools: composer:v2
+          coverage: none
+      
+      # Step 2: Node/NPM Dependencies Cache (Minutes တွေ လျှော့ချဖို့)
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # သင့်လိုအပ်တဲ့ Node Version
+          cache: 'npm'
+          
+      # Step 3: Composer Install (Runner ပေါ်မှာ Run ပါမည်)
+      - name: Install PHP Dependencies
+        run: composer install --no-dev --prefer-dist
+        
+      # Step 4: NPM Install & Frontend Build (Runner ပေါ်မှာ Run ပါမည်)
+      - name: Build Frontend Assets (Memory Friendly)
+        run: |
+          npm install
+          npm run build # Build လုပ်တာ ဒီအဆင့်မှာ ပြီးသွားပါပြီ။
+          
+      # Step 5: SSH Agent Set up (Key ကို လုံခြုံစွာ ခေါ်ယူခြင်း)
+      - name: Deploy via SSH Agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Step 6: EC2 Server သို့ Code များကို တင်ခြင်းနှင့် Script များ Run ခြင်း
+      - name: Run Deployment Script on EC2
+        uses: appleboy/ssh-action@v1.0.1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # ----------------------------------------------------
+            # AWS EC2 Server ပေါ်တွင် လုပ်ဆောင်မည့် အဆင့်များ
+            # ----------------------------------------------------
+            
+            # Project Directory သို့ သွားခြင်း
+            cd /var/www/mylaravelserver # သင့် Project ရဲ့ Path
+
+            # Code အသစ် (Assets အပါအဝင်) ကို ဆွဲချခြင်း
+            git pull origin main       
+            
+            # Composer Dependencies များ Install လုပ်ခြင်း (Server အတွက်သာ)
+            composer install --no-dev --prefer-dist 
+            
+            # Storage Permission ပြန်ပြင်ခြင်း (အရေးကြီးဆုံး)
+            sudo chown -R www-data:www-data storage bootstrap/cache
+            sudo chmod -R 775 storage bootstrap/cache
+
+            # Cache, Config များ ရှင်းခြင်း
+            php artisan cache:clear
+            php artisan config:cache
+            
+            # Database Migration (လိုအပ်ပါက)
+            # php artisan migrate --force
+            
+            # Web Server ကို Restart လုပ်ရန် (လိုအပ်ပါက)
+            # sudo systemctl reload nginx
