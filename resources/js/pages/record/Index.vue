@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 defineProps({
     records: Array,
     vouchers: Array,
+    
 })
 
 onMounted(() => {
