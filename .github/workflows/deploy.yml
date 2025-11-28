@@ -55,7 +55,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/htoo
-            git pull origin main       
+            git pull       
             composer install --no-dev --prefer-dist 
             npm install
             npm run build
