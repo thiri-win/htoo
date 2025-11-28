@@ -109,7 +109,6 @@ Route::get('/pdf/quotation', function (Request $request) {
         ->withBrowsershot(function (Browsershot $bs) {
             $bs->noSandbox();
         })
-        ->onLambda()
         ->format('A4')
         ->margins(75, 10, 30, 10)
         ->name('invoice.pdf');
