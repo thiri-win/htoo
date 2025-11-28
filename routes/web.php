@@ -106,6 +106,9 @@ Route::get('/pdf/quotation', function (Request $request) {
     return Pdf::view('quotation.show', ['data' => $quotationData])
         ->headerView('partials._quotationheader', ['data' => $quotationData])
         ->footerView('partials._footer')
+        ->withBrowsershot(function (Browsershot $bs) {
+            $bs->noSandbox();
+        })
         ->format('A4')
         ->margins(75, 10, 30, 10)
         ->name('invoice.pdf');
