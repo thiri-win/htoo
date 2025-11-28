@@ -24,7 +24,7 @@ onMounted(() => {
 
 <template>
     <AppLayout>
-        <Link :href="route('records.create')" class="new-btn">+ စာရင်းအသစ်ထည့်ရန်</Link>
+        <Link :href="route('records.create')" class="btn new-btn">+ စာရင်းအသစ်ထည့်ရန်</Link>
         <table>
             <thead class="border-0">
                 <tr>
