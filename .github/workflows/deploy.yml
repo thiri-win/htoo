@@ -54,29 +54,14 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # ----------------------------------------------------
-            # AWS EC2 Server ပေါ်တွင် လုပ်ဆောင်မည့် အဆင့်များ
-            # ----------------------------------------------------
-            
-            # Project Directory သို့ သွားခြင်း
-            cd /var/www/htoo # သင့် Project ရဲ့ Path
-
-            # Code အသစ် (Assets အပါအဝင်) ကို ဆွဲချခြင်း
+            cd /var/www/htoo
             git pull origin main       
-            
-            # Composer Dependencies များ Install လုပ်ခြင်း (Server အတွက်သာ)
             composer install --no-dev --prefer-dist 
-            
-            # Storage Permission ပြန်ပြင်ခြင်း (အရေးကြီးဆုံး)
+            npm install
+            npm run build
             sudo chown -R www-data:www-data storage bootstrap/cache
             sudo chmod -R 775 storage bootstrap/cache
-
-            # Cache, Config များ ရှင်းခြင်း
             php artisan cache:clear
             php artisan config:cache
-            
-            # Database Migration (လိုအပ်ပါက)
             # php artisan migrate:fresh --force
-            
-            # Web Server ကို Restart လုပ်ရန် (လိုအပ်ပါက)
-            sudo systemctl reload nginx
+            # sudo systemctl reload nginx
