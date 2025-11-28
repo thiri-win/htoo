@@ -4,11 +4,11 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
 import dayjs from 'dayjs';
+import { EyeIcon, Pencil, Printer, Trash } from 'lucide-vue-next';
 
 defineProps({
     records: Array,
     vouchers: Array,
-    
 })
 
 onMounted(() => {
@@ -26,7 +26,7 @@ onMounted(() => {
     <AppLayout>
         <Link :href="route('records.create')" class="new-btn">+ စာရင်းအသစ်ထည့်ရန်</Link>
         <table>
-            <thead>
+            <thead class="border-0">
                 <tr>
                     <th>ID</th>
                     <th>Date</th>
@@ -44,18 +44,36 @@ onMounted(() => {
                     <td>{{ record.category.title }}</td>
                     <td>{{ record.grand_total }}</td>
                     <td>
-                        <a :href="route('records.show', record)" class="show-btn my-5 inline-block mr-1 text-xs">View</a>
+                        <a :href="route('records.show', record)" class="btn show-btn inline-block mr-1 text-xs">
+                            <EyeIcon class="inline-block w-4 xl:w-3 xl:mr-1" />
+                            <span class="hidden xl:inline-block">View</span>
+                        </a>
                         <div v-if="record.category.id == 1" class="inline-block">
-                            <a :href="route('vouchers.edit', record)" class="edit-btn my-5 inline-block mr-1 text-xs">Edit</a>
+                            <a :href="route('vouchers.edit', record)" class="btn edit-btn inline-block mr-1 text-xs">
+                                <Pencil class="inline-block w-4 xl:w-3 xl:mr-1" />
+                                <span class="hidden xl:inline-block">Edit</span>
+                            </a>
                         </div>
                         <div v-else-if="record.category.id == 2" class="inline-block">
-                            <a :href="route('expenses.edit', record)" class="edit-btn my-5 inline-block mr-1 text-xs">Edit</a>
+                            <a :href="route('expenses.edit', record)" class="btn edit-btn inline-block mr-1 text-xs">
+                                <Pencil class="inline-block w-4 xl:w-3 xl:mr-1" />
+                                <span class="hidden xl:inline-block">Edit</span>
+                            </a>
                         </div>
                         <div v-else class="inline-block">
-                            <a :href="route('records.edit', record)" class="edit-btn my-5 inline-block mr-1 text-xs">Edit</a>
+                            <a :href="route('records.edit', record)" class="btn edit-btn inline-block mr-1 text-xs">
+                                <Pencil class="inline-block w-4 xl:w-3 xl:mr-1" />
+                                <span class="hidden xl:inline-block">Edit</span>
+                            </a>
                         </div>
-                        <a :href="route('vouchers.print', record)" class="print-btn my-5 inline-block mr-1 text-xs">Print</a>
-                        <a :href="route('records.destroy', record)" class="edit-btn my-5 inline-block mr-1 text-xs">Delete</a>
+                        <a :href="route('vouchers.print', record)" class="btn print-btn inline-block mr-1 text-xs">
+                            <Printer class="inline-block w-4 xl:w-3 xl:mr-1" />
+                            <span class="hidden xl:inline-block">Print</span>
+                        </a>
+                        <a :href="route('records.destroy', record)" class="btn delete-btn inline-block mr-1 text-xs">
+                            <Trash class="inline-block w-4 xl:w-3 xl:mr-1" />
+                            <span class="hidden xl:inline-block">Delete</span>
+                        </a>
                     </td>
                 </tr>
             </tbody>

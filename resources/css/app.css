@@ -185,6 +185,9 @@
     }
 }
 
+
+
+
 h1 {
     @apply mb-5 text-3xl font-black;
 }
@@ -224,28 +227,32 @@ table input {
     @apply border-0;
 }
 
+.btn {
+    @apply rounded-2xl border px-3 py-1 no-underline hover:bg-transparent;
+}
+
 .print-btn {
-    @apply rounded border border-gray-300 bg-gray-300 px-4 py-2 no-underline hover:bg-transparent;
+    @apply border-gray-300 bg-gray-300;
 }
 
 .edit-btn {
-    @apply rounded border border-amber-500 bg-amber-500 px-4 py-2 no-underline hover:bg-transparent;
+    @apply border-amber-500 bg-amber-500;
 }
 
 .new-btn {
-    @apply rounded border border-gray-500 px-4 py-2 no-underline hover:bg-gray-300 hover:text-black mb-5 inline-block;
+    @apply border-gray-500 hover:bg-gray-300 hover:text-black mb-5 inline-block;
 }
 
 .show-btn {
-    @apply rounded border border-emerald-600 bg-emerald-400 px-4 py-2 no-underline hover:bg-transparent;
+    @apply border-emerald-500 bg-emerald-500;
 }
 
 .submit-btn {
-    @apply rounded border border-sky-600 bg-sky-600 px-4 py-2 no-underline text-white hover:bg-transparent hover:text-sky-600;
+    @apply border-sky-600 bg-sky-600 text-white hover:text-sky-600;
 }
 
 .delete-btn {
-    @apply rounded border border-red-600 bg-red-600 px-4 py-2 no-underline hover:bg-transparent;
+    @apply border-red-600 bg-red-600 text-white;
 }
 
 thead {

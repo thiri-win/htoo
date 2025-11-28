@@ -14,7 +14,7 @@ const form = useForm({
     'car_brand': props.voucher.car?.car_brand || '',
     'car_model': props.voucher.car?.car_model || '',
     'car_number': props.voucher.car?.car_number || '',
-    'sales': props.voucher.sales || [
+    'items': props.voucher.items || [
         {
             'id': 1,
             'description': '',
@@ -30,34 +30,34 @@ const form = useForm({
 })
 
 const addSale = () => {
-    form.sales.push({
-        description: form.sales.description,
-        quantity: form.sales.quantity || 1,
-        unit_price: form.sales.unit_price || 0,
-        total: form.sales.total
+    form.items.push({
+        description: form.items.description,
+        quantity: form.items.quantity || 1,
+        unit_price: form.items.unit_price || 0,
+        total: form.items.total
     });
 };
 
-const removeSale = (sale) => {
-    form.sales = form.sales.filter(s => s.id != sale.id)
+const removeSale = (item) => {
+    form.items = form.items.filter(s => s.id != item.id)
 }
 
 const total = () => {
-    form.sales.forEach((sale) => {
-        return sale.total = (sale.quantity || 1) * (sale.unit_price || 0)
+    form.items.forEach((item) => {
+        return item.total = (item.quantity || 1) * (item.unit_price || 0)
     })
 }
 
-watch(() => [form.sales, form.discount], total, { deep: true, immediate: true });
+watch(() => [form.items, form.discount], total, { deep: true, immediate: true });
 
 form.sub_total = computed(() => {
-    return form.sales.reduce((sum, item) => {
+    return form.items.reduce((sum, item) => {
         return sum + (item.quantity * item.unit_price)
     }, 0)
 })
 
 form.grand_total = computed(() => {
-    return form.sales.reduce((sum, item) => {
+    return form.items.reduce((sum, item) => {
         return sum + (item.quantity * item.unit_price)
     }, 0) - form.discount
 })
@@ -107,24 +107,24 @@ const submit = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(sale, index) in form.sales" :key="sale.id">
+                        <tr v-for="(item, index) in form.items" :key="item.id">
                             <td>
                                 {{ index + 1 }}
                             </td>
                             <td>
-                                <input type="text" v-model="sale.description" placeholder="Description" class="border-white" :class="form.errors[`sales.${index}.description`] ? '!border-b !border-red-300' : ''">
+                                <input type="text" v-model="item.description" placeholder="Description" class="border-white" :class="form.errors[`items.${index}.description`] ? '!border-b !border-red-300' : ''">
                             </td>
                             <td>
-                                <input type="number" v-model="sale.quantity" placeholder="Qty" class="border-white" :class="form.errors[`sales.${index}.quantity`] ? '!border-b !border-red-300' : ''">
+                                <input type="number" v-model="item.quantity" placeholder="Qty" class="border-white" :class="form.errors[`items.${index}.quantity`] ? '!border-b !border-red-300' : ''">
                             </td>
                             <td>
-                                <input type="number" v-model="sale.unit_price" placeholder="Amount" class="border-white" :class="form.errors[`sales.${index}.unit_price`] ? '!border-b !border-red-300' : ''">
+                                <input type="number" v-model="item.unit_price" placeholder="Amount" class="border-white" :class="form.errors[`items.${index}.unit_price`] ? '!border-b !border-red-300' : ''">
                             </td>
                             <td>
-                                {{ sale.quantity * sale.unit_price }}
+                                {{ item.quantity * item.unit_price }}
                             </td>
                             <td>
-                                <a href="#" @click.prevent="removeSale(sale)" class="text-nowrap"> - Remove</a>
+                                <a href="#" @click.prevent="removeSale(item)" class="text-nowrap"> - Remove</a>
                             </td>
                         </tr>
                         <tr>

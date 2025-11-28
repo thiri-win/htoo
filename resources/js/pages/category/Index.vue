@@ -21,7 +21,7 @@ onMounted(() => {
     <AppLayout>
         <Link :href="route('categories.create')" class="new-btn">+New</Link>
         <table>
-            <thead>
+            <thead class="border-0">
                 <tr>
                     <th>ID</th>
                     <th>အကြောင်းအရာ</th>
@@ -43,8 +43,8 @@ onMounted(() => {
                     </td>
                     <td>{{ category.remark }}</td>
                     <td>
-                        <Link :href="route('categories.show', category)" class="show-btn text-sm me-2">Show</Link>
-                        <Link :href="route('categories.edit', category)" class="edit-btn text-sm">Edit</Link>
+                        <Link :href="route('categories.show', category)" class="btn show-btn text-sm me-2">Show</Link>
+                        <Link :href="route('categories.edit', category)" class="btn edit-btn text-sm">Edit</Link>
                     </td>
                 </tr>
             </tbody>
