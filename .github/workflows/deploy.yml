@@ -59,9 +59,11 @@ jobs:
             composer install --no-dev --prefer-dist 
             npm install
             npm run build
-            sudo chown -R www-data:www-data storage bootstrap/cache
-            sudo chmod -R 775 storage bootstrap/cache
+            sudo chmod -R 777 storage bootstrap/cache
             php artisan cache:clear
             php artisan config:cache
+            sudo chown -R www-data:www-data storage bootstrap/cache
+            sudo chmod -R 775 storage bootstrap/cache
+            
             # php artisan migrate:fresh --force
             # sudo systemctl reload nginx
