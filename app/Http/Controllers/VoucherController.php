@@ -79,7 +79,7 @@ class VoucherController extends Controller
     public function edit(Record $voucher)
     {
         return Inertia::render('voucher/Create', [
-            'voucher' => $voucher->load(['sales', 'car'])
+            'voucher' => $voucher->load(['items', 'car'])
         ]);
     }
 
