@@ -94,7 +94,7 @@ Route::get('/records/vouchers/{record}/print', function (Record $record) {
         ->footerView('partials._footer')
         ->format('A4')
         ->margins(95, 10, 30, 10)
-        ->name('invoice.pdf');
+        ->download($record->car_number . '.pdf');
 })->name('vouchers.print');
 
 Route::get('/prepare/quotation', function () {
@@ -106,7 +106,7 @@ Route::get('/pdf/quotation', function (Request $request) {
     return Pdf::view('quotation.show', ['data' => $quotationData])
         ->headerView('partials._quotationheader', ['data' => $quotationData])
         ->footerView('partials._footer')
-        ->withBrowsershot(function (Browsershot $bs){ 
+        ->withBrowsershot(function (Browsershot $bs) {
             $bs->noSandbox();
         })
         ->format('A4')
