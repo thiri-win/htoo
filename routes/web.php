@@ -103,6 +103,7 @@ Route::get('/prepare/quotation', function () {
     return Inertia::render('prepare/Quotation');
 })->name('prepare-quotation');
 
+
 Route::get('/pdf/quotation', function (Request $request) {
     $quotationData = $request->all();
     return Pdf::view('quotation.show', ['data' => $quotationData])
