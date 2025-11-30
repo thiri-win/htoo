@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { Calculator, DollarSign, LayoutGrid, List, ListCheckIcon, MessageCircle, NotebookPen, PenToolIcon, Plus } from 'lucide-vue-next';
+import { Calculator, Car, DollarSign, LayoutGrid, List, ListCheckIcon, MessageCircle, NotebookPen, PenToolIcon, Plus } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -18,6 +18,11 @@ const mainNavItems: NavItem[] = [
         title: 'စာရင်းများကြည့်ရန်',
         href: '/records',
         icon: List,
+    },
+    {
+        title: 'ကားများစစ်ဆေးရန်',
+        href: '/cars',
+        icon: Car,
     },
 ];
 

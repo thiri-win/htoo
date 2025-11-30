@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->string('description');
+            $table->integer('car_id')->nullable();
             $table->integer('category_id');
             $table->integer('sub_total')->default(0);
             $table->integer('discount')->default(0);

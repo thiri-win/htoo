@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/vue3';
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const props = defineProps({
-    voucher: Object
+    voucher: Object,
+    cars: Array,
 })
 
 const form = useForm({
     'date': props.voucher.date ? new Date(props.voucher.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-    'customer_name': props.voucher.car?.customer_name || '',
-    'customer_phone': props.voucher.car?.customer_phone || '',
-    'car_brand': props.voucher.car?.car_brand || '',
-    'car_model': props.voucher.car?.car_model || '',
-    'car_number': props.voucher.car?.car_number || '',
+    'description': props.voucher.description || '',
+    'car_id': props.voucher.car_id || '',
     'items': props.voucher.items || [
         {
             'id': 1,
@@ -28,6 +26,23 @@ const form = useForm({
     'grand_total': props.voucher.grand_total || 0,
     'remark': props.voucher.remark || null
 })
+
+const selectedCar = ref({
+    car_number: '',
+    car_brand: '',
+    car_model: '',
+    customer_name: '',
+    customer_phone: '',
+})
+
+const getCarInfo = (event) => {
+    const selectedCarId = event.target.value;
+    const car = props.cars.find(c => c.id == selectedCarId);
+    if (car) {
+        selectedCar.value = { ...car };
+    }
+}
+
 
 const addSale = () => {
     form.items.push({
@@ -63,7 +78,7 @@ form.grand_total = computed(() => {
 })
 
 const submit = () => {
-    if(props.voucher.id) {
+    if (props.voucher.id) {
         form.put(route('vouchers.update', props.voucher.id))
     } else {
         form.post(route('vouchers.store'));
@@ -80,22 +95,29 @@ const submit = () => {
                     <input type="date" name="date" id="date" v-model="form.date" :class="form.errors.date ? 'border-red-300' : ''">
                 </div>
                 <div>
-                    <input type="text" name="customer_name" id="customer_name" placeholder="Customer Name" v-model="form.customer_name" :class="form.errors.customer_name ? 'border-red-300' : ''">
-                </div>
-                <div>
-                    <input type="tel" name="customer_phone" id="customer_phone" placeholder="Phone" v-model="form.customer_phone" :class="form.errors.customer_phone ? 'border-red-300' : ''">
-                </div>
-                <div>
-                    <input type="text" name="car_brand" id="car_brand" placeholder="Car Brand" v-model="form.car_brand" :class="form.errors.car_brand ? 'border-red-300' : ''">
-                </div>
-                <div>
-                    <input type="text" name="car_model" id="car_model" placeholder="Car Model" v-model="form.car_model" :class="form.errors.car_model ? 'border-red-300' : ''">
-                </div>
-                <div>
-                    <input type="text" name="car_number" id="car_number" placeholder="Car Number" v-model="form.car_number" :class="form.errors.car_number ? 'border-red-300' : ''">
+                    <input type="text" name="description" id="description" placeholder="Description" v-model="form.description" :class="form.errors.description ? 'border-red-300' : ''">
                 </div>
             </div>
-            <div class="bg-neutral-100 dark:bg-(--sidebar-background) my-5 p-5 rounded-lg">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 gap-y-5 bg-neutral-100 dark:bg-(--sidebar-background) my-3 p-5 rounded-lg">
+                <div>
+                    <input type="text" list="carNumber" name="car_id" id="car_id" placeholder="Car Number 1A-1234" v-model="form.car_id" :class="form.errors.car_id ? 'border-red-300' : ''" @input="getCarInfo($event)">
+                    <datalist id="carNumber">
+                        <option v-for="car in cars" :key="car.id" :value="car.id">{{ car.car_number }}</option>
+                    </datalist>
+                    <p>
+                        <mark>{{ selectedCar.car_number }}</mark>
+                        {{ selectedCar.car_brand }}
+                        {{ selectedCar.car_model }}
+                        {{ selectedCar.customer_name }}
+                        {{ selectedCar.customer_phone }}
+                    </p>
+                </div>
+                <div>
+                    <p class="text-xs mb-2">List ထဲမှာ ကားနံပါတ် မရှိပါက အသစ်ထပ်ထည့်ရပါမည်</p>
+                    <a :href="route('cars.create')" class="btn new-btn m-0 text-xs">+ New Car</a>
+                </div>
+            </div>
+            <div class="bg-neutral-100 dark:bg-(--sidebar-background) my-3 p-5 rounded-lg">
                 <table class="w-full">
                     <thead>
                         <tr>

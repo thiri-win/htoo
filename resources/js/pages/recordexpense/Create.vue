@@ -1,16 +1,34 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/vue3';
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const props = defineProps({
     record: Object,
     categories: Array,
+    cars: Array,
 })
+
+const selectedCar = ref({
+    car_number: '',
+    car_brand: '',
+    car_model: '',
+    customer_name: '',
+    customer_phone: '',
+})
+
+const getCarInfo = (event) => {
+    const selectedCarId = event.target.value;
+    const car = props.cars.find(c => c.id == selectedCarId);
+    if (car) {
+        selectedCar.value = { ...car };
+    }
+}
 
 const form = useForm({
     'date': props.record.date ? new Date(props.record.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
     'description': props.record.description || '',
+    'car_id': props.record.car_id || '',
     'category_id': props.record.category_id || '',
     'items': props.record.items || [
         {
@@ -64,7 +82,7 @@ const submit = () => {
     // if (props.record.id) {
     //     form.put(route('records.update', props.record.id))
     // } else {
-        form.post(route('expenses.store'));
+    form.post(route('expenses.store'));
     // }
 }
 
@@ -78,10 +96,31 @@ const submit = () => {
                     <input type="date" name="date" id="date" v-model="form.date" :class="form.errors.date ? 'border-red-300' : ''">
                 </div>
                 <div>
-                    <input type="text" name="description" id="description" placeholder="Car Number" v-model="form.description" :class="form.errors.description ? 'border-red-300' : ''">
+                    <input type="text" name="description" id="description" v-model="form.description" :class="form.errors.description ? 'border-red-300' : ''" placeholder="Description" autofocus>
                 </div>
             </div>
-            <div class="bg-neutral-100 dark:bg-(--sidebar-background) my-5 p-5 rounded-lg">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 gap-y-5 bg-neutral-100 dark:bg-(--sidebar-background) my-3 p-5 rounded-lg">
+                <div>
+                    <input type="text" list="carNumber" name="car_id" id="car_id" placeholder="Car Number 1A-1234" v-model="form.car_id" :class="form.errors.car_id ? 'border-red-300' : ''" @input="getCarInfo($event)">
+                    <datalist id="carNumber">
+                        <option v-for="car in cars" :key="car.id" :value="car.id">{{ car.car_number }}</option>
+                    </datalist>
+                    <p>
+                        <mark>{{ selectedCar.car_number }}</mark>
+                        {{ selectedCar.car_brand }}
+                        {{ selectedCar.car_model }}
+                        {{ selectedCar.customer_name }}
+                        {{ selectedCar.customer_phone }}
+                    </p>
+                </div>
+                <div>
+                    <p  class="text-xs mb-2">List ထဲမှာ ကားနံပါတ် မရှိပါက အသစ်ထပ်ထည့်ရပါမည်</p>
+                    <a :href="route('cars.create')" class="btn new-btn m-0 text-xs">+ New Car</a>
+                </div>
+            </div>
+
+            <div class="bg-neutral-100 dark:bg-(--sidebar-background) my-3 p-5 rounded-lg">
                 <table class="w-full">
                     <thead>
                         <tr>

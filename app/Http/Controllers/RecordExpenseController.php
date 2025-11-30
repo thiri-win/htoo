@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Car;
 use App\Models\Category;
 use App\Models\Record;
 use Illuminate\Http\Request;
@@ -16,7 +17,8 @@ class RecordExpenseController extends Controller
     {
         return Inertia::render('recordexpense/Create', [
             'categories' => Category::all(),
-            'record' => []
+            'record' => [],
+            'cars' => Car::all(),
         ]);
     }
 
@@ -25,6 +27,7 @@ class RecordExpenseController extends Controller
      */
     public function store(Request $request)
     {
+        return $request->all();
         $validated = $request->validate([
             'date' => 'required',
             'description' => 'sometimes',

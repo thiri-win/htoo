@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\CarController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\RecordExpenseController;
 use App\Http\Controllers\RecordSalaryController;
+use App\Http\Controllers\RecordVoucherController;
 use App\Http\Controllers\VoucherController;
 use App\Models\Category;
 use App\Models\Record;
@@ -83,9 +85,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('records', RecordController::class);
     Route::resource('records/expenses', RecordExpenseController::class)->except('index', 'destroy');
-    Route::resource('records/vouchers', VoucherController::class);
+    Route::resource('records/vouchers', RecordVoucherController::class)->except('index', 'destroy');
     Route::resource('records/salary', RecordSalaryController::class)->only('create', 'store');
-    Route::get('/backup-database', [DatabaseBackupController::class, 'download'])->name('backup-database');
+    Route::resource('cars', CarController::class);
 });
 
 Route::get('/records/vouchers/{record}/print', function (Record $record) {
@@ -94,7 +96,7 @@ Route::get('/records/vouchers/{record}/print', function (Record $record) {
         ->footerView('partials._footer')
         ->format('A4')
         ->margins(95, 10, 30, 10)
-        ->download($record->car_number . '.pdf');
+        ->name($record->car->car_number . '.pdf');
 })->name('vouchers.print');
 
 Route::get('/prepare/quotation', function () {
@@ -111,7 +113,7 @@ Route::get('/pdf/quotation', function (Request $request) {
         })
         ->format('A4')
         ->margins(75, 10, 30, 10)
-        ->name('invoice.pdf');
+        ->name($quotationData['subject'] . '.pdf');
 })->name('pdf-quotation');
 
 Route::get('/find-node', function () {

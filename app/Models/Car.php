@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Car extends Model
 {
-    protected $fillable = ['record_id', 'customer_name', 'customer_phone', 'car_number', 'car_brand', 'car_model'];
+    protected $fillable = ['customer_name', 'customer_phone', 'car_number', 'car_brand', 'car_model'];
+
+    public function records()
+    {
+        return $this->hasMany(Record::class);
+    }
 }
