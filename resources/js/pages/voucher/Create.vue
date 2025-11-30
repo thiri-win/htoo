@@ -56,7 +56,7 @@ const addSale = () => {
 };
 
 const removeSale = (item) => {
-    form.items = form.items.filter(s => s.id != item.id)
+    form.items = form.items.filter(i => i.id != item.id)
 }
 
 const total = () => {
@@ -147,7 +147,7 @@ const submit = () => {
                             <td>
                                 {{ item.quantity * item.unit_price }}
                             </td>
-                            <td>
+                            <td> ;
                                 <a href="#" @click.prevent="removeSale(item)" class="text-nowrap"> - Remove</a>
                             </td>
                         </tr>
