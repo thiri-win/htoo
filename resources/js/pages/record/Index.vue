@@ -70,10 +70,10 @@ onMounted(() => {
                             <Printer class="inline-block w-4 xl:w-3 xl:mr-1" />
                             <span class="hidden xl:inline-block">Print</span>
                         </a>
-                        <a :href="route('records.destroy', record)" class="btn delete-btn inline-block mr-1 text-xs">
+                        <Link method="delete" as="button" :href="route('records.destroy', record)" class="btn delete-btn inline-block mr-1 text-xs">
                             <Trash class="inline-block w-4 xl:w-3 xl:mr-1" />
                             <span class="hidden xl:inline-block">Delete</span>
-                        </a>
+                        </Link>
                     </td>
                 </tr>
             </tbody>
