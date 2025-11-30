@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('records', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->integer('car_id')->nullable();
             $table->integer('category_id');
             $table->integer('sub_total')->default(0);

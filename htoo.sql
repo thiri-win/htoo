@@ -354,7 +354,7 @@ DROP TABLE IF EXISTS `records`;
 CREATE TABLE `records` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `date` date NOT NULL,
-  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   `car_id` int NOT NULL,
   `category_id` int NOT NULL,
   `sub_total` int NOT NULL DEFAULT '0',
