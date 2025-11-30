@@ -17,13 +17,16 @@ const selectedCar = ref({
     customer_phone: '',
 })
 
-const getCarInfo = (event) => {
-    const selectedCarId = event.target.value;
-    const car = props.cars.find(c => c.id == selectedCarId);
-    if (car) {
-        selectedCar.value = { ...car };
+watch(() => form.car_id, (newCarId) => {
+    if (newCarId) {
+        const car = props.cars.find(c => c.id == newCarId);
+        if (car) {
+            selectedCar.value = { ...car };
+        }
+    } else {
+        selectedCar.value = { car_number: '', car_brand: '', car_model: '', customer_name: '', customer_phone: '' };
     }
-}
+}, { immediate: true });
 
 const form = useForm({
     'date': props.record.date ? new Date(props.record.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
@@ -102,7 +105,7 @@ const submit = () => {
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 gap-y-5 bg-neutral-100 dark:bg-(--sidebar-background) my-3 p-5 rounded-lg">
                 <div>
-                    <input type="text" list="carNumber" name="car_id" id="car_id" placeholder="Car Number 1A-1234" v-model="form.car_id" :class="form.errors.car_id ? 'border-red-300' : ''" @input="getCarInfo($event)">
+                    <input type="text" list="carNumber" name="car_id" id="car_id" placeholder="Car Number 1A-1234" v-model="form.car_id" :class="form.errors.car_id ? 'border-red-300' : ''">
                     <datalist id="carNumber">
                         <option v-for="car in cars" :key="car.id" :value="car.id">{{ car.car_number }}</option>
                     </datalist>
