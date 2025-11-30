@@ -116,6 +116,20 @@ Route::get('/pdf/quotation', function (Request $request) {
         ->name($quotationData['subject'] . '.pdf');
 })->name('pdf-quotation');
 
+Route::get('/prepare/note', function () {
+    return Inertia::render('prepare/Note');
+})->name('prepare-note');
+
+Route::get('/pdf/note',function(Request $request) {
+    $htmlContent = $request->input('content');
+    return Pdf::view('note.show', ['data' => $htmlContent])
+        ->headerView('partials._noteheader')
+        ->footerView('partials._footer')
+        ->format('A4')
+        ->margins(77, 10, 30, 10)
+        ->name('note.pdf');
+})->name('pdf-note');
+
 Route::get('/find-node', function () {
     $path = shell_exec('which node');
     if ($path) {
