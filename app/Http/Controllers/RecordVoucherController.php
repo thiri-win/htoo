@@ -85,15 +85,15 @@ class RecordVoucherController extends Controller
             'items.*.total' => 'required',
         ]);
 
-        // $salesData = $validated['sales'];
+        $itemsData = $validated['sales'];
 
-        // foreach ($salesData as $sale) {
-        //     if (isset($sale['id'])) {
-        //         $voucher->sales()->find($sale['id'])->update($sale);
-        //     } else {
-        //         $voucher->sales()->create($sale);
-        //     }
-        // }
+        foreach ($itemsData as $item) {
+            if (isset($item['id'])) {
+                $voucher->items()->find($item['id'])->update($item);
+            } else {
+                $voucher->items()->create($item);
+            }
+        }
         $voucher->update($validated);
 
         return redirect()->route('records.index')->with('success', 'Updated Voucher');
