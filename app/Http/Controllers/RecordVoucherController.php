@@ -85,7 +85,7 @@ class RecordVoucherController extends Controller
             'items.*.total' => 'required',
         ]);
 
-        $itemsData = $validated['sales'];
+        $itemsData = $validated['items'];
 
         foreach ($itemsData as $item) {
             if (isset($item['id'])) {
