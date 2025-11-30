@@ -68,6 +68,7 @@ class RecordVoucherController extends Controller
     public function update(Request $request, Record $voucher)
     {
         $validated = $request->validate([
+            'description' => 'sometimes',
             // car
             'car_id' => 'required',
             // record
