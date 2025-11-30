@@ -42,7 +42,7 @@ onMounted(() => {
                     <td>{{ dayjs(record.date).format('DD-MM-YYYY') }}</td>
                     <td>{{ record.description }}</td>
                     <td>{{ record.category.title }}</td>
-                    <td>{{ record.grand_total }}</td>
+                    <td>{{ record.grand_total.toLocaleString() }}</td>
                     <td>
                         <a :href="route('records.show', record)" class="btn show-btn inline-block mr-1 text-xs">
                             <EyeIcon class="inline-block w-4 xl:w-3 xl:mr-1" />
