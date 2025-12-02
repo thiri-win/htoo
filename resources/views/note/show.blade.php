@@ -8,6 +8,10 @@
         opacity: 0.2;
         width: 500px;
     }
+    * {
+        font-family: "Poppins";
+        line-height: 1.5;
+    }
 </style>
 <div>
      {!! $data !!}
