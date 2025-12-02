@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Record;
 use Inertia\Inertia;
 
+use function PHPUnit\Framework\isNan;
+
 class RecordVoucherController extends Controller
 {
     /**
@@ -14,8 +16,7 @@ class RecordVoucherController extends Controller
      */
     public function create()
     {
-        return Inertia::render('voucher/Create', [
-            'voucher' => [],
+        return Inertia::render('recordvoucher/Create', [
             'cars' => Car::all()
         ]);
     }
@@ -46,7 +47,6 @@ class RecordVoucherController extends Controller
 
         $record = Record::create($validated);
         $record->items()->createMany($validated['items']);
-        $record->car()->create($validated);
 
         return redirect()->route('records.index')->with('success', 'Added New Voucher');
     }
@@ -56,7 +56,7 @@ class RecordVoucherController extends Controller
      */
     public function edit(Record $voucher)
     {
-        return Inertia::render('voucher/Create', [
+        return Inertia::render('recordvoucher/Edit', [
             'voucher' => $voucher->load(['items', 'car']),
             'cars' => Car::all(),
         ]);
@@ -70,7 +70,7 @@ class RecordVoucherController extends Controller
         $validated = $request->validate([
             'description' => 'sometimes',
             // car
-            'car_id' => 'required',
+            'car_id' => 'sometimes',
             // record
             'date' => 'required',
             'sub_total' => 'required',
@@ -88,13 +88,22 @@ class RecordVoucherController extends Controller
 
         $itemsData = $validated['items'];
 
+        $incomingItemIds = collect($itemsData)
+            ->pluck('id')
+            ->filter(fn($id) => is_numeric($id) && $id > 0)
+            ->map(fn($id) => (int) $id)
+            ->all();
+
+        $voucher->items()->whereNotIn('id', $incomingItemIds)->delete();
+
         foreach ($itemsData as $item) {
-            if (isset($item['id'])) {
-                $voucher->items()->find($item['id'])->update($item);
-            } else {
+            if (!is_numeric($item['id'])) {
                 $voucher->items()->create($item);
+            } else {
+                $voucher->items()->find($item['id'])->update($item);
             }
         }
+
         $voucher->update($validated);
 
         return redirect()->route('records.index')->with('success', 'Updated Voucher');

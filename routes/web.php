@@ -127,7 +127,7 @@ Route::get('/pdf/note',function(Request $request) {
         ->headerView('partials._noteheader')
         ->footerView('partials._footer')
         ->format('A4')
-        ->margins(77, 10, 30, 10)
+        ->margins(60, 10, 30, 10)
         ->name('note.pdf');
 })->name('pdf-note');
 

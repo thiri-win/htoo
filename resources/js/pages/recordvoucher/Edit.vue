@@ -4,19 +4,19 @@ import { useForm } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps({
-    expense: Object,
+    voucher: Object,
     cars: Array,
 })
 
 const form = useForm({
-    'date': new Date(props.expense.date).toISOString().split('T')[0],
-    'description': props.expense.description,
-    'car_id': props.expense.car_id,
-    'items': props.expense.items,
-    'discount': props.expense.discount,
-    'sub_total': props.expense.sub_total,
-    'grand_total': props.expense.grand_total,
-    'remark': props.expense.remark,
+    'date': new Date(props.voucher.date).toISOString().split('T')[0],
+    'description': props.voucher.description,
+    'car_id': props.voucher.car_id,
+    'items': props.voucher.items,
+    'discount': props.voucher.discount,
+    'sub_total': props.voucher.sub_total,
+    'grand_total': props.voucher.grand_total,
+    'remark': props.voucher.remark,
 })
 
 const selectedCar = ref({
@@ -73,7 +73,7 @@ form.grand_total = computed(() => {
 })
 
 const submit = () => {
-    form.put(route('expenses.update', props.expense.id))
+    form.put(route('vouchers.update', props.voucher.id))
 }
 
 </script>

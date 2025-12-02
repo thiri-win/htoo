@@ -4,15 +4,14 @@ import { useForm } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps({
-    voucher: Object,
     cars: Array,
 })
 
 const form = useForm({
-    'date': props.voucher.date ? new Date(props.voucher.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-    'description': props.voucher.description || '',
-    'car_id': props.voucher.car_id || '',
-    'items': props.voucher.items || [
+    'date': new Date().toISOString().split('T')[0],
+    'description': '',
+    'car_id': '',
+    'items': [
         {
             'id': 1,
             'description': '',
@@ -21,10 +20,10 @@ const form = useForm({
             'total': 0,
         }
     ],
-    'discount': props.voucher.discount || 0,
-    'sub_total': props.voucher.sub_total || 0,
-    'grand_total': props.voucher.grand_total || 0,
-    'remark': props.voucher.remark || null
+    'discount': 0,
+    'sub_total': 0,
+    'grand_total': 0,
+    'remark': null,
 })
 
 const selectedCar = ref({
@@ -47,11 +46,14 @@ watch(() => form.car_id, (newCarId) => {
 }, { immediate: true });
 
 const addSale = () => {
+    const newId = form.items.length > 0 ? Math.max(...form.items.map(item => item.id)) + 1 : 1;
+
     form.items.push({
-        description: form.items.description,
-        quantity: form.items.quantity || 1,
-        unit_price: form.items.unit_price || 0,
-        total: form.items.total
+        id: newId,
+        description: '',
+        quantity: 1,
+        unit_price: 0,
+        total: 0
     });
 };
 
@@ -80,11 +82,7 @@ form.grand_total = computed(() => {
 })
 
 const submit = () => {
-    if (props.voucher.id) {
-        form.put(route('vouchers.update', props.voucher.id))
-    } else {
-        form.post(route('vouchers.store'));
-    }
+    form.post(route('vouchers.store'));
 }
 
 </script>
@@ -92,21 +90,21 @@ const submit = () => {
     <!-- <AppLayout :breadcrumbs="breadcrumbs"> -->
     <AppLayout>
         <form action="" method="" @submit.prevent="submit">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 gap-y-5 bg-neutral-100 dark:bg-(--sidebar-background) p-5 rounded-lg">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 gap-y-5 bg-neutral-100 dark:bg-(--sidebar-background) p-5 rounded-lg">
                 <div>
                     <input type="date" name="date" id="date" v-model="form.date" :class="form.errors.date ? 'border-red-300' : ''">
                 </div>
                 <div>
                     <input type="text" name="description" id="description" placeholder="Description" v-model="form.description" :class="form.errors.description ? 'border-red-300' : ''">
                 </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 gap-y-5 bg-neutral-100 dark:bg-(--sidebar-background) my-3 p-5 rounded-lg">
+                <!-- </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 gap-y-5 bg-neutral-100 dark:bg-(--sidebar-background) my-3 p-5 rounded-lg"> -->
                 <div>
                     <input type="text" list="carNumber" name="car_id" id="car_id" placeholder="Car Number 1A-1234" v-model="form.car_id" :class="form.errors.car_id ? 'border-red-300' : ''">
                     <datalist id="carNumber">
                         <option v-for="car in cars" :key="car.id" :value="car.id">{{ car.car_number }}</option>
                     </datalist>
-                    <p>
+                    <p class="text-xs">
                         <mark>{{ selectedCar.car_number }}</mark>
                         {{ selectedCar.car_brand }}
                         {{ selectedCar.car_model }}
@@ -115,8 +113,8 @@ const submit = () => {
                     </p>
                 </div>
                 <div>
-                    <p class="text-xs mb-2">List ထဲမှာ ကားနံပါတ် မရှိပါက အသစ်ထပ်ထည့်ရပါမည်</p>
-                    <a :href="route('cars.create')" class="btn new-btn m-0 text-xs">+ New Car</a>
+                    <a :href="route('cars.create')" class="btn new-btn !m-0 text-xs">+ New Car</a>
+                    <p class="text-xs">List ထဲမှာ ကားနံပါတ် မရှိပါက <br> အသစ်ထပ်ထည့်ရပါမည်</p>
                 </div>
             </div>
             <div class="bg-neutral-100 dark:bg-(--sidebar-background) my-3 p-5 rounded-lg">
@@ -147,7 +145,7 @@ const submit = () => {
                             <td>
                                 {{ item.quantity * item.unit_price }}
                             </td>
-                            <td> ;
+                            <td>
                                 <a href="#" @click.prevent="removeSale(item)" class="text-nowrap"> - Remove</a>
                             </td>
                         </tr>
@@ -192,8 +190,8 @@ const submit = () => {
             </div>
 
             <div class="text-right">
-                <button type="submit" :class="props.voucher.id ? 'edit-btn' : 'submit-btn'">
-                    {{ props.voucher.id ? 'Update' : 'Submit' }}
+                <button type="submit" class="btn submit-btn">
+                    Submit
                 </button>
             </div>
         </form>
