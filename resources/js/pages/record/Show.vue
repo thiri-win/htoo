@@ -83,6 +83,10 @@ defineProps({
                         <td class="text-right">{{ record.discount }}</td>
                     </tr>
                     <tr>
+                        <td colspan="4" class="text-right">Advance</td>
+                        <td class="text-right">{{ record.advance }}</td>
+                    </tr>
+                    <tr>
                         <td colspan="4" class="text-right">Grand Total</td>
                         <td class="text-right">{{ record.grand_total }}</td>
                     </tr>

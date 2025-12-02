@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('category_id');
             $table->integer('sub_total')->default(0);
             $table->integer('discount')->default(0);
+            $table->integer('advance')->default(0);
             $table->integer('grand_total')->default(0);
             $table->string('remark')->nullable();
             $table->timestamps();

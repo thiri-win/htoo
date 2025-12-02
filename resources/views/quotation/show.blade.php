@@ -79,12 +79,29 @@
                 <td colspan="3">Discount</td>
                 <td style="font-weight: 600;">{{ number_format($data['discount']) }}</td>
             </tr>
+            @isset($data['advance'])
+                <tr>
+                    <td colspan="3">Advance</td>
+                    <td style="font-weight: 600;">{{ number_format($data['advance']) }}</td>
+                </tr>
+            @endisset
+            <tr>
+                <td colspan="3">Discount</td>
+                <td style="font-weight: 600;">{{ number_format($data['discount']) }}</td>
+            </tr>
             <tr>
                 <td colspan="3">Total</td>
                 <td style="font-weight: 600;">{{ number_format($data['grand_total']) }}</td>
             </tr>
         </tbody>
     </table>
+
+    @if ($data['remark'])
+        <div style="margin-top: 5px; font-size:12px;">
+            <label for="remark" style="font-family: Poppins;">Note:</label>
+            <p style="font-family: Poppins; ">{{ $data['remark'] }}</p>
+        </div>
+    @endif
 
     <div style="text-align: right;">
         <div style="text-align: center; display: inline-block">

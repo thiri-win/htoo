@@ -33,6 +33,7 @@ class RecordExpenseController extends Controller
             'date' => 'required',
             'sub_total' => 'required',
             'discount' => 'required',
+            'advance' => 'required',
             'grand_total' => 'required',
             'remark' => 'sometimes',
             // record items
@@ -75,6 +76,7 @@ class RecordExpenseController extends Controller
             'date' => 'required',
             'sub_total' => 'required',
             'discount' => 'required',
+            'advance' => 'required',
             'grand_total' => 'required',
             'remark' => 'sometimes',
             // record items

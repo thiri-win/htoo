@@ -35,6 +35,7 @@ class RecordVoucherController extends Controller
             'sub_total' => 'required',
             'discount' => 'required',
             'grand_total' => 'required',
+            'advance' => 'required',
             'remark' => 'sometimes',
             // record items
             'items' => 'required|array',
@@ -75,6 +76,7 @@ class RecordVoucherController extends Controller
             'date' => 'required',
             'sub_total' => 'required',
             'discount' => 'required',
+            'advance' => 'required',
             'grand_total' => 'required',
             'remark' => 'sometimes',
             // record items

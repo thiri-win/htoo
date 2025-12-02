@@ -15,6 +15,7 @@ const form = useForm({
     'items': props.expense.items,
     'discount': props.expense.discount,
     'sub_total': props.expense.sub_total,
+    'advance': props.expense.advance,
     'grand_total': props.expense.grand_total,
     'remark': props.expense.remark,
 })
@@ -69,7 +70,7 @@ form.sub_total = computed(() => {
 form.grand_total = computed(() => {
     return form.items.reduce((sum, item) => {
         return sum + (item.quantity * item.unit_price)
-    }, 0) - form.discount
+    }, 0) - form.discount - form.advance
 })
 
 const submit = () => {
@@ -158,6 +159,14 @@ const submit = () => {
                             </td>
                             <td>
                                 <input type="number" name="discount" id="discount" v-model="form.discount">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <label for="advance">Advance</label>
+                            </td>
+                            <td>
+                                <input type="number" name="advance" id="advance" v-model="form.advance">
                             </td>
                         </tr>
                         <tr>

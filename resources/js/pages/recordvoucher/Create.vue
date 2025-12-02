@@ -22,6 +22,7 @@ const form = useForm({
     ],
     'discount': 0,
     'sub_total': 0,
+    'advance': 0,
     'grand_total': 0,
     'remark': null,
 })
@@ -39,6 +40,9 @@ watch(() => form.car_id, (newCarId) => {
         const car = props.cars.find(c => c.id == newCarId);
         if (car) {
             selectedCar.value = { ...car };
+            if (form.description === '' || form.description === 'Invoice' || !form.description) {
+                form.description = car.car_number || car.customer_name || 'Invoice';
+            }
         }
     } else {
         selectedCar.value = { car_number: '', car_brand: '', car_model: '', customer_name: '', customer_phone: '' };
@@ -78,7 +82,7 @@ form.sub_total = computed(() => {
 form.grand_total = computed(() => {
     return form.items.reduce((sum, item) => {
         return sum + (item.quantity * item.unit_price)
-    }, 0) - form.discount
+    }, 0) - form.discount - form.advance
 })
 
 const submit = () => {
@@ -97,8 +101,6 @@ const submit = () => {
                 <div>
                     <input type="text" name="description" id="description" placeholder="Description" v-model="form.description" :class="form.errors.description ? 'border-red-300' : ''">
                 </div>
-                <!-- </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 gap-y-5 bg-neutral-100 dark:bg-(--sidebar-background) my-3 p-5 rounded-lg"> -->
                 <div>
                     <input type="text" list="carNumber" name="car_id" id="car_id" placeholder="Car Number 1A-1234" v-model="form.car_id" :class="form.errors.car_id ? 'border-red-300' : ''">
                     <datalist id="carNumber">
@@ -170,6 +172,14 @@ const submit = () => {
                             </td>
                             <td>
                                 <input type="number" name="discount" id="discount" v-model="form.discount">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <label for="advance">Advance</label>
+                            </td>
+                            <td>
+                                <input type="number" name="advance" id="advance" v-model="form.advance">
                             </td>
                         </tr>
                         <tr>
