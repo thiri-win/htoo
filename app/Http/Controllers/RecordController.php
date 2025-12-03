@@ -43,7 +43,7 @@ class RecordController extends Controller
             'remark' => 'sometimes',
         ]);
 
-        $record = Record::create($validated);
+        Record::create($validated);
 
         return redirect()->route('records.index')->with('success', 'Record Added Successfully');
     }
