@@ -90,28 +90,28 @@
 
                 <td style="font-size: 12px;">Customer Name:</td>
                 <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; min-width: 65px;">
-                    {{ $data->car->customer_name }}
+                    {{ $data->car->customer_name ?? '' }}
                 </td>
 
                 <td style="font-size: 12px;">Customer Phone:</td>
                 <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; min-width: 65px;">
-                    {{ $data->car->customer_phone }}
+                    {{ $data->car->customer_phone ?? '' }}
                 </td>
             </tr>
             <tr>
                 <td style="font-size: 12px;">Car Number:</td>
                 <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; min-width: 65px;">
-                    {{ $data->car->car_number }}
+                    {{ $data->car->car_number ?? '' }}
                 </td>
 
                 <td style="font-size: 12px;">Car Brand:</td>
                 <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; min-width: 65px;">
-                    {{ $data->car->car_brand }}
+                    {{ $data->car->car_brand ?? '' }}
                 </td>
 
                 <td style="font-size: 12px;">Car Model:</td>
                 <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; min-width: 65px;">
-                    {{ $data->car->car_model }}
+                    {{ $data->car->car_model ?? '' }}
                 </td>
             </tr>
         </tbody>
