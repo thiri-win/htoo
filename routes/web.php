@@ -96,7 +96,7 @@ Route::get('/records/vouchers/{record}/print', function (Record $record) {
         ->footerView('partials._footer')
         ->format('A4')
         ->margins(97, 10, 30, 10)
-        ->name($record->car->car_number . '.pdf');
+        ->name('invoice.pdf');
 })->name('vouchers.print');
 
 Route::get('/prepare/quotation', function () {
