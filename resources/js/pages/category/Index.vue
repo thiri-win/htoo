@@ -45,6 +45,7 @@ onMounted(() => {
                     <td>
                         <Link :href="route('categories.show', category)" class="btn show-btn text-sm me-2">Show</Link>
                         <Link :href="route('categories.edit', category)" class="btn edit-btn text-sm">Edit</Link>
+                        <Link :href="route('categories.destroy', category)" method="delete" class="btn edit-btn text-sm">Delete</Link>
                     </td>
                 </tr>
             </tbody>

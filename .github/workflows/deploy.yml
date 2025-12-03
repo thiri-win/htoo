@@ -65,5 +65,5 @@ jobs:
             sudo chown -R www-data:www-data storage bootstrap/cache
             sudo chmod -R 775 storage bootstrap/cache
             
-            php artisan migrate:fresh --seed --force
+            # php artisan migrate:fresh --seed --force
             # sudo systemctl reload nginx

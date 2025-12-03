@@ -50,7 +50,7 @@ const submit = () => {
                 <input type="text" name="remark" id="remark" v-model="form.remark" class="w-full">
                 <p v-if="form.errors.remark" class="text-red-500 text-sm mt-1">{{ form.errors.remark }}</p>
             </div>
-            <button type="submit" class="submit-btn" :disabled="form.processing">Update Record</button>
+            <button type="submit" class="btn submit-btn" :disabled="form.processing">Update Record</button>
         </form>
     </AppLayout>
 </template>
