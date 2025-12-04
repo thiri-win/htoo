@@ -53,7 +53,9 @@ class CarController extends Controller
     public function show(Car $car)
     {
         return Inertia::render('car/Show', [
-            'car' => $car->load(['records.category', 'records.items']),
+            'car' => $car->load(['records' => function ($query) {
+                $query->latest('date')->with(['category', 'items']);
+            }]),
         ]);
     }
 
