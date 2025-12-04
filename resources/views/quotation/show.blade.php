@@ -86,10 +86,6 @@
                 </tr>
             @endisset
             <tr>
-                <td colspan="3">Discount</td>
-                <td style="font-weight: 600;">{{ number_format($data['discount']) }}</td>
-            </tr>
-            <tr>
                 <td colspan="3">Total</td>
                 <td style="font-weight: 600;">{{ number_format($data['grand_total']) }}</td>
             </tr>
