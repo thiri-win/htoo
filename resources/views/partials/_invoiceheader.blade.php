@@ -75,6 +75,10 @@
                 <strong style="font-family: Poppins;">2000 4254 047</strong>
                 [<strong>THIRI WIN</strong>]
             </p>
+            <p style="font-family: Poppins;">&blacktriangleright; KBZ Pay -
+                <strong style="font-family: Poppins;">09443067898</strong>
+                [<strong>AUNG KO HEIN</strong>]
+            </p>
         </div>
     </div>
 
