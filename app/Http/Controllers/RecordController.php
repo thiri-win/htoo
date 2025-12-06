@@ -15,7 +15,7 @@ class RecordController extends Controller
     public function index()
     {
         return Inertia::render('record/Index', [
-            'records' => Record::all()->load('category'),
+            'records' => Record::with('category')->orderByDesc('date')->get(),
         ]);
     }
 
@@ -54,7 +54,7 @@ class RecordController extends Controller
     public function show(Record $record)
     {
         return Inertia::render('record/Show', [
-            'record' => $record->load('category')->load('items')->load('car')
+            'record' => $record->load('category', 'items', 'car')
         ]);
     }
 
@@ -65,7 +65,7 @@ class RecordController extends Controller
     {
         return Inertia::render('record/Create', [
             'categories' => Category::all(),
-            'record' => $record->load('items')->load('category')
+            'record' => $record->load('items', 'category')
         ]);
     }
 
@@ -92,6 +92,6 @@ class RecordController extends Controller
         $record->car()->delete();
         $record->items()->delete();
         $record->delete();
-        return redirect()->route('records.index')->with('warngin', 'Record Deleted');
+        return redirect()->route('records.index')->with('warning', 'Record Deleted');
     }
 }
