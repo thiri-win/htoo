@@ -83,14 +83,14 @@
     <div style="display:flex; justify-content: space-between;">
             <div>
                 <label>Date:</label>
-        <span>{{$data->date}}</span>
+        <span>{{$data['date']}}</span>
     <br>
         <label>Subject:</label>
-        <span>{{$data->subject}}</span>
+        <span>{{$data['subject']}}</span>
     </div>
         <div>
         <label>To:</label>
-        <p>{{$data->to}}</p> 
+        <p>{{$data['to']}}</p> 
     </div>
 
 </header>
