@@ -113,7 +113,7 @@ Route::get('/pdf/quotation', function (Request $request) {
             $bs->noSandbox();
         })
         ->format('A4')
-        ->margins(77, 10, 30, 10)
+        ->margins(97, 10, 30, 10)
         ->name($quotationData['subject'] . '.pdf');
 })->name('pdf-quotation');
 
