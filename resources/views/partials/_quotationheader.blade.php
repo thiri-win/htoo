@@ -81,16 +81,16 @@
     <h1>Quotation</h1>
 
     <div style="display:flex; justify-content: space-between;">
-            <div>
-                <label>Date:</label>
-        <span>{{$data['date']}}</span>
-    <br>
-        <label>Subject:</label>
-        <span>{{$data['subject']}}</span>
-    </div>
         <div>
-        <label>To:</label>
-        <p>{{$data['to']}}</p> 
-    </div>
+            <label>Date:</label>
+            <span>{{ $data['date'] }}</span>
+            <br>
+            <label>Subject:</label>
+            <strong>{{ $data['subject'] }}</strong>
+        </div>
+        <div>
+            <label>To:</label>
+            <p><strong>{{ $data['to'] }}</strong></p>
+        </div>
 
 </header>
