@@ -72,13 +72,14 @@ const barChartData = computed(() => {
 
     <AppLayout :breadcrumbs="breadcrumbs">
 
-        <Link :href="route('records.create')" class="new-btn mr-2">
-        <PlusIcon class="inline-block"></PlusIcon>စာရင်းအသစ်ထည့်ရန်</Link>
-        <Link :href="route('vouchers.create')" class="new-btn mr-2">
-        <PlusIcon class="inline-block"></PlusIcon>
-        <span>ဘောက်ချာအသစ်ဖွင့်ရန်</span>
+        <Link :href="route('records.create')" class="btn new-btn mr-2">
+            <PlusIcon class="inline-block"></PlusIcon>စာရင်းအသစ်ထည့်ရန်
         </Link>
-        <a href="/backup-database" class="new-btn">
+        <Link :href="route('vouchers.create')" class="btn new-btn mr-2">
+            <PlusIcon class="inline-block"></PlusIcon>
+            <span>ဘောက်ချာအသစ်ဖွင့်ရန်</span>
+        </Link>
+        <a href="/backup-database" class="btn new-btn">
             <DownloadCloud class="inline-block"></DownloadCloud>
             Download DB
         </a>

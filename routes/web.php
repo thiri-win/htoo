@@ -121,7 +121,7 @@ Route::get('/prepare/note', function () {
     return Inertia::render('prepare/Note');
 })->name('prepare-note');
 
-Route::get('/pdf/note',function(Request $request) {
+Route::get('/pdf/note', function (Request $request) {
     $htmlContent = $request->input('content');
     return Pdf::view('note.show', ['data' => $htmlContent])
         ->headerView('partials._noteheader')
@@ -138,3 +138,16 @@ Route::get('/find-node', function () {
     }
     return "Could not find Node.js executable using 'which node'. You may need to contact laravel.cloud support to get the correct path.";
 });
+
+Route::get("/backup-database", function () {
+    $dbName = config('database.connections.mysql.database');
+    $username = config('database.connections.mysql.username');
+    $password = config('database.connections.mysql.password');
+    $host = config('database.connections.mysql.host');
+
+    $filename = 'backup-' . date('Y-m-d-His') . '.sql';
+    return response()->streamDownload(function () use ($dbName, $username, $password, $host) {
+        $command = "mysqldump --user={$username} --password={$password} --host={$host} --single-transaction --quick {$dbName}";
+        passthru($command);
+    }, $filename);
+})->name('backup-database');
