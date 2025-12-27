@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
-import { MinusCircleIcon, PlusCircleIcon } from 'lucide-vue-next';
+import { EyeIcon, MinusCircleIcon, Pencil, PlusCircleIcon, Trash } from 'lucide-vue-next';
 import { onMounted } from 'vue';
 
 defineProps({
@@ -43,9 +43,18 @@ onMounted(() => {
                     </td>
                     <td>{{ category.remark }}</td>
                     <td>
-                        <Link :href="route('categories.show', category)" class="btn show-btn text-sm me-2">Show</Link>
-                        <Link :href="route('categories.edit', category)" class="btn edit-btn text-sm">Edit</Link>
-                        <Link :href="route('categories.destroy', category)" method="delete" class="btn edit-btn text-sm">Delete</Link>
+                        <Link :href="route('categories.show', category)" class="btn show-btn inline-block mr-1 text-xs">
+                            <EyeIcon class="inline-block w-4 xl:w-3 xl:mr-1" />
+                            <span class="hidden xl:inline-block">View</span>
+                        </Link>
+                        <Link :href="route('categories.edit', category)" class="btn edit-btn inline-block mr-1 text-xs">
+                            <Pencil class="inline-block w-4 xl:w-3 xl:mr-1" />
+                            <span class="hidden xl:inline-block">Edit</span>
+                        </Link>
+                        <!-- <Link :href="route('categories.destroy', category)" class="btn delete-btn inline-block mr-1 text-xs">
+                            <Trash class="inline-block w-4 xl:w-3 xl:mr-1" />
+                            <span class="hidden xl:inline-block">Delete</span>
+                        </Link> -->
                     </td>
                 </tr>
             </tbody>

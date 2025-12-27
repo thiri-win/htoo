@@ -38,7 +38,12 @@ defineProps({
             </div>
         </div>
         <div v-for="record in car.records" :key="record.id" class="bg-neutral-100 dark:bg-(--sidebar-background) my-3 p-5 rounded-lg">
-            <h4>{{ record.category.title }} - {{ dayjs(record.date).format('DD-MM-YYYY') }}</h4>
+            <div class="flex justify-between">
+                <h4>{{ record.category.title }} - {{ dayjs(record.date).format('DD-MM-YYYY') }}</h4>
+                <a :href="route('records.show', record)" class="btn show-btn inline-block mr-1 text-xs">
+                    <span>View</span>
+                </a>
+            </div>
             <table class="w-full">
                 <thead>
                     <tr>
@@ -55,21 +60,21 @@ defineProps({
                         <td>{{ item.description }}</td>
                         <td class="text-right">{{ item.quantity }}</td>
                         <td class="text-right">{{ item.unit_price }}</td>
-                        <td class="text-right">{{ item.total }}</td>
+                        <td class="text-right">{{ item.total.toLocaleString() }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="4" class="text-right">Sub Total</td>
-                        <td class="text-right">{{ record.sub_total }}</td>
+                        <td class="text-right">{{ record.sub_total.toLocaleString() }}</td>
                     </tr>
                     <tr>
                         <td colspan="4" class="text-right">Discount</td>
-                        <td class="text-right">{{ record.discount }}</td>
+                        <td class="text-right">{{ record.discount.toLocaleString() }}</td>
                     </tr>
                     <tr>
                         <td colspan="4" class="text-right">Grand Total</td>
-                        <td class="text-right">{{ record.grand_total }}</td>
+                        <td class="text-right">{{ record.grand_total.toLocaleString() }}</td>
                     </tr>
                     <tr>
                         <td>မှတ်ချက် :</td>

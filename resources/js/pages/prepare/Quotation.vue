@@ -1,7 +1,7 @@
 <script setup>
 
 import AppLayout from '@/layouts/AppLayout.vue';
-import { router, useForm } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import { computed, watch } from 'vue';
 
 const form = useForm({
@@ -24,11 +24,14 @@ const form = useForm({
 })
 
 const addItem = () => {
+    const newId = form.items.length > 0 ? Math.max(...form.items.map(item => item.id)) + 1 : 1;
+
     form.items.push({
-        description: null,
+        id: newId,
+        description: '',
         quantity: 1,
         unit_price: 0,
-        total: 0,
+        total: 0
     });
 };
 
@@ -55,8 +58,6 @@ const grand_total = computed(() => {
 })
 
 watch(() => [form.items, form.discount], total, { deep: true, immediate: true });
-
-
 
 </script>
 <template>

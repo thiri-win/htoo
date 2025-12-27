@@ -103,7 +103,6 @@ Route::get('/prepare/quotation', function () {
     return Inertia::render('prepare/Quotation');
 })->name('prepare-quotation');
 
-
 Route::get('/pdf/quotation', function (Request $request) {
     $quotationData = $request->all();
     return Pdf::view('quotation.show', ['data' => $quotationData])
@@ -150,4 +149,4 @@ Route::get("/backup-database", function () {
         $command = "mysqldump --user={$username} --password={$password} --host={$host} --single-transaction --quick {$dbName}";
         passthru($command);
     }, $filename);
-})->name('backup-database');
+})->middleware('auth')->name('backup-database');

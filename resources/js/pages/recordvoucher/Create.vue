@@ -1,7 +1,9 @@
-<script setup lang="ts">
+<script setup>
 import AppLayout from '@/layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
+import vSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
 
 const props = defineProps({
     cars: Array,
@@ -101,11 +103,16 @@ const submit = () => {
                 <div>
                     <input type="text" name="description" id="description" placeholder="Description" v-model="form.description" :class="form.errors.description ? 'border-red-300' : ''">
                 </div>
-                <div>
-                    <input type="text" list="carNumber" name="car_id" id="car_id" placeholder="Car Number 1A-1234" v-model="form.car_id" :class="form.errors.car_id ? 'border-red-300' : ''">
-                    <datalist id="carNumber">
-                        <option v-for="car in cars" :key="car.id" :value="car.id">{{ car.car_number }}</option>
-                    </datalist>
+                <div class="v-select-container">
+                    <v-select
+                        v-model="form.car_id"
+                        :options="cars"
+                        :reduce="car => car.id"
+                        label="car_number"
+                        placeholder="Car Number ရွေးပါ"
+                        :class="form.errors.car_id ? 'v-select-error' : ''"
+                        class="border-b"
+                    ></v-select>
                     <p class="text-xs">
                         <mark>{{ selectedCar.car_number }}</mark>
                         {{ selectedCar.car_brand }}
@@ -116,7 +123,7 @@ const submit = () => {
                 </div>
                 <div>
                     <a :href="route('cars.create')" class="btn new-btn !m-0 text-xs">+ New Car</a>
-                    <p class="text-xs">List ထဲမှာ ကားနံပါတ် မရှိပါက <br> အသစ်ထပ်ထည့်ရပါမည်</p>
+                    <p class="text-xs mt-1">List ထဲမှာ ကားနံပါတ် မရှိပါက အသစ်ထပ်ထည့်ရပါမည်</p>
                 </div>
             </div>
             <div class="bg-neutral-100 dark:bg-(--sidebar-background) my-3 p-5 rounded-lg">
