@@ -57,9 +57,15 @@ class RecordExpenseController extends Controller
      */
     public function edit(Record $expense)
     {
-        return Inertia::render('recordexpense/Edit', [
-            'expense' => $expense->load(['items', 'car']),
-            'cars' => Car::all(),
+        if ($expense->items()->exists()) {
+            return Inertia::render('recordexpense/Edit', [
+                'expense' => $expense->load(['items', 'car']),
+                'cars' => Car::all(),
+            ]);
+        }
+        return Inertia::render('record/Create', [
+            'categories' => Category::all(),
+            'record' => $expense->load('items', 'category')
         ]);
     }
 

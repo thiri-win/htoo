@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Record;
 use Inertia\Inertia;
@@ -57,9 +58,15 @@ class RecordVoucherController extends Controller
      */
     public function edit(Record $voucher)
     {
-        return Inertia::render('recordvoucher/Edit', [
-            'voucher' => $voucher->load(['items', 'car']),
-            'cars' => Car::all(),
+        if ($voucher->items()->exists()) {
+            return Inertia::render('recordvoucher/Edit', [
+                'voucher' => $voucher->load(['items', 'car']),
+                'cars' => Car::all(),
+            ]);
+        }
+        return Inertia::render('record/Create', [
+            'categories' => Category::all(),
+            'record' => $voucher->load('items', 'category')
         ]);
     }
 
