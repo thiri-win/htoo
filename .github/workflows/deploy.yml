@@ -3,51 +3,20 @@ name: Optimized Laravel Deploy to EC2
 on:
   push:
     branches:
-      - main  # သင့်ရဲ့ main branch ကို သုံးပါ။
-  workflow_dispatch: # Manual Deploy ခေါ်ဖို့
+      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10 # Deployment အတွက် အများဆုံး 10 မိနစ်သာ သုံးမည်။
+    timeout-minutes: 10
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-      
-      # Step 1: PHP Dependencies Cache (Minutes တွေ လျှော့ချဖို့)
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3' # သင့် Server ရဲ့ PHP Version ကို ပြောင်းပါ။
-          tools: composer:v2
-          coverage: none
-      
-      # Step 2: Node/NPM Dependencies Cache (Minutes တွေ လျှော့ချဖို့)
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20' # သင့်လိုအပ်တဲ့ Node Version
-          cache: 'npm'
-          
-      # Step 3: Composer Install (Runner ပေါ်မှာ Run ပါမည်)
-      - name: Install PHP Dependencies
-        run: composer install --no-dev --prefer-dist
-        
-      # Step 4: NPM Install & Frontend Build (Runner ပေါ်မှာ Run ပါမည်)
-      - name: Build Frontend Assets (Memory Friendly)
-        run: |
-          npm install
-          npm run build # Build လုပ်တာ ဒီအဆင့်မှာ ပြီးသွားပါပြီ။
-          
-      # Step 5: SSH Agent Set up (Key ကို လုံခြုံစွာ ခေါ်ယူခြင်း)
-      - name: Deploy via SSH Agent
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # Step 6: EC2 Server သို့ Code များကို တင်ခြင်းနှင့် Script များ Run ခြင်း
-      - name: Run Deployment Script on EC2
+      # Step 1: EC2 ပေါ်မှာ တိုက်ရိုက် Command ပေးပြီး Deploy လုပ်ခြင်း
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.1
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -55,15 +24,29 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/htoo
-            git pull       
-            composer install --no-dev --prefer-dist 
-            npm install
+
+            # 1. Server ပေါ်က Local changes တွေကို ဖယ်ပြီး Code အသစ်ဆွဲမယ်
+            git fetch --all
+            git reset --hard origin/main
+
+            # 2. PHP Dependencies သွင်းမယ်
+            composer install --no-dev --optimize-autoloader
+
+            # 3. NPM (ဒါက အရေးကြီးဆုံး အပိုင်းပါ)
+            # Memory နည်းရင် npm install အစား npm ci သုံးပါ
+            npm ci || npm install --no-audit
+
+            # 4. Build လုပ်မယ်
             npm run build
-            sudo chmod -R 777 storage bootstrap/cache
-            php artisan cache:clear
+
+            # 5. Laravel Optimization & Permissions
+            php artisan optimize:clear
             php artisan config:cache
-            sudo chown -R www-data:www-data storage bootstrap/cache
-            sudo chmod -R 775 storage bootstrap/cache
-            
+            php artisan route:cache
+            php artisan view:cache
             # php artisan migrate:fresh --seed --force
             # sudo systemctl reload nginx
+
+            # Permission ပေးတာကို လိုအပ်မှ သုံးပါ (ပုံမှန်ဆိုရင် 775 က လုံလောက်ပါတယ်)
+            sudo chown -R www-data:www-data storage bootstrap/cache
+            sudo chmod -R 775 storage bootstrap/cache
