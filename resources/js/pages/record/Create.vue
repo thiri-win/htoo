@@ -56,7 +56,7 @@ const submit = () => {
                 </div>
             </div>
             <div class="text-right">
-                <button type="submit" :class="props.record.id ? 'edit-btn' : 'submit-btn'">
+                <button type="submit" class="btn" :class="props.record.id ? 'edit-btn' : 'submit-btn'">
                     {{ props.record.id ? 'Update' : 'Submit' }}
                 </button>
             </div>

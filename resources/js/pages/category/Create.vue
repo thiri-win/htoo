@@ -32,7 +32,7 @@ const submit = () => {
             <p class="text-sm text-red-500" v-text="form.errors.status"></p>
             <input type="text" name="remark" id="remark" placeholder="မှတ်ချက်" class="my-3" v-model="form.remark">
             <p class="text-sm text-red-500" v-text="form.errors.remark"></p>
-            <button type="submit" class="submit-btn">Submit</button>
+            <button type="submit" class="btn submit-btn">Submit</button>
         </form>
     </AppLayout>
 </template>

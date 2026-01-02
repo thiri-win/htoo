@@ -149,7 +149,7 @@ watch(() => [form.items, form.discount], total, { deep: true, immediate: true })
             </div>
 
             <div class="text-right">
-                <button type="submit" class='submit-btn'>
+                <button type="submit" class='btn submit-btn'>
                     Submit
                 </button>
             </div>

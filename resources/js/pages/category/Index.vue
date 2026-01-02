@@ -19,7 +19,7 @@ onMounted(() => {
 </script>
 <template>
     <AppLayout>
-        <Link :href="route('categories.create')" class="new-btn">+New</Link>
+        <Link :href="route('categories.create')" class="btn new-btn">+New</Link>
         <table>
             <thead class="border-0">
                 <tr>

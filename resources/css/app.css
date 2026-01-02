@@ -230,7 +230,7 @@ table input {
 }
 
 .btn {
-    @apply rounded-2xl border px-2 no-underline hover:bg-transparent;
+    @apply rounded-2xl border px-2 py-1 no-underline hover:bg-transparent my-2;
 }
 
 .print-btn {

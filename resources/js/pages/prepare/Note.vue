@@ -40,7 +40,7 @@ const editorOptions = {
 
                 <QuillEditor v-model:content="form.content" :options="editorOptions" contentType="html" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm min-h-50" />
 
-                <button type="submit" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                <button type="submit" class="btn print-btn">
                     Print to PDF
                 </button>
             </form>
