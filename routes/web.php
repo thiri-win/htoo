@@ -2,12 +2,10 @@
 
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\RecordExpenseController;
 use App\Http\Controllers\RecordSalaryController;
 use App\Http\Controllers\RecordVoucherController;
-use App\Http\Controllers\VoucherController;
 use App\Models\Category;
 use App\Models\Record;
 use Illuminate\Http\Request;
@@ -71,6 +69,12 @@ Route::get('dashboard', function () {
             return $allCategoriesWithZero->merge($sumsForThisMonth);
         });
 
+    // $test = Record::all()->groupBy(function($record) {
+    //     return $record->date->format('Y');
+    // });
+
+    // dd($test);
+
     return Inertia::render('Dashboard', [
         'categorySums' => $categorySums,
         'monthlyProfitThisYear' => $monthlyProfitThisYear,
@@ -120,7 +124,7 @@ Route::get('/prepare/note', function () {
     return Inertia::render('prepare/Note');
 })->name('prepare-note');
 
-Route::get('/pdf/note', function (Request $request) {
+Route::post('/pdf/note', function (Request $request) {
     $htmlContent = $request->input('content');
     return Pdf::view('note.show', ['data' => $htmlContent])
         ->headerView('partials._noteheader')

@@ -33,7 +33,7 @@ const editorOptions = {
 <template>
     <AppLayout>
         <div>
-            <form :action="route('pdf-note')" method="get">
+            <form :action="route('pdf-note')" method="post" >
 
                 <!-- QuillEditor ထဲက data ကို form submit လုပ်ရာတွင် ပါသွားစေရန် hidden input ကိုသုံးခြင်း -->
                 <input type="hidden" name="content" :value="form.content">
