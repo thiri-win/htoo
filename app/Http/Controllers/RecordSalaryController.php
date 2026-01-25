@@ -21,7 +21,13 @@ class RecordSalaryController extends Controller
             'grand_total' => 'required',
         ]);
         $validated['category_id'] = 4;
-        $validated['remark'] = 'leave_days='.$request->unpaid_leave_days.', fine='. $request->fine.', bonus='. $request->bonus;
+        $validated['remark'] = "
+        unpaid_leave_days($request->unpaid_leave_days),
+        paid_leave_days($request->paid_leave_days),
+        fine_late($request->fine_late_days),
+        work_leave_days($request->bonus_work_leave_days),
+        bonus($request->bonus),
+        ";
         Record::create($validated);
         return redirect()->route('records.index')->with('success', 'Salary Added Successfully');
     }
