@@ -114,11 +114,10 @@ const submit = () => {
                         class="border-b"
                     ></v-select>
                     <p class="text-xs">
-                        <mark>{{ selectedCar.car_number }}</mark>
-                        {{ selectedCar.car_brand }}
-                        {{ selectedCar.car_model }}
-                        {{ selectedCar.customer_name }}
-                        {{ selectedCar.customer_phone }}
+                        {{ selectedCar.car_brand }} 
+                        {{ selectedCar.car_model }} 
+                        {{ selectedCar.customer_name }} 
+                        {{ selectedCar.customer_phone }} 
                     </p>
                 </div>
                 <div>

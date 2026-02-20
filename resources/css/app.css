@@ -272,9 +272,13 @@ tfoot {
     --vs-dropdown-option-color: #4b5563; /* dark:text-gray-300 */
     --vs-dropdown-option--active-bg: #3b82f6; /* blue-500 */
     --vs-dropdown-option--active-color: #ffffff;
-    --vs-selected-color: #1f2937; /* dark:text-gray-200 */
+    --vs-selected-color: #000000; /* dark:text-gray-200 */
     --vs-search-input-color: #4b5563; /* dark:text-gray-300 */
 }
 .v-select-container .vs__dropdown-toggle {
     /* border-bottom: 1px solid #e5e7eb; */
+}
+
+.dark .v-select-container .v-select {
+    --vs-selected-color: #ffffff; /* dark:text-gray-200 */
 }
