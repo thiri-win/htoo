@@ -57,18 +57,11 @@ const submit = () => {
     <AppLayout>
         <h1>လုပ်အားခတွက်ချက်ရန်</h1>
         <form @submit.prevent="submit">
-            <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
-                <div>
+            <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+                <div class="salary">
                     <div class="mb-3 flex justify-between">
                         <label for="date" class="mr-3 text-nowrap">Date:</label>
-                        <input
-                            type="date"
-                            name="date"
-                            id="date"
-                            v-model="form.date"
-                            class="!w-auto"
-                            :class="form.errors.date ? 'border-red-500' : ''"
-                        />
+                        <input type="date" name="date" id="date" v-model="form.date" :class="form.errors.date ? 'border-red-500' : ''" />
                     </div>
                     <div class="mb-3 flex justify-between">
                         <label for="description" class="mr-3 text-nowrap">ဝန်ထမ်းအမည်</label>
@@ -78,14 +71,13 @@ const submit = () => {
                             id="description"
                             placeholder="အမည်"
                             v-model="form.description"
-                            class="!w-auto"
                             :class="form.errors.description ? 'border-red-500' : ''"
                             autofocus
                         />
                     </div>
                     <div class="mb-3 flex justify-between">
                         <label for="days" class="mr-3 text-nowrap">အခြေခံလစာ</label>
-                        <input type="number" name="basic_salary" id="basic_salary" placeholder="လစာ" v-model="form.basic_salary" class="!w-auto" />
+                        <input type="number" name="basic_salary" id="basic_salary" placeholder="လစာ" v-model="form.basic_salary" />
                     </div>
                     <div class="mb-3 flex justify-between">
                         <label for="days" class="mr-3 text-nowrap">တလအတွင်း စုစုပေါင်းရှိရက်</label>
@@ -94,30 +86,27 @@ const submit = () => {
                             name="working_days"
                             id="working_days"
                             placeholder="30, 31 စသဖြင့် ဖြည့်ရန်"
-                            class="!w-auto"
                             v-model="form.working_days"
                         />
                     </div>
 
                     <div class="mb-3 flex justify-between">
-                        <label for="days" class="mr-3 text-nowrap">ဒဏ်ကြေး(လစာမဲ့ခွင့်ရက်)</label>
+                        <label for="days" class="mr-3 text-nowrap">ဒဏ်ကြေး(ခွင့်မဲ့ပျက်ရက်)</label>
                         <input
                             type="number"
                             name="unpaid_leave_days"
                             id="unpaid_leave_days"
                             placeholder="ခွင့်မဲ့ပျက်ရက်"
-                            class="!w-auto"
                             v-model="form.unpaid_leave_days"
                         />
                     </div>
                     <div class="mb-3 flex justify-between">
-                        <label for="paid_leave_days" class="mr-3 text-nowrap">ဒဏ်ကြေး(လစာပေးခွင့်ရက်)</label>
+                        <label for="paid_leave_days" class="mr-3 text-nowrap">ဒဏ်ကြေး(ခွင့်တိုင်ပျက်ရက်)</label>
                         <input
                             type="number"
                             name="paid_leave_days"
                             id="paid_leave_days"
                             placeholder="ခွင့်ရှိပျက်ရက်"
-                            class="!w-auto"
                             v-model="form.paid_leave_days"
                         />
                     </div>
@@ -129,7 +118,6 @@ const submit = () => {
                             name="fine_late_days"
                             id="fine_late_days"
                             placeholder="နောက်ကျရက်ဒဏ်ကြေး"
-                            class="!w-auto"
                             v-model="form.fine_late_days"
                         />
                     </div>
@@ -141,7 +129,6 @@ const submit = () => {
                             name="bonus_work_leave_days"
                             id="bonus_work_leave_days"
                             placeholder="နားရက်ဆင်းသည့်ရက်"
-                            class="!w-auto"
                             v-model="form.bonus_work_leave_days"
                         />
                     </div>
@@ -153,13 +140,12 @@ const submit = () => {
                             id="bonus"
                             placeholder="ဆုကြေး"
                             v-model="form.bonus"
-                            class="!w-auto"
                             :class="form.errors.bonus ? 'border-red-500' : ''"
                         />
                     </div>
                 </div>
 
-                <div class="rounded-xl border p-3 shadow">
+                <div class="col-span-2 rounded-xl border p-3 shadow">
                     <div>
                         <table>
                             <tbody>
@@ -186,7 +172,7 @@ const submit = () => {
                                     <td class="min-w-50 text-right" v-if="form.unpaid_leave_days">- {{ unpaidLeaveDaysAmount.toLocaleString() }}</td>
                                     <td class="min-w-50 text-right" v-else>0</td>
                                     <td v-if="form.unpaid_leave_days && dailySalary">
-                                        {{ dailySalary }} x {{ form.unpaid_leave_days }}days = {{ unpaidLeaveDaysAmount }}
+                                        {{ dailySalary }} x 2ဆ x {{ form.unpaid_leave_days }}days = {{ unpaidLeaveDaysAmount }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -202,7 +188,7 @@ const submit = () => {
                                     <td class="min-w-50 text-right" v-if="form.fine_late_days">- {{ fineLateDaysAmount.toLocaleString() }}</td>
                                     <td class="min-w-50 text-right" v-else>0</td>
                                     <td v-if="form.fine_late_days && dailySalary">
-                                        {{ dailySalary }}/2 x {{ form.fine_late_days }}days = {{ fineLateDaysAmount }}
+                                        {{ dailySalary }} x 1/2ဆ x {{ form.fine_late_days }}days = {{ fineLateDaysAmount }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -212,7 +198,7 @@ const submit = () => {
                                     </td>
                                     <td class="min-w-50 text-right" v-else>0</td>
                                     <td v-if="form.bonus_work_leave_days && dailySalary">
-                                        {{ dailySalary }} x 1.5 x {{ form.bonus_work_leave_days }}days = {{ bonusWorkLeaveDaysAmount }}
+                                        {{ dailySalary }} x 1.5ဆ x {{ form.bonus_work_leave_days }}days = {{ bonusWorkLeaveDaysAmount }}
                                     </td>
                                 </tr>
                                 <tr>

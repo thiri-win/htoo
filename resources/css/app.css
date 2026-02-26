@@ -265,6 +265,10 @@ tfoot {
     @apply border-t-2 border-black;
 }
 
+.salary input {
+    @apply !w-32;
+}
+
 .v-select-container .v-select {
     --vs-controls-color: #4b5563; /* dark:text-gray-300 */
     --vs-border-width: 0px;
