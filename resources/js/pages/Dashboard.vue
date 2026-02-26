@@ -12,6 +12,7 @@ const props = defineProps({
     categorySums: Array,
     monthlyProfitThisYear: Array,
     categorySumByMonth: Object,
+    monthlyBalance: Object,
 })
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -20,6 +21,13 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
 ];
+
+const date = new Date(); // လက်ရှိအချိန် (ဥပမာ- 2026)
+
+const year = date.getFullYear();
+const month = date.toLocaleString('default', { month: 'short' });
+
+const currentMonth = `${year}-${month}`;
 
 const chartData = computed(() => {
     if (!Array.isArray(props.categorySums) || props.categorySums.length === 0) {
@@ -85,8 +93,22 @@ const barChartData = computed(() => {
         </a>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mb-5">
+
             <div class="border p-5">
                 <PieChart :chartData="chartData" class="w-full"></PieChart>
+            </div>
+
+            <div class="border col-span-2">
+                <table class="w-full">
+                    <tbody>
+                        <tr v-for="(sum, month) in props.monthlyBalance" :key="month" class="bg-gray-100 border border-white" :class="{ 'bg-gray-200 font-bold': month === currentMonth }">
+                            <td>{{ month }}</td>
+                            <td class="text-right">{{ sum.sum_total.toLocaleString() }}</td>
+                            <td class="text-right">{{ sum.sub_total.toLocaleString() }}</td>
+                            <td class="text-right">{{ sum.diff.toLocaleString() }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <div class="border p-5 col-span-3">

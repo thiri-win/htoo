@@ -69,16 +69,33 @@ Route::get('dashboard', function () {
             return $allCategoriesWithZero->merge($sumsForThisMonth);
         });
 
-    // $test = Record::all()->groupBy(function($record) {
-    //     return $record->date->format('Y');
-    // });
+    $monthlyBalance = Record::with('category')
+        ->whereBetween('date', [now()->copy()->subMonths(5)->startOfMonth()->toDateString(), now()->copy()->endOfMonth()->toDateString()])
+        ->get()
+        ->groupBy(function ($record) {
+            return $record->date->format('Y-M'); // လနံပါတ်
+        })
+        ->map(function ($recordsInMonth) {
+            $sumTotal = $recordsInMonth
+                ->filter(fn($record) => $record->category && $record->category->status === 'sum')
+                ->sum('grand_total');
 
-    // dd($test);
+            $subTotal = $recordsInMonth
+                ->filter(fn($record) => $record->category && $record->category->status === 'sub')
+                ->sum('grand_total');
+
+            return [
+                'sum_total' => $sumTotal,
+                'sub_total' => $subTotal,
+                'diff'      => $sumTotal - $subTotal,
+            ];
+        });
 
     return Inertia::render('Dashboard', [
         'categorySums' => $categorySums,
         'monthlyProfitThisYear' => $monthlyProfitThisYear,
         'categorySumByMonth' => $categorySumByMonth,
+        'monthlyBalance' => $monthlyBalance,
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
