@@ -98,7 +98,7 @@ const barChartData = computed(() => {
                 <PieChart :chartData="chartData" class="w-full"></PieChart>
             </div>
 
-            <div class="border col-span-2">
+            <div class="border p-5 col-span-2">
                 <table class="w-full">
                     <tbody>
                         <tr v-for="(sum, month) in props.monthlyBalance" :key="month" class="bg-gray-100 border border-white" :class="{ 'bg-gray-200 font-bold': month === currentMonth }">
