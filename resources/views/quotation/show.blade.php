@@ -68,8 +68,8 @@
     $items = collect($data['items'] ?? []);
 
     // မျက်နှာခုနစ်ကျော်ရင် အသုံးပြုမယ့် rows, single page အတွက် rows
-    $multiPageRows = 14;
-    $singlePageRows = 11;
+    $multiPageRows = 15;
+    $singlePageRows = 10;
 
     // ပထမဆုံး 15 rows နဲ့ chunk လုပ်ပြီး မျက်နှာရေ တွက်မယ်
     $chunks = $items->chunk($multiPageRows);

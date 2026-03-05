@@ -64,10 +64,10 @@
 </style>
 
 @php
-    $rows = 14;
+    $rows = 15;
     $chunks = $data['items']->chunk($rows);
 
-    $rows = count($data['items']->chunk($rows)) > 1 ? 15 : 11;
+    $rows = count($data['items']->chunk($rows)) > 1 ? 15 : 10;
 
     $allPageTotal = 0;
     $subPageTotal = [];
