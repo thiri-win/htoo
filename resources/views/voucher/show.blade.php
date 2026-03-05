@@ -64,18 +64,10 @@
 </style>
 
 @php
-    // items ကို collection သတ်မှတ်ထားမယ် (array နဲ့ model နှစ်မျိုးလုံးကို handle လို့ရအောင်)
-    $items = collect($data['items'] ?? []);
+    $rows = 15;
+    $chunks = $data['items']->chunk($rows);
 
-    // မျက်နှာခုနစ်ကျော်ရင် အသုံးပြုမယ့် rows, single page အတွက် rows
-    $multiPageRows = 15;
-    $singlePageRows = 11;
-
-    // ပထမဆုံး 15 rows နဲ့ chunk လုပ်ပြီး မျက်နှာရေ တွက်မယ်
-    $chunks = $items->chunk($multiPageRows);
-
-    // page တစ်မျက်နှာထက် ပိုနေလား မလား အရ rows ကို သတ်မှတ်မယ်
-    $rows = $chunks->count() > 1 ? $multiPageRows : $singlePageRows;
+    $rows = count($data['items']->chunk($rows)) > 1 ? 15 : 11;
 
     $allPageTotal = 0;
     $subPageTotal = [];
@@ -84,7 +76,7 @@
 <div class="main">
     @foreach ($chunks as $chunk)
         @php $columnSum = 0; @endphp
-        <div class="{{ $chunks->count() > 1 ? 'page-break' : '' }}">
+        <div class="{{ count($data['items']->chunk($rows)) > 1 ? 'page-break' : '' }}">
             <table>
                 <thead>
                     <tr>
@@ -106,8 +98,7 @@
                             <td>{{ number_format($item['total']) }}</td>
                         </tr>
                         @php
-                            // လိုအပ်တဲ့အလွတ် rows ကို တွက်မယ်
-                            $remainingRows = $rows - $chunk->count();
+                            $remainingRows = $rows - count($chunk);
                         @endphp
                     @endforeach
                     @for ($i = 0; $i < $remainingRows; $i++)

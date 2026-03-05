@@ -88,23 +88,23 @@
         <tbody>
             <tr>
                 <td style="font-size: 12px;">Date:</td>
-                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; min-width: 65px;">
+                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; width:16%">
                     {{ date_format($data->date, 'd-M-Y') }}
                 </td>
 
                 <td style="font-size: 12px;">Customer Name:</td>
-                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; min-width: 65px;">
+                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; width:16%">
                     {{ $data->car->customer_name ?? '' }}
                 </td>
 
                 <td style="font-size: 12px;">Customer Phone:</td>
-                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; min-width: 65px;">
+                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; width:16%">
                     {{ $data->car->customer_phone ?? '' }}
                 </td>
             </tr>
             <tr>
                 <td style="font-size: 12px;">Car Number:</td>
-                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; min-width: 65px;">
+                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; width:16%">
                     {{ $data->car->car_number ?? '' }}
                 </td>
 

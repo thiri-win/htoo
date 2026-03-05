@@ -19,6 +19,7 @@ const form = useForm({
     ],
     'discount': 0,
     'sub_total': 0,
+    'advance': 0,
     'grand_total': 0,
     'remark': null,
 })
@@ -129,6 +130,14 @@ watch(() => [form.items, form.discount], total, { deep: true, immediate: true })
                             </td>
                             <td>
                                 <input type="number" name="discount" id="discount" v-model="form.discount">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <label for="advance">Advance</label>
+                            </td>
+                            <td>
+                                <input type="number" name="advance" id="advance" v-model="form.advance">
                             </td>
                         </tr>
                         <tr>

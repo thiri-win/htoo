@@ -112,11 +112,11 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/records/vouchers/{record}/print', function (Record $record) {
-    return Pdf::view('quotation.show', ['data' => $record])
+    return Pdf::view('voucher.show', ['data' => $record])
         ->headerView('partials._invoiceheader', ['data' => $record])
         ->footerView('partials._footer')
         ->format('A4')
-        ->margins(97, 10, 30, 10)
+        ->margins(97, 10, 10, 10)
         ->name('invoice.pdf');
 })->name('vouchers.print');
 
@@ -133,7 +133,7 @@ Route::get('/pdf/quotation', function (Request $request) {
             $bs->noSandbox();
         })
         ->format('A4')
-        ->margins(97, 10, 30, 10)
+        ->margins(97, 10, 10, 10)
         ->name($quotationData['subject'] . '.pdf');
 })->name('pdf-quotation');
 
@@ -147,7 +147,7 @@ Route::post('/pdf/note', function (Request $request) {
         ->headerView('partials._noteheader')
         ->footerView('partials._footer')
         ->format('A4')
-        ->margins(60, 10, 30, 10)
+        ->margins(60, 10, 10, 10)
         ->name('note.pdf');
 })->name('pdf-note');
 
