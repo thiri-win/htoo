@@ -101,7 +101,7 @@ const barChartData = computed(() => {
             <div class="border p-5 col-span-2">
                 <table class="w-full">
                     <tbody>
-                        <tr v-for="(sum, month) in props.monthlyBalance" :key="month" class="bg-gray-100 border border-white" :class="{ 'bg-gray-200 font-bold': month === currentMonth }">
+                        <tr v-for="(sum, month) in props.monthlyBalance" :key="month" class="bg-gray-100 border border-white dark:bg-transparent" :class="{ 'bg-gray-200 dark:!bg-accent font-bold': month === currentMonth }">
                             <td>{{ month }}</td>
                             <td class="text-right">{{ sum.sum_total.toLocaleString() }}</td>
                             <td class="text-right">{{ sum.sub_total.toLocaleString() }}</td>

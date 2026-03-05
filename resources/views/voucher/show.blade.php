@@ -64,7 +64,7 @@
 </style>
 
 @php
-    $rows = 15;
+    $rows = 14;
     $chunks = $data['items']->chunk($rows);
 
     $rows = count($data['items']->chunk($rows)) > 1 ? 15 : 11;
