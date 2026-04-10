@@ -68,7 +68,7 @@
                 [<strong>AUNG KO HEIN</strong>]
             </p>
             <p style="font-family: Poppins;">&blacktriangleright; KBZ Bank -
-                <strong style="font-family: Poppins;">2353 0105 7008 30201</strong>
+                <strong style="font-family: Poppins;">1225 1105 7008 30201</strong>
                 [<strong>THIRI WIN</strong>]
             </p>
             <p style="font-family: Poppins;">&blacktriangleright; AYA Bank -
