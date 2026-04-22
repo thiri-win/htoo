@@ -15,7 +15,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Step 1: EC2 ပေါ်မှာ တိုက်ရိုက် Command ပေးပြီး Deploy လုပ်ခြင်း
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.1
         with:
