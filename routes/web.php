@@ -117,6 +117,12 @@ Route::get('/records/vouchers/{record}/print', function (Record $record) {
         ->footerView('partials._footer')
         ->format('A4')
         ->margins(97, 10, 10, 10)
+        ->withBrowsershot(function ($browsershot) {
+            $browsershot->addChromiumArguments([
+                'no-sandbox',
+                'allow-file-access-from-files', // ဒီ line က အရေးကြီးပါတယ်
+            ]);
+        })
         ->name('invoice.pdf');
 })->name('vouchers.print');
 
