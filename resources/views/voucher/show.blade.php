@@ -1,10 +1,17 @@
 <style>
+    @font-face {
+        font-family: 'padauk';
+        src: url('{{ storage_path('fonts/Padauk-Regular.ttf') }}') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
     * {
         padding: 0;
         margin: 0;
         box-sizing: border-box;
-        font-family: Poppins;
         line-height: 1.5;
+        font-family: 'padauk';
     }
 
     table {
@@ -17,6 +24,7 @@
         color: white;
         font-weight: 600;
         text-align: center;
+        font-family: 'Poppins';
     }
 
     th:not(:first-child) {
