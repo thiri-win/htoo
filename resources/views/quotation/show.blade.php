@@ -49,7 +49,8 @@
         }
 
         h3 {
-            font-weight: 500;
+            font-weight: 600;
+            font-style: normal;
         }
 
         .watermark {
@@ -75,17 +76,13 @@
 
 <body>
     @php
-        // items ကို collection သတ်မှတ်ထားမယ် (array နဲ့ model နှစ်မျိုးလုံးကို handle လို့ရအောင်)
         $items = collect($data['items'] ?? []);
 
-        // မျက်နှာခုနစ်ကျော်ရင် အသုံးပြုမယ့် rows, single page အတွက် rows
         $multiPageRows = 15;
         $singlePageRows = 10;
 
-        // ပထမဆုံး 15 rows နဲ့ chunk လုပ်ပြီး မျက်နှာရေ တွက်မယ်
         $chunks = $items->chunk($multiPageRows);
 
-        // page တစ်မျက်နှာထက် ပိုနေလား မလား အရ rows ကို သတ်မှတ်မယ်
         $rows = $chunks->count() > 1 ? $multiPageRows : $singlePageRows;
 
         $allPageTotal = 0;
@@ -117,7 +114,6 @@
                                 <td>{{ number_format($item['total']) }}</td>
                             </tr>
                             @php
-                                // လိုအပ်တဲ့အလွတ် rows ကို တွက်မယ်
                                 $remainingRows = $rows - $chunk->count();
                             @endphp
                         @endforeach
