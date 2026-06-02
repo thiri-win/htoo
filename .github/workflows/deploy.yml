@@ -20,7 +20,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/html/htoo
+            cd /var/www/htoo
 
             # 1. Server ပေါ်က Local changes တွေကို ဖယ်ပြီး Code အသစ်ဆွဲမယ်
             git fetch --all
@@ -28,6 +28,9 @@ jobs:
 
             # 2. PHP Dependencies သွင်းမယ်
             composer install --no-dev --optimize-autoloader
+
+            npm install
+            npm run build
 
             # 3. Laravel Optimization & Permissions
             php artisan optimize:clear
