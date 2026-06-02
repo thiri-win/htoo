@@ -1,10 +1,8 @@
-name: Optimized Laravel Deploy to EC2
+name: Deploy Laravel Application
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -22,7 +20,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/htoo
+            cd /var/www/html/htoo
 
             # 1. Server ပေါ်က Local changes တွေကို ဖယ်ပြီး Code အသစ်ဆွဲမယ်
             git fetch --all
@@ -31,14 +29,7 @@ jobs:
             # 2. PHP Dependencies သွင်းမယ်
             composer install --no-dev --optimize-autoloader
 
-            # 3. NPM (ဒါက အရေးကြီးဆုံး အပိုင်းပါ)
-            # Memory နည်းရင် npm install အစား npm ci သုံးပါ
-            npm ci || npm install --no-audit
-
-            # 4. Build လုပ်မယ်
-            npm run build
-
-            # 5. Laravel Optimization & Permissions
+            # 3. Laravel Optimization & Permissions
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
