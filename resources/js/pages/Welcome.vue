@@ -26,7 +26,7 @@ import { Head, Link } from '@inertiajs/vue3';
         </header>
         <div class="duration-750 starting:opacity-0 flex w-full items-center justify-center opacity-100 transition-opacity lg:grow">
             <main class="w-full overflow-hidden rounded-lg lg:max-w-4xl p-5">
-                <img src="image/htoo_logo_green.png" alt="" class="h-70 mx-auto">
+                <img src="image/htoo_logo_green.png" alt="" class="h-70 mx-auto object-contain">
             </main>
         </div>
         <div class="h-14.5 hidden lg:block"></div>

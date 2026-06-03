@@ -92,13 +92,13 @@ const barChartData = computed(() => {
             Download DB
         </a>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mb-5">
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-5">
 
             <div class="border p-5">
                 <PieChart :chartData="chartData" class="w-full"></PieChart>
             </div>
 
-            <div class="border p-5 col-span-2">
+            <div class="border p-5 overflow-x-auto">
                 <table class="w-full">
                     <tbody>
                         <tr v-for="(sum, month) in props.monthlyBalance" :key="month" class="bg-gray-100 border border-white dark:bg-transparent" :class="{ 'bg-gray-200 dark:!bg-accent font-bold': month === currentMonth }">
@@ -111,11 +111,11 @@ const barChartData = computed(() => {
                 </table>
             </div>
 
-            <div class="border p-5 col-span-3">
+            <div class="border p-5 col-span-2">
                 <BarChart :chartData="barChartData" class="w-full"></BarChart>
             </div>
 
-            <div class="border p-5 col-span-3 overflow-x-auto">
+            <div class="border p-5 col-span-2 overflow-x-auto">
                 <table class="w-full">
                     <thead>
                         <tr>
