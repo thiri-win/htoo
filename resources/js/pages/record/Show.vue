@@ -106,7 +106,7 @@ defineProps({
         <div v-else class="inline-block">
             <a :href="route('records.edit', record)" class="btn edit-btn my-5 inline-block mr-2">Edit</a>
         </div>
-        <a href="/dashboard" class="btn new-btn my-5 inline-block mr-2">Back to Dashboard</a>
         <a :href="route('vouchers.print', record)" class="btn print-btn my-5 inline-block mr-2">Print</a>
+        <a href="/dashboard" class="btn new-btn my-5 inline-block mr-2">Back to Dashboard</a>
     </AppLayout>
 </template>
