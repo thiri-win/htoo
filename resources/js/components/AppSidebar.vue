@@ -24,6 +24,11 @@ const mainNavItems: NavItem[] = [
         href: '/cars',
         icon: Car,
     },
+    {
+        title: 'Quotations',
+        href: '/quotations',
+        icon: PenToolIcon,
+    },
 ];
 
 const incomeNavItems: NavItem[] = [
@@ -62,11 +67,6 @@ const settingNavItems: NavItem[] = [
         title: 'Message',
         href: '/chatify',
         icon: MessageCircle,
-    },
-    {
-        title: 'Quotation ပြင်ရန်',
-        href: '/prepare/quotation',
-        icon: PenToolIcon,
     },
     {
         title: 'Note ရေးရန်',

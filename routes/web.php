@@ -6,8 +6,10 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\RecordExpenseController;
 use App\Http\Controllers\RecordSalaryController;
 use App\Http\Controllers\RecordVoucherController;
+use App\Http\Controllers\QuotationController;
 use App\Models\Category;
 use App\Models\Record;
+use App\Models\Quotation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -103,39 +105,28 @@ require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
 
 Route::middleware('auth')->group(function () {
+
     Route::resource('categories', CategoryController::class);
+
     Route::resource('records', RecordController::class);
     Route::resource('records/expenses', RecordExpenseController::class)->except('index', 'destroy');
     Route::resource('records/vouchers', RecordVoucherController::class)->except('index', 'destroy');
     Route::resource('records/salary', RecordSalaryController::class)->only('create', 'store');
-    Route::resource('cars', CarController::class);
-});
-
-Route::get('/records/vouchers/{record}/print', function (Record $record) {
-    return Pdf::view('voucher.show', ['data' => $record])
+    Route::get('/records/vouchers/{record}/print', function (Record $record) {
+        return Pdf::view('voucher.show', ['data' => $record])
         ->headerView('partials._invoiceheader', ['data' => $record])
         ->footerView('partials._footer')
         ->format('A4')
         ->margins(97, 10, 10, 10)
         ->name('invoice.pdf');
-})->name('vouchers.print');
+    })->name('vouchers.print');
 
-Route::get('/prepare/quotation', function () {
-    return Inertia::render('prepare/Quotation');
-})->name('prepare-quotation');
+    Route::resource('cars', CarController::class);
 
-Route::get('/pdf/quotation', function (Request $request) {
-    $quotationData = $request->all();
-    return Pdf::view('quotation.show', ['data' => $quotationData])
-        ->headerView('partials._quotationheader', ['data' => $quotationData])
-        ->footerView('partials._footer')
-        ->withBrowsershot(function (Browsershot $bs) {
-            $bs->noSandbox();
-        })
-        ->format('A4')
-        ->margins(97, 10, 10, 10)
-        ->name($quotationData['subject'] . '.pdf');
-})->name('pdf-quotation');
+    Route::resource('quotations', QuotationController::class);
+    Route::get('quotations/{quotation}/print-to-pdf', [QuotationController::class, 'print'])->name('quotations.print');
+
+});
 
 Route::get('/prepare/note', function () {
     return Inertia::render('prepare/Note');
@@ -151,14 +142,6 @@ Route::post('/pdf/note', function (Request $request) {
         ->name('note.pdf');
 })->name('pdf-note');
 
-Route::get('/find-node', function () {
-    $path = shell_exec('which node');
-    if ($path) {
-        return "<br>Node.js executable found at: <pre>" . trim($path) . "</pre> Please use this path.";
-    }
-    return "Could not find Node.js executable using 'which node'. You may need to contact laravel.cloud support to get the correct path.";
-});
-
 Route::get("/backup-database", function () {
     $dbName = config('database.connections.mysql.database');
     $username = config('database.connections.mysql.username');
@@ -171,5 +154,3 @@ Route::get("/backup-database", function () {
         passthru($command);
     }, $filename);
 })->middleware('auth')->name('backup-database');
-
-// test for git reploy again

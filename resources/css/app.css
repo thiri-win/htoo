@@ -221,6 +221,20 @@ input[type='radio'] {
     @apply w-auto border-0;
 }
 
+input[type="number"] {
+    @apply text-end;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
 textarea {
     @apply mb-1 w-full border p-1;
 }
@@ -270,19 +284,27 @@ tfoot {
 }
 
 .v-select-container .v-select {
-    --vs-controls-color: #4b5563; /* dark:text-gray-300 */
+    --vs-controls-color: #4b5563;
+    /* dark:text-gray-300 */
     --vs-border-width: 0px;
-    --vs-dropdown-bg: #ffffff; /* dark:bg-gray-800 */
-    --vs-dropdown-option-color: #4b5563; /* dark:text-gray-300 */
-    --vs-dropdown-option--active-bg: #3b82f6; /* blue-500 */
+    --vs-dropdown-bg: #ffffff;
+    /* dark:bg-gray-800 */
+    --vs-dropdown-option-color: #4b5563;
+    /* dark:text-gray-300 */
+    --vs-dropdown-option--active-bg: #3b82f6;
+    /* blue-500 */
     --vs-dropdown-option--active-color: #ffffff;
-    --vs-selected-color: #000000; /* dark:text-gray-200 */
-    --vs-search-input-color: #4b5563; /* dark:text-gray-300 */
+    --vs-selected-color: #000000;
+    /* dark:text-gray-200 */
+    --vs-search-input-color: #4b5563;
+    /* dark:text-gray-300 */
 }
+
 .v-select-container .vs__dropdown-toggle {
     /* border-bottom: 1px solid #e5e7eb; */
 }
 
 .dark .v-select-container .v-select {
-    --vs-selected-color: #ffffff; /* dark:text-gray-200 */
+    --vs-selected-color: #ffffff;
+    /* dark:text-gray-200 */
 }

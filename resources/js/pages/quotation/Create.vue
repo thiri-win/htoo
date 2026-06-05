@@ -24,7 +24,7 @@ const form = useForm({
     'remark': null,
 })
 
-const addItem = () => {
+const addQuotationItem = () => {
     const newId = form.items.length > 0 ? Math.max(...form.items.map(item => item.id)) + 1 : 1;
 
     form.items.push({
@@ -36,7 +36,7 @@ const addItem = () => {
     });
 };
 
-const removeItem = (item) => {
+const removeQuotationItem = (item) => {
     form.items = form.items.filter(s => s.id != item.id)
 }
 
@@ -46,13 +46,13 @@ const total = () => {
     })
 }
 
-const sub_total = computed(() => {
+form.sub_total = computed(() => {
     return form.items.reduce((sum, item) => {
         return sum + (item.quantity * item.unit_price)
     }, 0)
 })
 
-const grand_total = computed(() => {
+form.grand_total = computed(() => {
     return form.items.reduce((sum, item) => {
         return sum + (item.quantity * item.unit_price)
     }, 0) - form.discount
@@ -60,21 +60,29 @@ const grand_total = computed(() => {
 
 watch(() => [form.items, form.discount], total, { deep: true, immediate: true });
 
+const submit = () => {
+    form.post(route('quotations.store'))
+}
+
 </script>
 <template>
     <AppLayout>
-        <form :action="route('pdf-quotation')" method="get">
+        <form @submit.prevent="submit">
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 gap-y-5 bg-neutral-100 dark:bg-(--sidebar-background) p-5 rounded-lg">
+            <div
+                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 gap-y-5 bg-neutral-100 dark:bg-(--sidebar-background) p-5 rounded-lg">
 
                 <div>
-                    <input type="date" name="date" id="date" v-model="form.date" :class="form.errors.date ? 'border-red-300' : ''">
+                    <input type="date" name="date" id="date" v-model="form.date"
+                        :class="form.errors.date ? 'border-red-300' : ''">
                 </div>
                 <div>
-                    <input type="text" name="subject" id="subject" placeholder="Subject" v-model="form.subject" :class="form.errors.subject ? 'border-red-300' : ''">
+                    <input type="text" name="subject" id="subject" placeholder="Subject" v-model="form.subject"
+                        :class="form.errors.subject ? 'border-red-300' : ''">
                 </div>
                 <div>
-                    <input type="text" name="to" id="to" placeholder="To" v-model="form.to" :class="form.errors.to ? 'border-red-300' : ''">
+                    <input type="text" name="to" id="to" placeholder="To" v-model="form.to"
+                        :class="form.errors.to ? 'border-red-300' : ''">
                 </div>
             </div>
             <div class="bg-neutral-100 dark:bg-(--sidebar-background) my-5 p-5 rounded-lg">
@@ -94,24 +102,33 @@ watch(() => [form.items, form.discount], total, { deep: true, immediate: true })
                                 {{ index + 1 }}
                             </td>
                             <td>
-                                <input type="text" v-model="item.description" :name="`items[${index}][description]`" placeholder="Description" class="border-white" :class="form.errors[`items.${index}.description`] ? '!border-b !border-red-300' : ''">
+                                <input type="text" v-model="item.description" :name="`items[${index}][description]`"
+                                    placeholder="Description" class="border-white"
+                                    :class="form.errors[`items.${index}.description`] ? '!border-b !border-red-300' : ''">
                             </td>
                             <td>
-                                <input type="number" v-model="item.quantity" :name="`items[${index}][quantity]`" placeholder="Qty" class="border-white" :class="form.errors[`items.${index}.quantity`] ? '!border-b !border-red-300' : ''">
+                                <input type="number" v-model="item.quantity" :name="`items[${index}][quantity]`"
+                                    placeholder="Qty" class="border-white"
+                                    :class="form.errors[`items.${index}.quantity`] ? '!border-b !border-red-300' : ''">
                             </td>
                             <td>
-                                <input type="number" v-model="item.unit_price" :name="`items[${index}][unit_price]`" placeholder="Amount" class="border-white" :class="form.errors[`items.${index}.unit_price`] ? '!border-b !border-red-300' : ''">
+                                <input type="number" v-model="item.unit_price" :name="`items[${index}][unit_price]`"
+                                    placeholder="Amount" class="border-white"
+                                    :class="form.errors[`items.${index}.unit_price`] ? '!border-b !border-red-300' : ''">
                             </td>
                             <td>
-                                <input type="number" v-model="item.total" :name="`items[${index}][total]`" placeholder="Total" class="border-white" :class="form.errors[`items.${index}.total`] ? '!border-b !border-red-300' : ''" readonly>
+                                <input type="number" v-model="item.total" :name="`items[${index}][total]`"
+                                    placeholder="Total" class="border-white"
+                                    :class="form.errors[`items.${index}.total`] ? '!border-b !border-red-300' : ''"
+                                    readonly>
                             </td>
                             <td>
-                                <a href="#" @click.prevent="removeItem(item)" class="text-nowrap"> - Remove</a>
+                                <a href="#" @click.prevent="removeQuotationItem(item)" class="text-nowrap"> - Remove</a>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="5" class="text-nowrap">
-                                <a href="#" @click.prevent="addItem">+ Add</a>
+                                <a href="#" @click.prevent="addQuotationItem">+ Add</a>
                             </td>
                         </tr>
                     </tbody>
@@ -121,7 +138,7 @@ watch(() => [form.items, form.discount], total, { deep: true, immediate: true })
                                 <label for="sub_total">Sub Total</label>
                             </td>
                             <td>
-                                <input type="number" name="sub_total" id="sub_total" :value="sub_total" readonly>
+                                <input type="number" name="sub_total" id="sub_total" v-model="form.sub_total" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -145,7 +162,8 @@ watch(() => [form.items, form.discount], total, { deep: true, immediate: true })
                                 <label for="total">Grand Total</label>
                             </td>
                             <td>
-                                <input type="number" name="grand_total" id="grand_total" :value="grand_total" readonly>
+                                <input type="number" name="grand_total" id="grand_total" v-model="form.grand_total"
+                                    readonly>
                             </td>
                         </tr>
                     </tfoot>
