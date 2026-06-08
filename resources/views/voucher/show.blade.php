@@ -8,8 +8,8 @@
     <title>Htoo - Invoice</title>
     <style>
         @font-face {
-            font-family: 'padauk';
-            src: url("{{ storage_path('fonts/Padauk-Regular.ttf') }}") format('truetype');
+            font-family: 'myanmar';
+            src: url("{{ storage_path('fonts/Noto_Sans_Myanmar/NotoSansMyanmar-Medium.ttf') }}") format('truetype');
             font-weight: normal;
             font-style: normal;
         }
@@ -19,7 +19,7 @@
             margin: 0;
             box-sizing: border-box;
             line-height: 1.5;
-            font-family: 'padauk';
+            font-family: 'myanmar';
         }
 
         table {
