@@ -14,6 +14,11 @@
             font-style: normal;
         }
 
+        @font-face {
+            font-family: 'poppins';
+            src: url("{{ storage_path('fonts/Poppins/Poppins-Regular.ttf' }}");
+        }
+
         * {
             padding: 0;
             margin: 0;
@@ -32,7 +37,7 @@
             color: white;
             font-weight: 600;
             text-align: center;
-            font-family: 'Poppins';
+            font-family: 'poppins';
         }
 
         th:not(:first-child) {
