@@ -16,7 +16,7 @@
 
         @font-face {
             font-family: 'poppins';
-            src: url("{{ storage_path('fonts/Poppins/Poppins-Regular.ttf' }}");
+            src: url("{{ storage_path('fonts/Poppins/Poppins-Regular.ttf') }}");
         }
 
         * {
