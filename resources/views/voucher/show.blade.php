@@ -9,15 +9,12 @@
     <style>
         @font-face {
             font-family: 'myanmar';
-            /* src: url("{{ asset('fonts/Padauk-Regular.ttf') }}") format('truetype'); */
-            src: url('{{ public_path('fonts/Padauk-Regular.ttf') }}') format('truetype');
-            font-weight: normal;
-            font-style: normal;
+            src: url('{{ public_path('fonts/Noto_Sans_Myanmar/NotoSansMyanmar-Medium.ttf') }}') format('truetype');
         }
 
         @font-face {
             font-family: 'poppins';
-            src: url('{{ public_path('fonts/Poppins/Poppins-Regular.ttf') }}');
+            src: url('{{ public_path('fonts/Poppins/Poppins-Medium.ttf') }}');
         }
 
         * {
@@ -25,7 +22,7 @@
             margin: 0;
             box-sizing: border-box;
             line-height: 1.5;
-            font-family: 'myanmar';
+            font-family: 'myanmar' !important;
         }
 
         table {
@@ -38,7 +35,7 @@
             color: white;
             font-weight: 600;
             text-align: center;
-            font-family: 'poppins';
+            font-family: 'poppins' !important;
         }
 
         th:not(:first-child) {
