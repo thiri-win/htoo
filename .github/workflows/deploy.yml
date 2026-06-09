@@ -23,6 +23,7 @@ jobs:
             cd /var/www/htoo
 
             sudo chown -R $USER:$USER storage bootstrap/cache
+            sudo chmod -R 775 storage bootstrap/cache
 
             # 1. Server ပေါ်က Local changes တွေကို ဖယ်ပြီး Code အသစ်ဆွဲမယ်
             git fetch --all
@@ -34,8 +35,6 @@ jobs:
             npm run build
 
             # 3. Laravel Optimization & Permissions
-            sudo chown -R www-data:www-data storage bootstrap/cache
-            sudo chmod -R 775 storage bootstrap/cache
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
@@ -43,3 +42,6 @@ jobs:
 
             # php artisan migrate:fresh --seed --force
             # sudo systemctl reload nginx
+
+            sudo chown -R www-data:www-data storage bootstrap/cache
+            sudo chmod -R 775 storage bootstrap/cache
