@@ -10,7 +10,7 @@
         @font-face {
             font-family: 'myanmar';
             /* src: url("{{ asset('fonts/Padauk-Regular.ttf') }}") format('truetype'); */
-            src: url("file://{{ public_path('fonts/Padauk-Regular.ttf') }}") format('truetype');
+            src: url("{{ public_path('fonts/Padauk-Regular.ttf') }}") format('truetype');
             font-weight: normal;
             font-style: normal;
         }
