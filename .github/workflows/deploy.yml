@@ -2,7 +2,7 @@ name: Deploy Laravel Application
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   deploy:
@@ -27,12 +27,13 @@ jobs:
             git reset --hard origin/main
 
             # 2. PHP Dependencies သွင်းမယ်
-            composer install --no-dev --optimize-autoloader
-
-            npm install --production
+            composer install --no-dev --optimize-autoloader --ignore-platform-reqs
+            npm install
             npm run build
 
             # 3. Laravel Optimization & Permissions
+            sudo chown -R www-data:www-data storage bootstrap/cache
+            sudo chmod -R 775 storage bootstrap/cache
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
@@ -40,7 +41,3 @@ jobs:
 
             # php artisan migrate:fresh --seed --force
             # sudo systemctl reload nginx
-
-            # Permission ပေးတာကို လိုအပ်မှ သုံးပါ (ပုံမှန်ဆိုရင် 775 က လုံလောက်ပါတယ်)
-            sudo chown -R www-data:www-data storage bootstrap/cache
-            sudo chmod -R 775 storage bootstrap/cache
