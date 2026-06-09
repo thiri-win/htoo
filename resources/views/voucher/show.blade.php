@@ -9,7 +9,7 @@
     <style>
         @font-face {
             font-family: 'myanmar';
-            src: url("{{ storage_path('fonts/Noto_Sans_Myanmar/NotoSansMyanmar-Medium.ttf') }}") format('truetype');
+            src: url("{{ storage_path('fonts/Padauk-Regular.ttf') }}") format('truetype');
             font-weight: normal;
             font-style: normal;
         }
