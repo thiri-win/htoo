@@ -5,7 +5,7 @@
         box-sizing: border-box;
         line-height: 1.5;
         font-size: 14px;
-        font-family: "Poppins";
+        font-family: "poppins";
         font-weight: 400;
     }
 
@@ -33,11 +33,11 @@
         margin: 20px 0;
         font-size: 30px;
         font-weight: 700;
-        font-family: "Poppins";
+        font-family: "poppins";
     }
 
     h2 {
-        font-family: "Poppins";
+        font-family: "poppins";
         font-weight: 600;
         font-size: 16px;
     }
@@ -63,20 +63,20 @@
             <p>(29/B), Shwe Ta Gar St, Bon Shay Gone Ward</p>
             <p>Shwe Pyi Thar Township, Yangon</p>
             <p>&#9742; 09 443067898, &#9742;09 795355487</p>
-            <p style="font-family: Poppins;">&blacktriangleright; UAB Bank -
-                <strong style="font-family: Poppins;">0243 3010 0011 287</strong>
+            <p style="font-family: poppins;">&blacktriangleright; UAB Bank -
+                <strong style="font-family: poppins;">0243 3010 0011 287</strong>
                 [<strong>AUNG KO HEIN</strong>]
             </p>
-            <p style="font-family: Poppins;">&blacktriangleright; KBZ Bank -
-                <strong style="font-family: Poppins;">1225 1105 7008 30201</strong>
+            <p style="font-family: poppins;">&blacktriangleright; KBZ Bank -
+                <strong style="font-family: poppins;">1225 1105 7008 30201</strong>
                 [<strong>THIRI WIN</strong>]
             </p>
-            <p style="font-family: Poppins;">&blacktriangleright; AYA Bank -
-                <strong style="font-family: Poppins;">2000 4254 047</strong>
+            <p style="font-family: poppins;">&blacktriangleright; AYA Bank -
+                <strong style="font-family: poppins;">2000 4254 047</strong>
                 [<strong>THIRI WIN</strong>]
             </p>
-            <p style="font-family: Poppins;">&blacktriangleright; KBZ Pay -
-                <strong style="font-family: Poppins;">09443067898</strong>
+            <p style="font-family: poppins;">&blacktriangleright; KBZ Pay -
+                <strong style="font-family: poppins;">09443067898</strong>
                 [<strong>AUNG KO HEIN</strong>]
             </p>
         </div>
