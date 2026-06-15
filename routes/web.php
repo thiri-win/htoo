@@ -7,99 +7,18 @@ use App\Http\Controllers\RecordExpenseController;
 use App\Http\Controllers\RecordSalaryController;
 use App\Http\Controllers\RecordVoucherController;
 use App\Http\Controllers\QuotationController;
-use App\Models\Category;
+use App\Http\Controllers\DashboardController;
 use App\Models\Record;
-use App\Models\Quotation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
-use Spatie\Browsershot\Browsershot;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-Route::get('dashboard', function () {
-
-    $now = now();
-    $startOfMonth = $now->copy()->startOfMonth();
-    $endOfMonth = $now->copy()->endOfMonth();
-
-    $categorySums = Category::withSum(['records' => function ($query) use ($startOfMonth, $endOfMonth) {
-        $query->whereBetween('date', [$startOfMonth->toDateString(), $endOfMonth->toDateString()]);
-    }], 'grand_total')->get();
-
-    $monthlyProfitThisYear = Record::with('category')->whereYear('date', now()->year)
-        ->get()
-        ->groupBy(function ($record) {
-            return $record->date->format('Y-m');
-        })
-        ->map(function ($recordsInMonth) {
-            return $recordsInMonth->reduce(function ($carry, $record) {
-                if ($record->category && $record->category->status == 'sum') {
-                    return $carry + $record->grand_total;
-                }
-                return $carry - $record->grand_total;
-            }, 0);
-        });
-
-    $allMonths = collect(range(1, 12))->mapWithKeys(function ($month) {
-        $key = now()->year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT);
-        return [$key => 0];
-    });
-
-    $monthlyProfitThisYear = $allMonths->merge($monthlyProfitThisYear)->sortKeys();
-
-    $categoryTitle = Category::pluck('title');
-
-    $categorySumByMonth = Record::with('category')->whereYear('date', now()->year)
-        ->get()
-        ->groupBy(function ($record) {
-            return $record->date->format('n');
-        })
-        ->sortKeys()
-        ->map(function ($recordsInMonth) use ($categoryTitle) {
-            $sumsForThisMonth = $recordsInMonth
-                ->groupBy('category.title')
-                ->map(function ($recordsInCategory) {
-                    return $recordsInCategory->sum('grand_total');
-                });
-
-            $allCategoriesWithZero = $categoryTitle->mapWithKeys(fn($title) => [$title => 0]);
-
-            return $allCategoriesWithZero->merge($sumsForThisMonth);
-        });
-
-    $monthlyBalance = Record::with('category')
-        ->whereBetween('date', [now()->copy()->subMonths(5)->startOfMonth()->toDateString(), now()->copy()->endOfMonth()->toDateString()])
-        ->get()
-        ->groupBy(function ($record) {
-            return $record->date->format('Y-M'); // လနံပါတ်
-        })
-        ->map(function ($recordsInMonth) {
-            $sumTotal = $recordsInMonth
-                ->filter(fn($record) => $record->category && $record->category->status === 'sum')
-                ->sum('grand_total');
-
-            $subTotal = $recordsInMonth
-                ->filter(fn($record) => $record->category && $record->category->status === 'sub')
-                ->sum('grand_total');
-
-            return [
-                'sum_total' => $sumTotal,
-                'sub_total' => $subTotal,
-                'diff'      => $sumTotal - $subTotal,
-            ];
-        });
-
-    return Inertia::render('Dashboard', [
-        'categorySums' => $categorySums,
-        'monthlyProfitThisYear' => $monthlyProfitThisYear,
-        'categorySumByMonth' => $categorySumByMonth,
-        'monthlyBalance' => $monthlyBalance,
-    ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

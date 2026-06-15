@@ -1,85 +1,88 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { DownloadCloud, PlusIcon } from 'lucide-vue-next';
 import PieChart from '@/components/PieChart.vue';
 import BarChart from '@/components/BarChart.vue';
+import BalanceSummaryTable from '@/components/BalanceSummaryTable.vue';
+import {
+    CHART_COLORS,
+    categoryStackChartData,
+    emptyChartData,
+    stackedBarChartOptions,
+} from '@/lib/dashboardCharts';
 
-const props = defineProps({
-    categorySums: Array,
-    monthlyProfitThisYear: Array,
-    categorySumByMonth: Object,
-    monthlyBalance: Object,
-})
+type CategorySum = {
+    title: string;
+    records_sum_grand_total?: number;
+};
+
+type BalanceSummary = Record<string, {
+    sum_total: number;
+    sub_total: number;
+    diff: number;
+}>;
+
+const props = defineProps<{
+    categorySums: CategorySum[];
+    monthlyProfitThisYear: Record<string, number>;
+    categorySumByMonth: Record<string, Record<string, number>>;
+    categorySumByDay: Record<string, Record<string, number>>;
+    monthlyBalance: BalanceSummary;
+    yearlySummary: BalanceSummary;
+}>();
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-    },
+    { title: 'Dashboard', href: '/dashboard' },
 ];
 
-const date = new Date(); // လက်ရှိအချိန် (ဥပမာ- 2026)
-
-const year = date.getFullYear();
-const month = date.toLocaleString('default', { month: 'short' });
-
+const now = new Date();
+const year = now.getFullYear();
+const month = now.toLocaleString('default', { month: 'short' });
 const currentMonth = `${year}-${month}`;
 
 const chartData = computed(() => {
-    if (!Array.isArray(props.categorySums) || props.categorySums.length === 0) {
-        return {
-            labels: [],
-            datasets: []
-        }
+    if (!props.categorySums?.length) {
+        return emptyChartData();
     }
+
     return {
         labels: props.categorySums.map(c => c.title),
-        datasets: [
-            {
-                label: 'Category Amount',
-                data: props.categorySums.map(c => c.records_sum_grand_total || 0),
-                backgroundColor: [
-                    '#f87171', '#60a5fa', '#fbbf24', '#34d399', '#a78bfa', '#f472b6', '#facc15', '#38bdf8', '#fb7185', '#4ade80'
-                ],
-            }
-        ]
-    }
+        datasets: [{
+            label: 'Category Amount',
+            data: props.categorySums.map(c => c.records_sum_grand_total || 0),
+            backgroundColor: CHART_COLORS,
+        }],
+    };
 });
 
 const barChartData = computed(() => {
     if (!props.monthlyProfitThisYear || Object.keys(props.monthlyProfitThisYear).length === 0) {
-        return { labels: [], datasets: [] };
+        return emptyChartData();
     }
+
     return {
         labels: Object.keys(props.monthlyProfitThisYear),
-        datasets: [
-            {
-                label: 'Monthly Profit',
-                data: Object.values(props.monthlyProfitThisYear),
-                backgroundColor: [
-                    '#f87171', '#60a5fa', '#fbbf24', '#34d399', '#a78bfa', '#f472b6', '#facc15', '#38bdf8', '#fb7185', '#4ade80'
-                ],
-            }
-        ],
-        options: {
-            borderColor: 'rgba(255,255,0,1)',
-            backgroundColor: 'rgba(255,0,255,1)',
-        }
-    }
+        datasets: [{
+            label: 'Monthly Profit',
+            data: Object.values(props.monthlyProfitThisYear),
+            backgroundColor: CHART_COLORS,
+        }],
+    };
 });
 
+const dailyStackChartData = computed(() => categoryStackChartData(props.categorySumByDay));
+const dailyStackChartOptions = stackedBarChartOptions(`Daily Category Summary (${month} ${year})`);
+
+const categoryTitles = computed(() => Object.keys(props.categorySumByMonth?.['1'] || {}));
 </script>
 
 <template>
-
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-
         <Link :href="route('records.create')" class="btn new-btn mr-2">
             <PlusIcon class="inline-block"></PlusIcon>စာရင်းအသစ်ထည့်ရန်
         </Link>
@@ -93,26 +96,29 @@ const barChartData = computed(() => {
         </a>
 
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-5">
-
             <div class="border p-5">
                 <PieChart :chartData="chartData" class="w-full"></PieChart>
             </div>
 
             <div class="border p-5 overflow-x-auto">
-                <table class="w-full">
-                    <tbody>
-                        <tr v-for="(sum, month) in props.monthlyBalance" :key="month" class="bg-gray-100 border border-white dark:bg-transparent" :class="{ 'bg-gray-200 dark:!bg-accent font-bold': month === currentMonth }">
-                            <td>{{ month }}</td>
-                            <td class="text-right">{{ sum.sum_total.toLocaleString() }}</td>
-                            <td class="text-right">{{ sum.sub_total.toLocaleString() }}</td>
-                            <td class="text-right">{{ sum.diff.toLocaleString() }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <BalanceSummaryTable :rows="monthlyBalance" :highlight-key="currentMonth" />
             </div>
 
             <div class="border p-5 col-span-2">
+                <BarChart :chartData="dailyStackChartData" :chartOptions="dailyStackChartOptions" class="w-full"></BarChart>
+            </div>
+
+            <div class="border p-5">
                 <BarChart :chartData="barChartData" class="w-full"></BarChart>
+            </div>
+
+            <div class="border p-5 overflow-x-auto">
+                <BalanceSummaryTable
+                    :rows="yearlySummary"
+                    :highlight-key="year"
+                    show-header
+                    first-column-label="Year"
+                />
             </div>
 
             <div class="border p-5 col-span-2 overflow-x-auto">
@@ -120,15 +126,23 @@ const barChartData = computed(() => {
                     <thead>
                         <tr>
                             <th class="px-6 py-3 border">Month</th>
-                            <th v-for="categoryTitle in Object.keys(props.categorySumByMonth['1'] || {})" :key="categoryTitle" class="px-6 py-3 text-right border">
+                            <th
+                                v-for="categoryTitle in categoryTitles"
+                                :key="categoryTitle"
+                                class="px-6 py-3 text-right border"
+                            >
                                 {{ categoryTitle }}
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(sums, month) in props.categorySumByMonth" :key="month">
-                            <th class="px-6 py-4 font-medium whitespace-nowrap border">{{ parseInt(month, 10) }}</th>
-                            <td v-for="(total, category) in sums" :key="category" class="px-6 py-4 text-right border">
+                        <tr v-for="(sums, monthKey) in categorySumByMonth" :key="monthKey">
+                            <th class="px-6 py-4 font-medium whitespace-nowrap border">{{ parseInt(monthKey, 10) }}</th>
+                            <td
+                                v-for="(total, category) in sums"
+                                :key="category"
+                                class="px-6 py-4 text-right border"
+                            >
                                 {{ total.toLocaleString() }}
                             </td>
                         </tr>
