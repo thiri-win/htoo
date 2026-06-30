@@ -1,153 +1,108 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
+import { Head, Link } from '@inertiajs/vue3';
+import AppLayout from '@/layouts/AppLayout.vue';
+import DynamicTable from '@/components/DynamicTable.vue';
+import { Bar, Pie } from 'vue-chartjs';
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js';
 import { DownloadCloud, PlusIcon } from 'lucide-vue-next';
-import PieChart from '@/components/PieChart.vue';
-import BarChart from '@/components/BarChart.vue';
-import BalanceSummaryTable from '@/components/BalanceSummaryTable.vue';
-import {
-    CHART_COLORS,
-    categoryStackChartData,
-    emptyChartData,
-    stackedBarChartOptions,
-} from '@/lib/dashboardCharts';
+import { CHART_COLORS, categoryStackChartData, emptyChartData } from '@/lib/dashboardCharts';
 
-type CategorySum = {
-    title: string;
-    records_sum_grand_total?: number;
-};
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement);
 
-type BalanceSummary = Record<string, {
-    sum_total: number;
-    sub_total: number;
-    diff: number;
-}>;
+// 🛠️ GLOBAL OPTIONS
+ChartJS.defaults.responsive = true;
+ChartJS.defaults.maintainAspectRatio = true;
+ChartJS.defaults.plugins.title.display = true;
+ChartJS.defaults.plugins.title.font = { size: 18 };
 
 const props = defineProps<{
-    categorySums: CategorySum[];
+    categorySumByThisMonth: Array<{ title: string; records_sum_grand_total?: number }>;
     monthlyProfitThisYear: Record<string, number>;
     categorySumByMonth: Record<string, Record<string, number>>;
     categorySumByDay: Record<string, Record<string, number>>;
-    monthlyBalance: BalanceSummary;
-    yearlySummary: BalanceSummary;
+    monthlyBalance: Record<string, any>;
+    yearlySummary: Record<string, any>;
+    topFiveCarsByModel: Array<any>;
 }>();
 
-const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Dashboard', href: '/dashboard' },
-];
+const year = new Date().getFullYear();
+const currentMonth = `${year}-${new Date().toLocaleString('default', { month: 'short' })}`;
 
-const now = new Date();
-const year = now.getFullYear();
-const month = now.toLocaleString('default', { month: 'short' });
-const currentMonth = `${year}-${month}`;
-
-const chartData = computed(() => {
-    if (!props.categorySums?.length) {
-        return emptyChartData();
-    }
-
-    return {
-        labels: props.categorySums.map(c => c.title),
-        datasets: [{
-            label: 'Category Amount',
-            data: props.categorySums.map(c => c.records_sum_grand_total || 0),
-            backgroundColor: CHART_COLORS,
-        }],
-    };
+const categorySumByThisMonth = computed(() => !props.categorySumByThisMonth?.length ? emptyChartData() : {
+    labels: props.categorySumByThisMonth.map(c => c.title),
+    datasets: [{ label: 'Category Amount', data: props.categorySumByThisMonth.map(c => c.records_sum_grand_total || 0), backgroundColor: CHART_COLORS }]
 });
 
-const barChartData = computed(() => {
-    if (!props.monthlyProfitThisYear || Object.keys(props.monthlyProfitThisYear).length === 0) {
-        return emptyChartData();
-    }
+const topFiveCarsByModel = computed(() => ({
+    labels: props.topFiveCarsByModel.map(c => `${c.car_brand} ${c.car_model}`),
+    datasets: [{ label: 'Count', data: props.topFiveCarsByModel.map(c => c.count || 0), backgroundColor: CHART_COLORS }]
+}));
 
-    return {
-        labels: Object.keys(props.monthlyProfitThisYear),
-        datasets: [{
-            label: 'Monthly Profit',
-            data: Object.values(props.monthlyProfitThisYear),
-            backgroundColor: CHART_COLORS,
-        }],
-    };
+const monthlyProfitThisYear = computed(() => !props.monthlyProfitThisYear || !Object.keys(props.monthlyProfitThisYear).length ? emptyChartData() : {
+    labels: Object.keys(props.monthlyProfitThisYear),
+    datasets: [{ label: 'Monthly Profit', data: Object.values(props.monthlyProfitThisYear), backgroundColor: CHART_COLORS }]
 });
 
 const dailyStackChartData = computed(() => categoryStackChartData(props.categorySumByDay));
-const dailyStackChartOptions = stackedBarChartOptions(`Daily Category Summary (${month} ${year})`);
-
 const categoryTitles = computed(() => Object.keys(props.categorySumByMonth?.['1'] || {}));
 </script>
 
 <template>
     <Head title="Dashboard" />
 
-    <AppLayout :breadcrumbs="breadcrumbs">
-        <Link :href="route('records.create')" class="btn new-btn mr-2">
-            <PlusIcon class="inline-block"></PlusIcon>စာရင်းအသစ်ထည့်ရန်
-        </Link>
-        <Link :href="route('vouchers.create')" class="btn new-btn mr-2">
-            <PlusIcon class="inline-block"></PlusIcon>
-            <span>ဘောက်ချာအသစ်ဖွင့်ရန်</span>
-        </Link>
-        <a href="/backup-database" class="btn new-btn">
-            <DownloadCloud class="inline-block"></DownloadCloud>
-            Download DB
-        </a>
+    <AppLayout :breadcrumbs="[{ title: 'Dashboard', href: '/dashboard' }]">
+        <div class="mb-5 flex flex-wrap gap-2">
+            <Link :href="route('records.create')" class="btn new-btn"><PlusIcon class="inline-block mr-1" />စာရင်းအသစ်ထည့်ရန်</Link>
+            <Link :href="route('vouchers.create')" class="btn new-btn"><PlusIcon class="inline-block mr-1" />ဘောက်ချာအသစ်ဖွင့်ရန်</Link>
+            <a href="/backup-database" class="btn new-btn"><DownloadCloud class="inline-block mr-1" />Download DB</a>
+        </div>
 
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-5">
-            <div class="border p-5">
-                <PieChart :chartData="chartData" class="w-full"></PieChart>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div class="overflow-x-auto border p-5">
+                <Pie :data="categorySumByThisMonth as any" :options="{ plugins: { title: { text: 'ယခုလ အမျိုးအစားအလိုက်ဝင်ငွေ' } } }" />
             </div>
 
-            <div class="border p-5 overflow-x-auto">
-                <BalanceSummaryTable :rows="monthlyBalance" :highlight-key="currentMonth" />
+            <div class="overflow-x-auto border p-5 h-[350px]">
+                <Bar :data="topFiveCarsByModel as any" :options="{ indexAxis: 'y', maintainAspectRatio: false, plugins: { title: { text: 'ဝပ်ရှော့သို့ အလာအများဆုံး ကားများ' } } }" />
             </div>
 
-            <div class="border p-5 col-span-2">
-                <BarChart :chartData="dailyStackChartData" :chartOptions="dailyStackChartOptions" class="w-full"></BarChart>
-            </div>
-
-            <div class="border p-5">
-                <BarChart :chartData="barChartData" class="w-full"></BarChart>
-            </div>
-
-            <div class="border p-5 overflow-x-auto">
-                <BalanceSummaryTable
+            <div class="overflow-x-auto border p-5">
+                <DynamicTable
+                    title="နှစ်အလိုက်အမြတ်ငွေ စာရင်းဇယား"
+                    :headers="['လ', 'ဝင်ငွေ', 'ထွက်ငွေ', 'အမြတ်']"
+                    firstKeyName="year"
+                    :highlightKey="year"
                     :rows="yearlySummary"
-                    :highlight-key="year"
-                    show-header
-                    first-column-label="Year"
                 />
             </div>
 
-            <div class="border p-5 col-span-2 overflow-x-auto">
-                <table class="w-full">
-                    <thead>
-                        <tr>
-                            <th class="px-6 py-3 border">Month</th>
-                            <th
-                                v-for="categoryTitle in categoryTitles"
-                                :key="categoryTitle"
-                                class="px-6 py-3 text-right border"
-                            >
-                                {{ categoryTitle }}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(sums, monthKey) in categorySumByMonth" :key="monthKey">
-                            <th class="px-6 py-4 font-medium whitespace-nowrap border">{{ parseInt(monthKey, 10) }}</th>
-                            <td
-                                v-for="(total, category) in sums"
-                                :key="category"
-                                class="px-6 py-4 text-right border"
-                            >
-                                {{ total.toLocaleString() }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="overflow-x-auto border p-5">
+                <DynamicTable
+                    title="ယခုနှစ်အမြတ်ငွေ စာရင်းဇယား"
+                    :headers="['လ', 'ဝင်ငွေ', 'ထွက်ငွေ', 'အမြတ်']"
+                    firstKeyName="month"
+                    :highlightKey="currentMonth"
+                    :rows="monthlyBalance"
+                />
+            </div>
+
+            <div class="col-span-full overflow-x-auto border p-5 xl:col-span-2">
+                <Bar :data="monthlyProfitThisYear as any" :options="{ scales: { x: { ticks: { maxRotation: 90, minRotation: 90 } } }, plugins: { title: { text: 'ယခုနှစ် လအလိုက်အမြတ်ငွေ' } } }" />
+            </div>
+
+            <div class="col-span-full overflow-x-auto border p-5">
+                <Bar :data="dailyStackChartData as any" :options="{ scales: { x: { stacked: true }, y: { stacked: true } }, plugins: { title: { text: 'နေ့ရက်အလိုက်စာရင်းများ' } } }" />
+            </div>
+
+            <div class="col-span-full overflow-x-auto border p-5">
+                <DynamicTable
+                    title="ယခုနှစ် ငွေစာရင်းများ"
+                    :headers="['Month', ...categoryTitles]"
+                    firstKeyName="month"
+                    :highlightKey="currentMonth"
+                    :rows="categorySumByMonth as any"
+                />
             </div>
         </div>
     </AppLayout>

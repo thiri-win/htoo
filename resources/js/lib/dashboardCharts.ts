@@ -16,15 +16,6 @@ export function baseChartOptions(title: string, extra: Record<string, unknown> =
     };
 }
 
-export function stackedBarChartOptions(title: string) {
-    return baseChartOptions(title, {
-        scales: {
-            x: { stacked: true, title: { display: true, text: 'Day' } },
-            y: { stacked: true, title: { display: true, text: 'Amount' } },
-        },
-    });
-}
-
 export function categoryStackChartData(
     categorySumByPeriod: Record<string, Record<string, number>> | undefined,
 ) {

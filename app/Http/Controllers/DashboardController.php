@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Car;
 use App\Models\Category;
 use App\Models\Record;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -17,34 +19,42 @@ class DashboardController extends Controller
         $endOfMonth = $now->copy()->endOfMonth();
         $sixMonthsStart = $now->copy()->subMonths(5)->startOfMonth();
 
-        $categorySums = Category::withSum(['records' => function ($query) use ($startOfMonth, $endOfMonth) {
+        $categorySumByThisMonth = Category::withSum(['records' => function ($query) use ($startOfMonth, $endOfMonth) {
             $query->whereBetween('date', [$startOfMonth->toDateString(), $endOfMonth->toDateString()]);
         }], 'grand_total')->get();
 
+        $topFiveCarsByModel = DB::table('cars')
+            ->select(DB::raw('count(*) as count, car_model, car_brand'))
+            ->groupBy('car_brand', 'car_model')
+            ->orderByDesc('count')
+            ->limit(7)
+            ->get();
+
         $allRecords = Record::with('category')->get();
-        $recordsThisYear = $allRecords->filter(fn ($record) => $record->date->year === $now->year);
-        $recordsThisMonth = $allRecords->filter(fn ($record) => $record->date->between($startOfMonth, $endOfMonth));
-        $recordsLastSixMonths = $allRecords->filter(fn ($record) => $record->date >= $sixMonthsStart);
+        $recordsThisYear = $allRecords->filter(fn($record) => $record->date->year === $now->year);
+        $recordsThisMonth = $allRecords->filter(fn($record) => $record->date->between($startOfMonth, $endOfMonth));
+        $recordsLastSixMonths = $allRecords->filter(fn($record) => $record->date >= $sixMonthsStart);
         $categoryTitles = Category::pluck('title');
 
         return Inertia::render('Dashboard', [
-            'categorySums' => $categorySums,
+            'categorySumByThisMonth' => $categorySumByThisMonth,
             'monthlyProfitThisYear' => $this->monthlyProfitThisYear($recordsThisYear, $now->year),
-            'categorySumByMonth' => $this->categorySumByPeriod($recordsThisYear, $categoryTitles, fn ($record) => $record->date->format('n')),
+            'categorySumByMonth' => $this->categorySumByPeriod($recordsThisYear, $categoryTitles, fn($record) => $record->date->format('n')),
             'categorySumByDay' => $this->categorySumByDay($recordsThisMonth, $categoryTitles, $endOfMonth->day),
-            'monthlyBalance' => $this->incomeExpenseSummaryByPeriod($recordsLastSixMonths, fn ($record) => $record->date->format('Y-M')),
-            'yearlySummary' => $this->incomeExpenseSummaryByPeriod($allRecords, fn ($record) => $record->date->format('Y'))->sortKeys(),
+            'monthlyBalance' => $this->incomeExpenseSummaryByPeriod($recordsLastSixMonths, fn($record) => $record->date->format('Y-M')),
+            'yearlySummary' => $this->incomeExpenseSummaryByPeriod($allRecords, fn($record) => $record->date->format('Y'))->sortKeys(),
+            'topFiveCarsByModel' => $topFiveCarsByModel,
         ]);
     }
 
     private function incomeExpenseSummary(Collection $records): array
     {
         $sumTotal = $records
-            ->filter(fn ($record) => $record->category?->status === 'sum')
+            ->filter(fn($record) => $record->category?->status === 'sum')
             ->sum('grand_total');
 
         $subTotal = $records
-            ->filter(fn ($record) => $record->category?->status === 'sub')
+            ->filter(fn($record) => $record->category?->status === 'sub')
             ->sum('grand_total');
 
         return [
@@ -58,13 +68,13 @@ class DashboardController extends Controller
     {
         return $records
             ->groupBy($groupKey)
-            ->map(fn ($group) => $this->incomeExpenseSummary($group));
+            ->map(fn($group) => $this->incomeExpenseSummary($group));
     }
 
     private function monthlyProfitThisYear(Collection $recordsThisYear, int $year): Collection
     {
         $monthlyProfit = $recordsThisYear
-            ->groupBy(fn ($record) => $record->date->format('Y-m'))
+            ->groupBy(fn($record) => $record->date->format('Y-m'))
             ->map(function ($recordsInMonth) {
                 return $recordsInMonth->reduce(function ($carry, $record) {
                     if ($record->category?->status === 'sum') {
@@ -76,7 +86,7 @@ class DashboardController extends Controller
             });
 
         $allMonths = collect(range(1, 12))->mapWithKeys(function ($month) use ($year) {
-            $key = $year.'-'.str_pad((string) $month, 2, '0', STR_PAD_LEFT);
+            $key = $year . '-' . str_pad((string) $month, 2, '0', STR_PAD_LEFT);
 
             return [$key => 0];
         });
@@ -92,10 +102,10 @@ class DashboardController extends Controller
             ->map(function ($recordsInPeriod) use ($categoryTitles) {
                 $sums = $recordsInPeriod
                     ->groupBy('category.title')
-                    ->map(fn ($recordsInCategory) => $recordsInCategory->sum('grand_total'));
+                    ->map(fn($recordsInCategory) => $recordsInCategory->sum('grand_total'));
 
                 return $categoryTitles
-                    ->mapWithKeys(fn ($title) => [$title => 0])
+                    ->mapWithKeys(fn($title) => [$title => 0])
                     ->merge($sums);
             });
     }
@@ -105,10 +115,10 @@ class DashboardController extends Controller
         $grouped = $this->categorySumByPeriod(
             $recordsThisMonth,
             $categoryTitles,
-            fn ($record) => $record->date->format('j'),
+            fn($record) => $record->date->format('j'),
         );
 
-        $zeroCategories = $categoryTitles->mapWithKeys(fn ($title) => [$title => 0]);
+        $zeroCategories = $categoryTitles->mapWithKeys(fn($title) => [$title => 0]);
 
         return collect(range(1, $daysInMonth))->mapWithKeys(function ($day) use ($grouped, $zeroCategories) {
             $key = (string) $day;
