@@ -40,7 +40,7 @@ jobs:
             php artisan route:cache
             php artisan view:cache
 
-            # php artisan migrate:fresh --seed --force
+            php artisan migrate:fresh --seed --force
             # sudo systemctl reload nginx
 
             sudo chown -R www-data:www-data storage bootstrap/cache

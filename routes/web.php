@@ -8,6 +8,7 @@ use App\Http\Controllers\RecordSalaryController;
 use App\Http\Controllers\RecordVoucherController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmployeeController;
 use App\Models\Record;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('quotations', QuotationController::class);
     Route::get('quotations/{quotation}/print-to-pdf', [QuotationController::class, 'print'])->name('quotations.print');
+
+    Route::resource('employees', EmployeeController::class);
 
 });
 

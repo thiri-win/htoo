@@ -1,237 +1,235 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { useForm } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { Head, router } from '@inertiajs/vue3';
+import { ref, computed, watch } from 'vue';
 
-const form = useForm({
-    date: new Date().toISOString().split('T')[0],
-    description: '',
-    basic_salary: 0,
-    working_days: 31,
-    unpaid_leave_days: 0,
-    paid_leave_days: 0,
-    fine_late_days: 0,
-    bonus_work_leave_days: 0,
-    bonus: 0,
-    grand_total: 0,
-});
+const props = defineProps({
+    employees: Array
+})
 
-const dailySalary = computed(() => {
-    return (parseInt(form.basic_salary) / parseInt(form.working_days)).toFixed(2);
-});
+const date = ref(new Date().toISOString().split('T')[0]);
+const employeeName = ref('');
+const baseSalary = ref(0);
+const allowedLeave = ref(2);
 
-const unpaidLeaveDaysAmount = computed(() => {
-    return dailySalary.value * 2 * parseInt(form.unpaid_leave_days);
-});
+watch(employeeName, (newId) => {
+    const selectedEmployee = props.employees?.find(e => e.id == newId);
+    if (selectedEmployee) {
+        baseSalary.value = selectedEmployee.latest_salary?.base_salary || 0;
+    } else {
+        baseSalary.value = 0;
+    }
+})
 
-const paidLeaveDaysAmount = computed(() => {
-    return dailySalary.value * parseInt(form.paid_leave_days);
-});
+const attendanceData = ref<Record<string, string>>({});
 
-const fineLateDaysAmount = computed(() => {
-    return (dailySalary.value / 2) * parseInt(form.fine_late_days);
-});
-
-const bonusWorkLeaveDaysAmount = computed(() => {
-    return dailySalary.value * 1.5 * parseInt(form.bonus_work_leave_days);
-});
-
-const grandTotal = computed(() => {
-    return (
-        Number(form.basic_salary || 0) -
-        Number(unpaidLeaveDaysAmount.value || 0) -
-        Number(paidLeaveDaysAmount.value || 0) -
-        Number(fineLateDaysAmount.value || 0) +
-        Number(bonusWorkLeaveDaysAmount.value || 0) +
-        Number(form.bonus || 0)
-    );
-});
-
-const submit = () => {
-    form.grand_total = grandTotal.value;
-    form.post(route('salary.store'));
+const attendanceStatuses = {
+    off: { label: 'နားရက်', color: 'gray', rate: 0 },
+    approved_leave: { label: 'ခွင့်ပျက်', color: 'green', rate: 1 },
+    unapproved_leave: { label: 'ခွင့်မဲ့ပျက်', color: 'red', rate: 2 },
+    late: { label: 'နောက်ကျ', color: 'yellow', rate: 0.25 }
 };
+
+const selectedDate = ref(new Date());
+
+const getFormattedDate = (date: Date) => {
+    return date.toISOString().split('T')[0];
+};
+
+const calendarAttributes = computed(() => {
+    return Object.entries(attendanceData.value).map(([dateStr, status]) => ({
+        key: dateStr,
+        highlight: (attendanceStatuses as any)[status]?.color,
+        dates: new Date(dateStr),
+        popover: { label: (attendanceStatuses as any)[status]?.label }
+    }));
+});
+
+const setStatusForSelectedDate = (status: string) => {
+
+    const dateKey = getFormattedDate(selectedDate.value);
+
+    if (status === 'normal') {
+        delete attendanceData.value[dateKey];
+    } else {
+        attendanceData.value[dateKey] = status;
+    }
+};
+
+const salarySummary = computed(() => {
+
+    let offCount = 0;
+    let offWorkCount = 0
+    let approvedLeaveCount = 0;
+    let unapprovedLeaveCount = 0;
+    let lateCount = 0;
+
+    Object.values(attendanceData.value).forEach(status => {
+        if (status === 'off') offCount++;
+        if (status === 'approved_leave') approvedLeaveCount++;
+        if (status === 'unapproved_leave') unapprovedLeaveCount++;
+        if (status === 'late') lateCount++;
+    });
+
+    const activeDate = selectedDate.value ? new Date(selectedDate.value) : new Date();
+    const year = activeDate.getFullYear();
+    const month = activeDate.getMonth();
+
+    const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+    const dailyRate = baseSalary.value / totalDaysInMonth;
+
+    offWorkCount = offCount < allowedLeave.value ? (allowedLeave.value - offCount) : 0;
+    const totalOffWorkEarn = offWorkCount * (dailyRate * 1.5);
+
+    const isPrefectAttendence = offCount == 0 && approvedLeaveCount == 0 && unapprovedLeaveCount == 0 && lateCount == 0;
+    const totalAttendanceFullEarn = isPrefectAttendence ? baseSalary.value * 0.03 : 0;
+
+    const totalApprovedDeduct = approvedLeaveCount * (dailyRate * attendanceStatuses.approved_leave.rate);
+    const totalUnapprovedDeduct = unapprovedLeaveCount * (dailyRate * attendanceStatuses.unapproved_leave.rate);
+    const totalLateDeduct = lateCount * (dailyRate * attendanceStatuses.late.rate);
+
+    const netSalary = baseSalary.value + totalAttendanceFullEarn + totalOffWorkEarn - totalApprovedDeduct - totalUnapprovedDeduct - totalLateDeduct;
+
+    return {
+        dailyRate,
+        offCount,
+        offWorkCount,
+        approvedLeaveCount,
+        unapprovedLeaveCount,
+        lateCount,
+        totalOffWorkEarn,
+        totalAttendanceFullEarn,
+        totalApprovedDeduct,
+        totalUnapprovedDeduct,
+        totalLateDeduct,
+        netSalary,
+    };
+});
+
+const save = () => {
+
+    router.post(route('salary.store'), {
+        'employee_id': employeeName.value,
+        'date': date.value,
+        'base_salary': baseSalary.value,
+        'allowed_leave': allowedLeave.value,
+        'net_salary': salarySummary.value.netSalary,
+        'off_count': salarySummary.value.offCount,
+        'off_work_count': salarySummary.value.offWorkCount,
+        'approved_leave_count': salarySummary.value.approvedLeaveCount,
+        'unapproved_leave_count': salarySummary.value.unapprovedLeaveCount,
+        'late_count': salarySummary.value.lateCount,
+        'attendance_details': attendanceData.value
+    }, {
+        onSuccess: () => {
+            alert("လစာစာရင်းကို ဒေတာဘေ့စ်ထဲ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီဗျာ!");
+        },
+        onError: (errors) => {
+            console.log(errors);
+            alert('ဒေတာသိမ်းဆည်းရာတွင် အမှားအယွင်းတစ်ခု ရှိနေပါသည်!')
+        }
+    });
+}
+
 </script>
 
 <template>
+    <Head title="Salary Calculator" />
     <AppLayout>
-        <h1>လုပ်အားခတွက်ချက်ရန်</h1>
-        <form @submit.prevent="submit">
-            <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
-                <div class="salary">
-                    <div class="mb-3 flex justify-between">
-                        <label for="date" class="mr-3 text-nowrap">Date:</label>
-                        <input type="date" name="date" id="date" v-model="form.date" :class="form.errors.date ? 'border-red-500' : ''" />
-                    </div>
-                    <div class="mb-3 flex justify-between">
-                        <label for="description" class="mr-3 text-nowrap">ဝန်ထမ်းအမည်</label>
-                        <input
-                            type="text"
-                            name="description"
-                            id="description"
-                            placeholder="အမည်"
-                            v-model="form.description"
-                            :class="form.errors.description ? 'border-red-500' : ''"
-                            autofocus
-                        />
-                    </div>
-                    <div class="mb-3 flex justify-between">
-                        <label for="days" class="mr-3 text-nowrap">အခြေခံလစာ</label>
-                        <input type="number" name="basic_salary" id="basic_salary" placeholder="လစာ" v-model="form.basic_salary" />
-                    </div>
-                    <div class="mb-3 flex justify-between">
-                        <label for="days" class="mr-3 text-nowrap">တလအတွင်း စုစုပေါင်းရှိရက်</label>
-                        <input
-                            type="number"
-                            name="working_days"
-                            id="working_days"
-                            placeholder="30, 31 စသဖြင့် ဖြည့်ရန်"
-                            v-model="form.working_days"
-                        />
+        <div>
+            <h1>လုပ်အားခတွက်ရန်</h1>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="border p-4 rounded-lg shadow">
+                    <div>
+                        <div class="mb-4 flex">
+                            <label for="date" class="min-w-1/3 text-nowrap">Date : </label>
+                            <input type="date" name="date" id="date" v-model="date" class="!border">
+                        </div>
+
+                        <div class="mb-4 flex">
+                            <label for="employeeName" class="min-w-1/3 text-nowrap">ဝန်ထမ်းအမည် : </label>
+                            <select name="employeename" id="employee" v-model="employeeName" class="!border">
+                                <option v-for="employee in props.employees" :key="employee.id" :value="employee.id">{{ employee.name }}</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4 flex">
+                            <label for="baseSalary" class="min-w-1/3 text-nowrap">အခြေခံလုပ်အားခ : </label>
+                            <input type="number" name="baseSalary" id="baseSalary" v-model="baseSalary" class="!border">
+                        </div>
+
+                        <div class="mb-4 flex">
+                            <label for="allowedLeave" class="min-w-1/3">ခွင့်ပြုထားသောနားရက်စုစုပေါင်း : </label>
+                            <input type="number" name="allowedLeave" id="allowLeave" v-model="allowedLeave" class="!border">
+                        </div>
+
+                        <div class="space-y-3 text-sm border-t pt-3">
+                            <div class="flex justify-between">
+                                <span>၁ ရက်စာလုပ်အားခ:</span>
+                                <span class="font-medium">{{ Math.round(salarySummary.dailyRate).toLocaleString() }} ကျပ်</span>
+                            </div>
+                            <div class="flex justify-between" :style="{ color: attendanceStatuses.off.color }">
+                                <span>{{ attendanceStatuses.off.label }}({{ salarySummary.offCount }} ရက်):</span>
+                                <span>-0 ကျပ်</span>
+                            </div>
+                            <div class="flex justify-between text-blue-600">
+                                <span>နားရက်အလုပ်ဆင်း ({{ salarySummary.offWorkCount }} ရက်):</span>
+                                <span>+{{ salarySummary.totalOffWorkEarn.toLocaleString() }} ကျပ်</span>
+                            </div>
+                            <div class="flex justify-between" :style="{ color: attendanceStatuses.approved_leave.color }">
+                                <span>{{ attendanceStatuses.approved_leave.label }} ({{ salarySummary.approvedLeaveCount }} ရက်):</span>
+                                <span>-{{ salarySummary.totalApprovedDeduct.toLocaleString() }} ကျပ်</span>
+                            </div>
+                            <div class="flex justify-between" :style="{ color: attendanceStatuses.unapproved_leave.color }">
+                                <span>{{ attendanceStatuses.unapproved_leave.label }} ({{ salarySummary.unapprovedLeaveCount }} ရက်):</span>
+                                <span>-{{ salarySummary.totalUnapprovedDeduct.toLocaleString() }} ကျပ်</span>
+                            </div>
+                            <div class="flex justify-between" :style="{ color: attendanceStatuses.late.color }">
+                                <span>{{ attendanceStatuses.late.label }} ({{ salarySummary.lateCount }} ရက်):</span>
+                                <span>-{{ salarySummary.totalLateDeduct.toLocaleString() }} ကျပ်</span>
+                            </div>
+                            <div class="flex justify-between text-orange-600">
+                                <span>ရက်မှန်ကြေး :</span>
+                                <span>-{{ salarySummary.totalAttendanceFullEarn.toLocaleString() }} ကျပ်</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mb-3 flex justify-between">
-                        <label for="days" class="mr-3 text-nowrap">ဒဏ်ကြေး(ခွင့်မဲ့ပျက်ရက်)</label>
-                        <input
-                            type="number"
-                            name="unpaid_leave_days"
-                            id="unpaid_leave_days"
-                            placeholder="ခွင့်မဲ့ပျက်ရက်"
-                            v-model="form.unpaid_leave_days"
-                        />
-                    </div>
-                    <div class="mb-3 flex justify-between">
-                        <label for="paid_leave_days" class="mr-3 text-nowrap">ဒဏ်ကြေး(ခွင့်တိုင်ပျက်ရက်)</label>
-                        <input
-                            type="number"
-                            name="paid_leave_days"
-                            id="paid_leave_days"
-                            placeholder="ခွင့်ရှိပျက်ရက်"
-                            v-model="form.paid_leave_days"
-                        />
+                    <div class="border-t pt-4 mt-4">
+                        <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                            <span class="text-blue-900 font-bold">အသားတင်လစာ:</span>
+                            <span class="text-xl font-black text-blue-700">{{ Math.round(salarySummary.netSalary).toLocaleString() }} ကျပ်</span>
+                        </div>
                     </div>
 
-                    <div class="mb-3 flex justify-between">
-                        <label for="fine_late_days" class="mr-3 text-nowrap">ဒဏ်ကြေး(နောက်ကျသည့်ရက်)</label>
-                        <input
-                            type="number"
-                            name="fine_late_days"
-                            id="fine_late_days"
-                            placeholder="နောက်ကျရက်ဒဏ်ကြေး"
-                            v-model="form.fine_late_days"
-                        />
-                    </div>
-
-                    <div class="mb-3 flex justify-between">
-                        <label for="bonus_work_leave_days" class="mr-3 text-nowrap">ဆုကြေး(နားရက်ဆင်းသည့်ရက်)</label>
-                        <input
-                            type="number"
-                            name="bonus_work_leave_days"
-                            id="bonus_work_leave_days"
-                            placeholder="နားရက်ဆင်းသည့်ရက်"
-                            v-model="form.bonus_work_leave_days"
-                        />
-                    </div>
-                    <div class="mb-3 flex justify-between">
-                        <label for="bonus" class="mr-3 text-nowrap">ဘောနပ်စ်</label>
-                        <input
-                            type="number"
-                            name="bonus"
-                            id="bonus"
-                            placeholder="ဆုကြေး"
-                            v-model="form.bonus"
-                            :class="form.errors.bonus ? 'border-red-500' : ''"
-                        />
+                    <div>
+                        <button @click="save()" class="btn submit-btn">Save to Database</button>
                     </div>
                 </div>
 
-                <div class="col-span-2 rounded-xl border p-3 shadow">
-                    <div>
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td>Date</td>
-                                    <td class="min-w-50 text-right">{{ form.date }}</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>ဝန်ထမ်းအမည်</td>
-                                    <td class="min-w-50 text-right">{{ form.description }}</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>အခြေခံလစာ</td>
-                                    <td v-if="form.basic_salary" class="min-w-50 text-right">{{ form.basic_salary.toLocaleString() }}</td>
-                                    <td v-else class="min-w-50 text-right">0</td>
-                                    <td v-if="form.basic_salary && form.working_days" class="text-sm">
-                                        {{ form.basic_salary }} / {{ form.working_days }}days = {{ dailySalary }}/day
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>ဒဏ်ကြေး(လစာမဲ့ခွင့်)</td>
-                                    <td class="min-w-50 text-right" v-if="form.unpaid_leave_days">- {{ unpaidLeaveDaysAmount.toLocaleString() }}</td>
-                                    <td class="min-w-50 text-right" v-else>0</td>
-                                    <td v-if="form.unpaid_leave_days && dailySalary">
-                                        {{ dailySalary }} x 2ဆ x {{ form.unpaid_leave_days }}days = {{ unpaidLeaveDaysAmount }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>ဒဏ်ကြေး(လစာပေးခွင့်ရက်)</td>
-                                    <td class="min-w-50 text-right" v-if="form.unpaid_leave_days">- {{ paidLeaveDaysAmount.toLocaleString() }}</td>
-                                    <td class="min-w-50 text-right" v-else>0</td>
-                                    <td v-if="form.unpaid_leave_days && dailySalary">
-                                        {{ dailySalary }} x {{ form.paid_leave_days }}days = {{ paidLeaveDaysAmount }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>ဒဏ်ကြေး(နောက်ကျသည့်ရက်)</td>
-                                    <td class="min-w-50 text-right" v-if="form.fine_late_days">- {{ fineLateDaysAmount.toLocaleString() }}</td>
-                                    <td class="min-w-50 text-right" v-else>0</td>
-                                    <td v-if="form.fine_late_days && dailySalary">
-                                        {{ dailySalary }} x 1/2ဆ x {{ form.fine_late_days }}days = {{ fineLateDaysAmount }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>ဆုကြေး(နားရက်ဆင်းသည့်ရက်)</td>
-                                    <td class="min-w-50 text-right" v-if="form.bonus_work_leave_days">
-                                        - {{ bonusWorkLeaveDaysAmount.toLocaleString() }}
-                                    </td>
-                                    <td class="min-w-50 text-right" v-else>0</td>
-                                    <td v-if="form.bonus_work_leave_days && dailySalary">
-                                        {{ dailySalary }} x 1.5ဆ x {{ form.bonus_work_leave_days }}days = {{ bonusWorkLeaveDaysAmount }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>ဘောနပ်စ်</td>
-                                    <td v-if="form.bonus" class="min-w-50 text-right">
-                                        {{ form.bonus.toLocaleString() }}
-                                    </td>
-                                    <td v-else class="text-right">0</td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td>စုစုပေါင်းရငွေ</td>
-                                    <td class="min-w-50 text-right">
-                                        {{ grandTotal.toLocaleString() }}
-                                    </td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                    <div>
-                        <button type="submit" class="mb-3 rounded-lg border px-3 py-2 text-red-500 shadow" :disabled="form.processing">
-                            စာရင်းထဲသို့သိမ်းမည်
-                        </button>
-                    </div>
-                    <div class="mb-3 rounded-lg border p-3 text-red-500 shadow">
-                        <p>မှတ်ချက်</p>
-                        <small><strong>စာရင်းထဲသို့သိမ်းမည်</strong> မနှိပ်ပါက database ထဲသို့ သိမ်းမည်မဟုတ်ပါ</small>
+                <div class="border p-4 rounded-lg bg-white shadow">
+                    <h2 class="text-lg font-semibold mb-3">ပြက္ခဒိန်တွင် ရက်ရွေးပြီး စာရင်းသွင်းပါ</h2>
+
+                    <VDatePicker v-model="selectedDate" :attributes="calendarAttributes" expanded borderless />
+
+                    <div class="mt-4 p-3 bg-gray-50 rounded">
+
+                        <p class="text-sm font-medium text-gray-700 mb-2">
+                            ရွေးချယ်ထားသောရက်စွဲ: <span class="text-blue-600 font-bold">{{ getFormattedDate(selectedDate) }}</span>
+                        </p>
+
+                        <div class="flex flex-wrap gap-2">
+
+                            <button @click="setStatusForSelectedDate(key)" v-for="(status, key) in attendanceStatuses" :key="key" :style="{ background: status.color }" class="px-3 py-1 text-sm font-medium rounded">{{ status.label }} ( * {{ status.rate }})</button>
+
+                            <button @click="setStatusForSelectedDate('normal')" class="px-3 py-1.5 bg-blue-200 text-sm font-medium rounded hover:bg-blue-300">Clear</button>
+
+                        </div>
                     </div>
                 </div>
+
             </div>
-        </form>
+        </div>
     </AppLayout>
 </template>

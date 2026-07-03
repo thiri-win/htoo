@@ -10,6 +10,8 @@ import $ from 'jquery';
 window.$ = window.jQuery = $;
 import 'datatables.net-dt/css/dataTables.dataTables.css';
 import 'datatables.net';
+import VCalendar from 'v-calendar';
+import 'v-calendar/style.css';
 
 // Extend ImportMeta interface for Vite...
 declare module 'vite/client' {
@@ -33,6 +35,7 @@ createInertiaApp({
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
+            .use(VCalendar,{})
             .mount(el);
     },
     progress: {
