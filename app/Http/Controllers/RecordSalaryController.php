@@ -21,11 +21,14 @@ class RecordSalaryController extends Controller
         $validated = $request->validate([
             'date' => 'required',
             'employee_id' => 'required',
+            'net_salary' => 'required',
         ]);
+
         $validated['description'] = Employee::find($request->employee_id)->name;
         $validated['category_id'] = 4;
-        $validated['remark'] = "salary($request->base_salary),attendance_details(". json_encode($request->attendance_details) .")";
-        dd($validated);
+        $validated['grand_total'] = $request->net_salary;
+        $validated['remark'] = "salary($request->base_salary),attendance_details(" . json_encode($request->attendance_details) . ")";
+        
         Record::create($validated);
         return redirect()->route('records.index')->with('success', 'Salary Added Successfully');
     }
