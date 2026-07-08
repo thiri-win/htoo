@@ -17,11 +17,10 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4.6' # သင့် local/server က PHP version ပြောင်းပေးပါ
-          extensions: mbstring, xml, ctype, iconv
-          
+
       - name: Install Composer Dependencies
         run: |
-          composer install --no-dev --optimize-autoloader --ignore-platform-reqs
+          composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-scripts
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
