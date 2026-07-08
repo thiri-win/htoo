@@ -7,11 +7,30 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '26' # သင့် local က node version နဲ့ ကိုက်ညီတာ ထားပါ
+
+      - name: Install NPM & Build Production Assets
+        run: |
+          npm install
+          npm run build
+
+      - name: Copy Build Assets to EC2 via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: 'public/build/'
+          target: '/var/www/htoo/'
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.1
@@ -31,8 +50,8 @@ jobs:
 
             # 2. PHP Dependencies သွင်းမယ်
             composer install --no-dev --optimize-autoloader --ignore-platform-reqs
-            npm install
-            npm run build
+            # npm install
+            # npm run build
 
             # 3. Laravel Optimization & Permissions
             php artisan optimize:clear
