@@ -16,7 +16,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4.6' # သင့် local/server က PHP version ပြောင်းပေးပါ
+          php-version: '8.4.6'
 
       - name: Install Composer Dependencies
         run: |
@@ -25,12 +25,24 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '26' # သင့် local က node version နဲ့ ကိုက်ညီတာ ထားပါ
+          node-version: '26'
 
       - name: Install NPM & Build Production Assets
         run: |
           npm install
           npm run build
+
+      - name: Open Permissions on EC2 for SCP
+        uses: appleboy/ssh-action@v1.0.1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/htoo
+            # scp တက်လာရင် ရေးလို့ရအောင် လက်ရှိ user ကို ခေတ္တ ပိုင်ရှင်ပေးထားမယ်
+            sudo chown -R $USER:$USER public storage bootstrap/cache
+            sudo chmod -R 775 public storage bootstrap/cache
 
       - name: Copy Build Assets to EC2 via SCP
         uses: appleboy/scp-action@v0.1.7
