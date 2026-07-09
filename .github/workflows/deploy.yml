@@ -13,15 +13,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # ၁။ GitHub စက်ပေါ်မှာ PHP/Composer အရင်သွင်းမယ် (ဒါမှ vendor/ziggy အသင့်ရှိမှာပါ)
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4.6'
+          php-version: '8.4.6' 
 
       - name: Install Composer Dependencies
         run: |
           composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-scripts
 
+      # ၂။ GitHub စက်ပေါ်မှာ Node.js ဆောက်ပြီး Vite Build ပတ်မယ်
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -32,7 +34,8 @@ jobs:
           npm install
           npm run build
 
-      - name: Open Permissions on EC2 for SCP
+      # 🚀 ၃။ AWS Server ပေါ်မှာ ရှင်းလင်းရေး အရင်လုပ်မယ်
+      - name: Git Pull & Reset on EC2
         uses: appleboy/ssh-action@v1.0.1
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -40,19 +43,27 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/htoo
+            
+            # ခေတ္တ ဝင်ရေးလို့ရအောင် Permission ဖွင့်မယ်
             sudo chown -R $USER:$USER public storage bootstrap/cache
             sudo chmod -R 775 public storage bootstrap/cache
 
+            # Git Reset အရင်လုပ်မယ် (ဒါမှ ဖိုင်တွေ အရင်သန့်စင်သွားမှာပါ)
+            git fetch --all
+            git reset --hard origin/main
+
+      # 🚀 ၄။ Git ရှင်းပြီးမှ... GitHub ပေါ်မှာ ထွက်လာတဲ့ public/build ကို SCP နဲ့ လှမ်းအုပ်မယ်
       - name: Copy Build Assets to EC2 via SCP
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: 'public/build/'
-          target: '/var/www/htoo/'
+          source: "public/build/"
+          target: "/var/www/htoo/"
 
-      - name: Deploy to EC2
+      # 🚀 ၅။ နောက်ဆုံးပိတ် Laravel Cache ရှင်းပြီး Permissions ပြန်ပိတ်မယ်
+      - name: Execute Remaining PHP Commands
         uses: appleboy/ssh-action@v1.0.1
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -61,21 +72,15 @@ jobs:
           script: |
             cd /var/www/htoo
 
-            sudo chown -R $USER:$USER storage bootstrap/cache
-            sudo chmod -R 775 storage bootstrap/cache
-
-            git fetch --all
-            git reset --hard origin/main
-            
+            # AWS ပေါ်မှာလည်း PHP packages တွေ update ဖြစ်အောင် သွင်းမယ်
             composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
+            # Laravel Optimization
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
 
-            # php artisan migrate:fresh --seed --force
-            # sudo systemctl reload nginx
-
-            sudo chown -R www-data:www-data storage bootstrap/cache
-            sudo chmod -R 775 storage bootstrap/cache
+            # 🔐 Nginx Web Server (www-data) ဖတ်လို့ရအောင် လုံခြုံရေး Permission ပြန်ပိတ်မယ်
+            sudo chown -R www-data:www-data storage bootstrap/cache public
+            sudo chmod -R 775 storage bootstrap/cache public
