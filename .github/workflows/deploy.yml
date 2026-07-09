@@ -40,7 +40,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/htoo
-            # scp တက်လာရင် ရေးလို့ရအောင် လက်ရှိ user ကို ခေတ္တ ပိုင်ရှင်ပေးထားမယ်
             sudo chown -R $USER:$USER public storage bootstrap/cache
             sudo chmod -R 775 public storage bootstrap/cache
 
@@ -65,16 +64,11 @@ jobs:
             sudo chown -R $USER:$USER storage bootstrap/cache
             sudo chmod -R 775 storage bootstrap/cache
 
-            # 1. Server ပေါ်က Local changes တွေကို ဖယ်ပြီး Code အသစ်ဆွဲမယ်
             git fetch --all
             git reset --hard origin/main
-
-            # 2. PHP Dependencies သွင်းမယ်
+            
             composer install --no-dev --optimize-autoloader --ignore-platform-reqs
-            # npm install
-            # npm run build
 
-            # 3. Laravel Optimization & Permissions
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
