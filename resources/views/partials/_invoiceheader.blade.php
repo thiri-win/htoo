@@ -30,7 +30,7 @@
         text-align: center;
         color: #1b5f21;
         text-transform: uppercase;
-        margin: 20px 0;
+        margin: 12px 0;
         font-size: 30px;
         font-weight: 700;
         font-family: "poppins";
@@ -55,8 +55,7 @@
 <header class="header">
     <div class="container">
         <div>
-            <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('image/htoo_logo_green.png'))) }}"
-                alt="" style="height: 150px;">
+            <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('image/htoo_logo_green.png'))) }}" alt="" style="height: 150px;">
         </div>
         <div class="content">
             <h2>Htoo Automobile Service</h2>
@@ -86,6 +85,20 @@
 
     <table style="width: 100%;">
         <tbody>
+            <tr>
+                <td style="font-size: 12px;"></td>
+                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; width:16%">
+                </td>
+
+                <td style="font-size: 12px;"></td>
+                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; width:16%">
+                </td>
+
+                <td style="font-size: 12px;">Invoice No:</td>
+                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; width:16%">
+                    {{ $data->record_number ?? '' }}
+                </td>
+            </tr>
             <tr>
                 <td style="font-size: 12px;">Date:</td>
                 <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; width:16%">

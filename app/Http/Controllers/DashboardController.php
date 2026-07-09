@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Car;
 use App\Models\Category;
 use App\Models\Record;
 use Illuminate\Support\Collection;
@@ -18,6 +17,11 @@ class DashboardController extends Controller
         $startOfMonth = $now->copy()->startOfMonth();
         $endOfMonth = $now->copy()->endOfMonth();
         $sixMonthsStart = $now->copy()->subMonths(5)->startOfMonth();
+
+        $threeYearsAgoStart = $now->copy()->subYears(2)->startOfYear();
+        $recordsFromThreeYears = Record::with('category')
+            ->where('date', '>=', $threeYearsAgoStart->toDateString())
+            ->get();
 
         $categorySumByThisMonth = Category::withSum(['records' => function ($query) use ($startOfMonth, $endOfMonth) {
             $query->whereBetween('date', [$startOfMonth->toDateString(), $endOfMonth->toDateString()]);
@@ -44,6 +48,7 @@ class DashboardController extends Controller
             'monthlyBalance' => $this->incomeExpenseSummaryByPeriod($recordsLastSixMonths, fn($record) => $record->date->format('Y-M')),
             'yearlySummary' => $this->incomeExpenseSummaryByPeriod($allRecords, fn($record) => $record->date->format('Y'))->sortKeys(),
             'topFiveCarsByModel' => $topFiveCarsByModel,
+            'yearlyComparisonChart' => $this->getYearlyComparisonData($recordsFromThreeYears, $now->year),
         ]);
     }
 
@@ -125,5 +130,47 @@ class DashboardController extends Controller
 
             return [$key => $grouped->get($key, $zeroCategories)];
         });
+    }
+
+    private function getYearlyComparisonData(Collection $records, int $currentYear): array
+    {
+        $years = [$currentYear - 2, $currentYear - 1, $currentYear]; // [2024, 2025, 2026]
+        $monthsName = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        $colors = [
+            $currentYear - 2 => '#94a3b8',
+            $currentYear - 1 => '#6366f1',
+            $currentYear     => '#10b981',
+        ];
+
+        $grouped = $records->groupBy(fn($record) => $record->date->format('Y-n'));
+        $datasets = [];
+
+        foreach ($years as $year) {
+            $dataForYear = [];
+
+            foreach (range(1, 12) as $monthNum) {
+                $key = "{$year}-{$monthNum}";
+                $profit = 0;
+
+                if ($grouped->has($key)) {
+                    $profit = $grouped->get($key)->reduce(function ($carry, $record) {
+                        return $record->category?->status === 'sum' ? $carry + $record->grand_total : $carry - $record->grand_total;
+                    }, 0);
+                }
+                $dataForYear[] = $profit;
+            }
+
+            $datasets[] = [
+                'label' => (string)$year,
+                'data' => $dataForYear,
+                'backgroundColor' => $colors[$year],
+            ];
+        }
+
+        return [
+            'labels' => $monthsName,
+            'datasets' => $datasets
+        ];
     }
 }

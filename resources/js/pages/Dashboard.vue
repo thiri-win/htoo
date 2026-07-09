@@ -24,6 +24,7 @@ const props = defineProps<{
     monthlyBalance: Record<string, any>;
     yearlySummary: Record<string, any>;
     topFiveCarsByModel: Array<any>;
+    yearlyComparisonChart: Array<any>;
 }>();
 
 const year = new Date().getFullYear();
@@ -53,9 +54,15 @@ const categoryTitles = computed(() => Object.keys(props.categorySumByMonth?.['1'
 
     <AppLayout :breadcrumbs="[{ title: 'Dashboard', href: '/dashboard' }]">
         <div class="mb-5 flex flex-wrap gap-2">
-            <Link :href="route('records.create')" class="btn new-btn"><PlusIcon class="inline-block mr-1" />စာရင်းအသစ်ထည့်ရန်</Link>
-            <Link :href="route('vouchers.create')" class="btn new-btn"><PlusIcon class="inline-block mr-1" />ဘောက်ချာအသစ်ဖွင့်ရန်</Link>
-            <a href="/backup-database" class="btn new-btn"><DownloadCloud class="inline-block mr-1" />Download DB</a>
+            <Link :href="route('records.create')" class="btn new-btn">
+                <PlusIcon class="inline-block mr-1" />စာရင်းအသစ်ထည့်ရန်
+            </Link>
+            <Link :href="route('vouchers.create')" class="btn new-btn">
+                <PlusIcon class="inline-block mr-1" />ဘောက်ချာအသစ်ဖွင့်ရန်
+            </Link>
+            <a href="/backup-database" class="btn new-btn">
+                <DownloadCloud class="inline-block mr-1" />Download DB
+            </a>
         </div>
 
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -68,23 +75,11 @@ const categoryTitles = computed(() => Object.keys(props.categorySumByMonth?.['1'
             </div>
 
             <div class="overflow-x-auto border p-5">
-                <DynamicTable
-                    title="နှစ်အလိုက်အမြတ်ငွေ စာရင်းဇယား"
-                    :headers="['လ', 'ဝင်ငွေ', 'ထွက်ငွေ', 'အမြတ်']"
-                    firstKeyName="year"
-                    :highlightKey="year"
-                    :rows="yearlySummary"
-                />
+                <DynamicTable title="နှစ်အလိုက်အမြတ်ငွေ စာရင်းဇယား" :headers="['လ', 'ဝင်ငွေ', 'ထွက်ငွေ', 'အမြတ်']" firstKeyName="year" :highlightKey="year" :rows="yearlySummary" />
             </div>
 
             <div class="overflow-x-auto border p-5">
-                <DynamicTable
-                    title="ယခုနှစ်အမြတ်ငွေ စာရင်းဇယား"
-                    :headers="['လ', 'ဝင်ငွေ', 'ထွက်ငွေ', 'အမြတ်']"
-                    firstKeyName="month"
-                    :highlightKey="currentMonth"
-                    :rows="monthlyBalance"
-                />
+                <DynamicTable title="ယခုနှစ်အမြတ်ငွေ စာရင်းဇယား" :headers="['လ', 'ဝင်ငွေ', 'ထွက်ငွေ', 'အမြတ်']" firstKeyName="month" :highlightKey="currentMonth" :rows="monthlyBalance" />
             </div>
 
             <div class="col-span-full overflow-x-auto border p-5 xl:col-span-2">
@@ -96,13 +91,11 @@ const categoryTitles = computed(() => Object.keys(props.categorySumByMonth?.['1'
             </div>
 
             <div class="col-span-full overflow-x-auto border p-5">
-                <DynamicTable
-                    title="ယခုနှစ် ငွေစာရင်းများ"
-                    :headers="['Month', ...categoryTitles]"
-                    firstKeyName="month"
-                    :highlightKey="currentMonth"
-                    :rows="categorySumByMonth as any"
-                />
+                <Bar :data="yearlyComparisonChart as any" :options="{ scales: { x: { stacked: false }, y: { stacked: false } }, plugins: { title: { text: 'Yearly Comparison' } } }" />
+            </div>
+
+            <div class="col-span-full overflow-x-auto border p-5">
+                <DynamicTable title="ယခုနှစ် ငွေစာရင်းများ" :headers="['Month', ...categoryTitles]" firstKeyName="month" :highlightKey="currentMonth" :rows="categorySumByMonth as any" />
             </div>
         </div>
     </AppLayout>

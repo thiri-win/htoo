@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
         ->headerView('partials._invoiceheader', ['data' => $record])
         ->footerView('partials._footer')
         ->format('A4')
-        ->margins(97, 10, 10, 10)
+        ->margins(100, 10, 10, 10)
         ->name('invoice.pdf');
     })->name('vouchers.print');
 
