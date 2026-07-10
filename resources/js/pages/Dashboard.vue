@@ -10,7 +10,6 @@ import { CHART_COLORS, categoryStackChartData, emptyChartData } from '@/lib/dash
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement);
 
-// 🛠️ GLOBAL OPTIONS
 ChartJS.defaults.responsive = true;
 ChartJS.defaults.maintainAspectRatio = true;
 ChartJS.defaults.plugins.title.display = true;
@@ -30,23 +29,24 @@ const props = defineProps<{
 const year = new Date().getFullYear();
 const currentMonth = `${year}-${new Date().toLocaleString('default', { month: 'short' })}`;
 
-const categorySumByThisMonth = computed(() => !props.categorySumByThisMonth?.length ? emptyChartData() : {
+const categorySumByThisMonthChartData = computed(() => !props.categorySumByThisMonth?.length ? emptyChartData() : {
     labels: props.categorySumByThisMonth.map(c => c.title),
     datasets: [{ label: 'Category Amount', data: props.categorySumByThisMonth.map(c => c.records_sum_grand_total || 0), backgroundColor: CHART_COLORS }]
 });
 
-const topFiveCarsByModel = computed(() => ({
+const topFiveCarsByModelChartData = computed(() => ({
     labels: props.topFiveCarsByModel.map(c => `${c.car_brand} ${c.car_model}`),
     datasets: [{ label: 'Count', data: props.topFiveCarsByModel.map(c => c.count || 0), backgroundColor: CHART_COLORS }]
 }));
 
-const monthlyProfitThisYear = computed(() => !props.monthlyProfitThisYear || !Object.keys(props.monthlyProfitThisYear).length ? emptyChartData() : {
+const monthlyProfitThisYearChartData = computed(() => !props.monthlyProfitThisYear || !Object.keys(props.monthlyProfitThisYear).length ? emptyChartData() : {
     labels: Object.keys(props.monthlyProfitThisYear),
     datasets: [{ label: 'Monthly Profit', data: Object.values(props.monthlyProfitThisYear), backgroundColor: CHART_COLORS }]
 });
 
 const dailyStackChartData = computed(() => categoryStackChartData(props.categorySumByDay));
 const categoryTitles = computed(() => Object.keys(props.categorySumByMonth?.['1'] || {}));
+
 </script>
 
 <template>
@@ -65,13 +65,25 @@ const categoryTitles = computed(() => Object.keys(props.categorySumByMonth?.['1'
             </a>
         </div>
 
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div class="overflow-x-auto border p-5">
-                <Pie :data="categorySumByThisMonth as any" :options="{ plugins: { title: { text: 'ယခုလ အမျိုးအစားအလိုက်ဝင်ငွေ' } } }" />
+                <Pie :data="categorySumByThisMonthChartData" :options="{ plugins: { title: { text: 'ယခုလ အမျိုးအစားအလိုက်ဝင်ငွေ' } } }" />
             </div>
 
             <div class="overflow-x-auto border p-5 h-[350px]">
-                <Bar :data="topFiveCarsByModel as any" :options="{ indexAxis: 'y', maintainAspectRatio: false, plugins: { title: { text: 'ဝပ်ရှော့သို့ အလာအများဆုံး ကားများ' } } }" />
+                <Bar :data="topFiveCarsByModelChartData" :options="{ indexAxis: 'y', maintainAspectRatio: false, plugins: { title: { text: 'ဝပ်ရှော့သို့ အလာအများဆုံး ကားများ' } } }" />
+            </div>
+
+            <div class="overflow-x-auto border p-5">
+                <DynamicTable title="ယခုနှစ် လအလိုက်အမြတ်ငွေ စာရင်းဇယား" :headers="['လ', 'ဝင်ငွေ', 'ထွက်ငွေ', 'အမြတ်']" firstKeyName="month" :highlightKey="currentMonth" :rows="monthlyBalance" />
+            </div>
+
+            <div class="overflow-x-auto border p-5">
+                <Bar :data="monthlyProfitThisYearChartData" :options="{ scales: { x: { ticks: { maxRotation: 90, minRotation: 90 } } }, plugins: { title: { text: 'ယခုနှစ် လအလိုက်အမြတ်ငွေ' } } }" />
+            </div>
+
+            <div class="overflow-x-auto border p-5 col-span-full">
+                <Bar :data="dailyStackChartData" :options="{ scales: { x: { stacked: true }, y: { stacked: true } }, plugins: { title: { text: 'နေ့ရက်အလိုက်စာရင်းများ' } } }" />
             </div>
 
             <div class="overflow-x-auto border p-5">
@@ -79,23 +91,11 @@ const categoryTitles = computed(() => Object.keys(props.categorySumByMonth?.['1'
             </div>
 
             <div class="overflow-x-auto border p-5">
-                <DynamicTable title="ယခုနှစ်အမြတ်ငွေ စာရင်းဇယား" :headers="['လ', 'ဝင်ငွေ', 'ထွက်ငွေ', 'အမြတ်']" firstKeyName="month" :highlightKey="currentMonth" :rows="monthlyBalance" />
+                <Bar :data="yearlyComparisonChart" :options="{ scales: { x: { stacked: false }, y: { stacked: false } }, plugins: { title: { text: 'Yearly Comparison' } } }" />
             </div>
 
-            <div class="col-span-full overflow-x-auto border p-5 xl:col-span-2">
-                <Bar :data="monthlyProfitThisYear as any" :options="{ scales: { x: { ticks: { maxRotation: 90, minRotation: 90 } } }, plugins: { title: { text: 'ယခုနှစ် လအလိုက်အမြတ်ငွေ' } } }" />
-            </div>
-
-            <div class="col-span-full overflow-x-auto border p-5">
-                <Bar :data="dailyStackChartData as any" :options="{ scales: { x: { stacked: true }, y: { stacked: true } }, plugins: { title: { text: 'နေ့ရက်အလိုက်စာရင်းများ' } } }" />
-            </div>
-
-            <div class="col-span-full overflow-x-auto border p-5">
-                <Bar :data="yearlyComparisonChart as any" :options="{ scales: { x: { stacked: false }, y: { stacked: false } }, plugins: { title: { text: 'Yearly Comparison' } } }" />
-            </div>
-
-            <div class="col-span-full overflow-x-auto border p-5">
-                <DynamicTable title="ယခုနှစ် ငွေစာရင်းများ" :headers="['Month', ...categoryTitles]" firstKeyName="month" :highlightKey="currentMonth" :rows="categorySumByMonth as any" />
+            <div class="overflow-x-auto border p-5 col-span-full">
+                <DynamicTable title="ယခုနှစ် ငွေစာရင်းများ" :headers="['Month', ...categoryTitles]" firstKeyName="month" :highlightKey="currentMonth" :rows="categorySumByMonth" />
             </div>
         </div>
     </AppLayout>
