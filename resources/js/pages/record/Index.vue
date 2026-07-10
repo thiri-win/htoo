@@ -29,6 +29,7 @@ onMounted(() => {
             <thead class="border-0">
                 <tr>
                     <th>ID</th>
+                    <th>Invoice ID</th>
                     <th>Date</th>
                     <th>Description</th>
                     <th>Category</th>
@@ -38,7 +39,8 @@ onMounted(() => {
             </thead>
             <tbody>
                 <tr v-for="record in records" v-bind:key="record.id">
-                    <td>{{ record.record_number }}</td>
+                    <td>{{ record.id }}</td>
+                    <td>{{ record.record_number}}</td>
                     <td>{{ dayjs(record.date).format('DD-MM-YYYY') }}</td>
                     <td>{{ record.description }}</td>
                     <td>{{ record.category.title }}</td>

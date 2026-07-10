@@ -239,6 +239,10 @@ textarea {
     @apply mb-1 w-full border p-1;
 }
 
+table {
+    @apply overflow-x-auto;
+}
+
 table input {
     @apply border-0;
 }
