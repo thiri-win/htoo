@@ -40,7 +40,7 @@ onMounted(() => {
             <tbody>
                 <tr v-for="record in records" v-bind:key="record.id">
                     <td>{{ record.id }}</td>
-                    <td>{{ record.record_number}}</td>
+                    <td>{{ record.record_number }}</td>
                     <td>{{ dayjs(record.date).format('DD-MM-YYYY') }}</td>
                     <td>{{ record.description }}</td>
                     <td>{{ record.category.title }}</td>
@@ -68,7 +68,7 @@ onMounted(() => {
                                 <span class="hidden xl:inline-block">Edit</span>
                             </a>
                         </div>
-                        <a :href="route('vouchers.print', record)" class="btn print-btn inline-block mr-1 text-xs">
+                        <a v-show="record.category.id == 1" :href="route('vouchers.print', record)" class="btn print-btn inline-block mr-1 text-xs">
                             <Printer class="inline-block w-4 xl:w-3 xl:mr-1" />
                             <span class="hidden xl:inline-block">Print</span>
                         </a>

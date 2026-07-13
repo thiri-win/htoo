@@ -87,11 +87,11 @@
         <tbody>
             <tr>
                 <td style="font-size: 12px;"></td>
-                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; width:16%">
+                <td style="font-size:12px; width:16%">
                 </td>
 
                 <td style="font-size: 12px;"></td>
-                <td style="border-bottom: 1px solid #f1f2f3; font-size:12px; width:16%">
+                <td style="font-size:12px; width:16%">
                 </td>
 
                 <td style="font-size: 12px;">Invoice No:</td>
