@@ -1,4 +1,9 @@
 <style>
+    @font-face {
+        font-family: 'poppins';
+        src: url('{{ public_path('fonts/Poppins/Poppins-Medium.ttf') }}');
+    }
+
     * {
         padding: 0;
         margin: 0;
@@ -44,6 +49,8 @@
 
     td {
         padding: 5px;
+        white-space: nowrap;
+
     }
 
     .content p,
