@@ -4,13 +4,18 @@
         src: url('{{ public_path('fonts/Poppins/Poppins-Medium.ttf') }}');
     }
 
+    @font-face {
+        font-family: 'myanmar';
+        src: url('{{ public_path('fonts/Noto_Sans_Myanmar/NotoSansMyanmar-Medium.ttf') }}') format('truetype');
+    }
+
     * {
         padding: 0;
         margin: 0;
         box-sizing: border-box;
         line-height: 1.5;
         font-size: 14px;
-        font-family: "poppins";
+        font-family: 'myanmar' !important;
         font-weight: 400;
     }
 
