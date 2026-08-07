@@ -1,11 +1,11 @@
 <style>
     .watermark {
         position: fixed;
-        top: 25%;
+        top: 55%;
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: -1;
-        opacity: 0.2;
+        opacity: 0.5;
         width: 500px;
     }
 

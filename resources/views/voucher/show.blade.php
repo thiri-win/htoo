@@ -9,68 +9,125 @@
     <style>
         @font-face {
             font-family: 'myanmar';
-            src: url('{{ public_path('fonts/Noto_Sans_Myanmar/NotoSansMyanmar-Medium.ttf') }}') format('truetype');
+            src: url('{{ public_path('fonts/Noto_Sans_Myanmar/NotoSansMyanmar-Light.ttf') }}') format('truetype');
         }
 
         @font-face {
             font-family: 'poppins';
-            src: url('{{ public_path('fonts/Poppins/Poppins-Medium.ttf') }}');
+            src: url('{{ public_path('fonts/Poppins/Poppins-Regular.ttf') }}');
         }
 
         * {
             padding: 0;
             margin: 0;
             box-sizing: border-box;
-            line-height: 1.5;
-            font-family: 'myanmar' !important;
+            font-size: 14px;
         }
 
         table {
-            font-size: 12px;
             width: 100%;
+            table-layout: fixed;
         }
 
-        thead th {
-            background-color: #1b5f21;
+        th {
+            background-color: #1b5f21 !important;
             color: white;
             font-weight: 600;
             text-align: center;
             font-family: 'poppins' !important;
         }
 
-        th:not(:first-child) {
-            width: 12%;
-        }
-
         th,
         td {
-            padding: 5px 10px;
+            padding: 3px 10px;
+            height: 25px;
+            width: 1%;
+            white-space: nowrap !important;
             background-color: #f1f2f380;
-            height: 32.5px;
+            vertical-align: middle;
+        }
+
+        td {
             text-align: right;
         }
 
-        td:first-child {
+        td:not(:first-child):not(:last-child) {
+            width: auto !important;
+        }
+
+        .customer-info {
+            font-family: 'poppins' !important;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .customer-info>div {
+            width: 30%;
+            display: flex;
+        }
+
+        .customer-info>div:nth-of-type(2),
+        .customer-info>div:nth-of-type(5) {
+            width: 40%;
+        }
+
+        .customer-info>div p:first-of-type {
+            color: gray;
+        }
+
+        .customer-info p {
+            display: inline-block;
+            padding: 3px 0;
+            padding-right: 5px;
+        }
+
+        .invoice-info {
+            font-family: 'myanmar' !important;
+        }
+
+        .invoice-info td:nth-child(2) {
             text-align: left;
         }
 
-        tfoot td {
-            font-weight: 600;
-            text-align: right !important;
+        .invoice-info td:nth-child(3) {
+            text-align: center;
         }
 
-        h3 {
-            font-weight: 500;
+        .invoice-info th,
+        .invoice-info td {
+            width: 20mm;
         }
 
-        .watermark {
-            position: fixed;
-            top: 45%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: -1;
-            opacity: 0.3;
-            width: 500px;
+        .invoice-info th:first-child,
+        .invoice-info td:first-child {
+            width: 10mm;
+        }
+
+        .invoice-info th:nth-child(2),
+        .invoice-info td:nth-child(2) {
+            width: 90mm;
+        }
+
+        .summary-info th:first-child,
+        .summary-info td:first-child {
+            width: 10mm;
+        }
+
+        .summary-info th:nth-child(2),
+        .summary-info td:nth-child(2) {
+            width: 120mm;
+        }
+
+        .summary-info td:nth-child(2) {
+            text-align: left;
+        }
+
+        .summary-info th:last-child,
+        .summary-info td:last-child {
+            width: 20mm;
         }
 
         .page-break {
@@ -85,22 +142,83 @@
 
 <body>
     @php
-        $rows = 15;
-        $chunks = $data['items']->chunk($rows);
+        $items = collect($data['items']);
+        $chunks = collect();
 
-        $rows = count($data['items']->chunk($rows)) > 1 ? 15 : 10;
+        $defaultRows = 16;
+        $firstPageRows = $defaultRows + 5;
+        $nextPageRows = $firstPageRows + 2;
+
+        if ($items->isNotEmpty()) {
+            $chunks->push($items->slice(0, $defaultRows));
+            $remainingItems = $items->slice($defaultRows);
+            if ($remainingItems->isNotEmpty()) {
+                $chunks = collect();
+                $chunks->push($items->slice(0, $firstPageRows));
+                $remainingItems = $items->slice($firstPageRows);
+
+                foreach ($remainingItems->chunk($nextPageRows) as $chunk) {
+                    $chunks->push($chunk);
+                }
+            }
+        }
 
         $allPageTotal = 0;
         $subPageTotal = [];
     @endphp
 
     <div class="main">
-        @foreach ($chunks as $chunk)
-            @php $columnSum = 0; @endphp
-            <div class="{{ count($data['items']->chunk($rows)) > 1 ? 'page-break' : '' }}">
+        <div class="customer-info">
+            <div>
+                <p>Date:</p>
+                <p>{{ date_format($data->date, 'd-M-Y') }}</p>
+            </div>
+            <div>
+                <p>Customer:</p>
+                <p>
+                    {{ $data->car->customer_name ?? '' }}
+                    {{ $data->car->customer_phone ?? '' }}
+                </p>
+            </div>
+            <div>
+                <p>Invoice No:</p>
+                <p>{{ $data->record_number ?? '' }}</p>
+            </div>
+            <div>
+                <p>Car Number:</p>
+                <p>{{ $data->car->car_number ?? '' }}</p>
+            </div>
+            <div>
+                <p>Car Brand:</p>
+                <p>{{ $data->car->car_brand ?? '' }}</p>
+            </div>
+            <div>
+                <p>Car Model:</p>
+                <p>{{ $data->car->car_model ?? '' }}</p>
+            </div>
+        </div>
+
+        @foreach ($chunks as $pageIndex => $chunk)
+            @php
+                $columnSum = 0;
+            @endphp
+
+            @if ($pageIndex !== 0)
+                <div class="customer-info">
+                    <div></div>
+                    <div></div>
+                    <div>
+                        <p>Invoice No:</p>
+                        <p>{{ $data->record_number ?? '' }}</p>
+                    </div>
+                </div>
+            @endif
+
+            <div class="{{ count($chunks) > 1 ? 'page-break' : '' }} invoice-info">
                 <table>
                     <thead>
                         <tr>
+                            <th>No</th>
                             <th>Description</th>
                             <th>Quantity</th>
                             <th>Price</th>
@@ -113,17 +231,27 @@
                                 $columnSum += $item['total'];
                             @endphp
                             <tr>
+                                <td>{{ $key + 1 }}</td>
                                 <td>{{ $item['description'] }}</td>
                                 <td>{{ $item['quantity'] }}</td>
                                 <td>{{ number_format($item['unit_price']) }}</td>
                                 <td>{{ number_format($item['total']) }}</td>
                             </tr>
                             @php
-                                $remainingRows = $rows - count($chunk);
+                                if (count($chunks) > 1 && $pageIndex === 0) {
+                                    $remainingRows = $firstPageRows - count($chunk);
+                                } elseif (count($chunks) > 1 && $pageIndex !== 0) {
+                                    $remainingRows = $nextPageRows - count($chunk);
+                                } else {
+                                    $remainingRows = $defaultRows - count($chunk);
+                                }
                             @endphp
                         @endforeach
                         @for ($i = 0; $i < $remainingRows; $i++)
                             <tr>
+                                <td>
+                                    <div></div>
+                                </td>
                                 <td>
                                     <div></div>
                                 </td>
@@ -141,24 +269,26 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="3">SubTotal</td>
+                            <td colspan="4">SubTotal</td>
                             <td>{{ number_format($columnSum) }}</td>
                         </tr>
-                        <tr>
-                            <td colspan="3">Discount</td>
-                            <td>{{ number_format($data['discount']) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">Advance</td>
-                            <td>{{ number_format($data['advance']) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">Total</td>
-                            <td>{{ number_format($columnSum) }}</td>
-                        </tr>
+                        @if (count($chunks) === 1)
+                            <tr>
+                                <td colspan="4">Discount</td>
+                                <td>{{ number_format($data['discount']) }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">Advance</td>
+                                <td>{{ number_format($data['advance']) }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">Total</td>
+                                <td>{{ number_format($columnSum) }}</td>
+                            </tr>
+                        @endif
                     </tfoot>
                 </table>
-                @if (count($chunks) == 1)
+                @if (count($chunks) === 1)
                     @include('partials._note&sign')
                 @endif
             </div>
@@ -169,54 +299,98 @@
         @endforeach
 
         @if (count($chunks) > 1)
-            <table>
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($subPageTotal as $index => $subPage)
+            <div class="customer-info">
+                <div>
+                    <p>Date:</p>
+                    <p>{{ date_format($data->date, 'd-M-Y') }}</p>
+                </div>
+                <div>
+                    <p>Customer:</p>
+                    <p>
+                        {{ $data->car->customer_name ?? '' }}
+                        {{ $data->car->customer_phone ?? '' }}
+                    </p>
+                </div>
+                <div>
+                    <p>Invoice No:</p>
+                    <p>{{ $data->record_number ?? '' }}</p>
+                </div>
+                <div>
+                    <p>Car Number:</p>
+                    <p>{{ $data->car->car_number ?? '' }}</p>
+                </div>
+                <div>
+                    <p>Car Brand:</p>
+                    <p>{{ $data->car->car_brand ?? '' }}</p>
+                </div>
+                <div>
+                    <p>Car Model:</p>
+                    <p>{{ $data->car->car_model ?? '' }}</p>
+                </div>
+            </div>
+            <div class="summary-info">
+                <table>
+                    <thead>
                         <tr>
-                            <td>Page {{ $index + 1 }}</td>
-                            <td>{{ number_format($subPage) }}</td>
+                            <th>No</th>
+                            <th>Description</th>
+                            <th>Total</th>
                         </tr>
-                    @endforeach
-                    @php
-                        $summaryRemainingRows = $rows - count($subPageTotal) - 4;
-                    @endphp
-                    @for ($i = 0; $i < $summaryRemainingRows; $i++)
+                    </thead>
+                    <tbody>
+                        @foreach ($subPageTotal as $index => $subPage)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>Page {{ $index + 1 }}</td>
+                                <td>{{ number_format($subPage) }}</td>
+                            </tr>
+                        @endforeach
+                        @php
+                            $summaryRemainingRows = $defaultRows - count($subPageTotal);
+                        @endphp
+                        @for ($i = 0; $i < $summaryRemainingRows; $i++)
+                            <tr>
+                                <td>
+                                    <div></div>
+                                </td>
+                                <td>
+                                    <div></div>
+                                </td>
+                                <td>
+                                    <div></div>
+                                </td>
+                            </tr>
+                        @endfor
+                    </tbody>
+                    <tfoot>
                         <tr>
-                            <td>
-                                <div></div>
-                            </td>
-                            <td>
-                                <div></div>
-                            </td>
+                            <td colspan="2">SubTotal</td>
+                            <td>{{ number_format($allPageTotal) }}</td>
                         </tr>
-                    @endfor
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td>SubTotal</td>
-                        <td>{{ number_format($allPageTotal) }}</td>
-                    </tr>
-                    <tr>
-                        <td>Discount</td>
-                        <td>{{ number_format($data['discount']) }}</td>
-                    </tr>
-                    <tr>
-                        <td>Advance</td>
-                        <td>{{ number_format($data['advance']) }}</td>
-                    </tr>
+                        <tr>
+                            <td colspan="2">Discount</td>
+                            <td>{{ number_format($data['discount']) }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Advance</td>
+                            <td>{{ number_format($data['advance']) }}</td>
+                        </tr>
 
-                    <tr>
-                        <td>Total</td>
-                        <td>{{ number_format($data['grand_total']) }}</td>
-                    </tr>
-                </tfoot>
-            </table>
+                        <tr>
+                            <td colspan="2">Grand Total</td>
+                            <td>{{ number_format($data['grand_total']) }}</td>
+                        </tr>
+                        {{-- <tr>
+                            <td colspan="2">Paid</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Due</td>
+                            <td></td>
+                        </tr> --}}
+                    </tfoot>
+                </table>
+            </div>
             @include('partials._note&sign')
         @endif
 

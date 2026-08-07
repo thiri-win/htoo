@@ -12,24 +12,18 @@
             src: url('{{ public_path('fonts/Poppins/Poppins-Medium.ttf') }}');
         }
 
-        @font-face {
-            font-family: 'myanmar';
-            src: url('{{ public_path('fonts/Noto_Sans_Myanmar/NotoSansMyanmar-Medium.ttf') }}') format('truetype');
-        }
-
         * {
             padding: 0;
             margin: 0;
             box-sizing: border-box;
             line-height: 1.5;
             font-size: 14px;
-            font-family: 'myanmar' !important;
-            font-weight: 400;
+            font-family: 'poppins' !important;
         }
 
         .header {
             width: 100%;
-            padding: 10mm;
+            padding: 5mm;
         }
 
         .container {
@@ -48,7 +42,7 @@
             text-align: center;
             color: #1b5f21;
             text-transform: uppercase;
-            margin: 12px 0;
+            margin: 3mm 0;
             font-size: 30px;
             font-weight: 700;
             font-family: "poppins";
@@ -60,14 +54,7 @@
             font-size: 16px;
         }
 
-        td {
-            padding: 5px;
-            white-space: nowrap;
-
-        }
-
-        .content p,
-        .content strong {
+        .content {
             font-size: 12px;
         }
     </style>
@@ -84,28 +71,28 @@
                 <p>(29/B), Shwe Ta Gar St, Bon Shay Gone Ward</p>
                 <p>Shwe Pyi Thar Township, Yangon</p>
                 <p>&#9742; 09 443067898, &#9742;09 795355487</p>
-                <p style="font-family: poppins;">&blacktriangleright; UAB Bank -
-                    <strong style="font-family: poppins;">0243 3010 0011 287</strong>
-                    [<strong>AUNG KO HEIN</strong>]
+                <p>&blacktriangleright; UAB Bank -
+                    <span>0243 3010 0011 287</span>
+                    [<span>AUNG KO HEIN</span>]
                 </p>
-                <p style="font-family: poppins;">&blacktriangleright; KBZ Bank -
-                    <strong style="font-family: poppins;">1225 1105 7008 30201</strong>
-                    [<strong>THIRI WIN</strong>]
+                <p>&blacktriangleright; KBZ Bank -
+                    <span>1225 1105 7008 30201</span>
+                    [<span>THIRI WIN</span>]
                 </p>
-                <p style="font-family: poppins;">&blacktriangleright; AYA Bank -
-                    <strong style="font-family: poppins;">2000 4254 047</strong>
-                    [<strong>THIRI WIN</strong>]
+                <p>&blacktriangleright; AYA Bank -
+                    <span>2000 4254 047</span>
+                    [<span>THIRI WIN</span>]
                 </p>
-                <p style="font-family: poppins;">&blacktriangleright; KBZ Pay -
-                    <strong style="font-family: poppins;">09443067898</strong>
-                    [<strong>AUNG KO HEIN</strong>]
+                <p>&blacktriangleright; KBZ Pay -
+                    <span>09443067898</span>
+                    [<span>AUNG KO HEIN</span>]
                 </p>
             </div>
         </div>
 
         <h1>Invoice</h1>
 
-        <table style="width: 100%;">
+        {{-- <table style="width: 100%;">
             <tbody>
                 <tr>
                     <td style="font-size: 12px;"></td>
@@ -154,7 +141,7 @@
                     </td>
                 </tr>
             </tbody>
-        </table>
+        </table> --}}
     </header>
 </body>
 
