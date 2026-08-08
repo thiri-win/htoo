@@ -84,7 +84,7 @@
             padding-right: 5px;
         }
 
-        .invoice-info {
+        .invoice-info td {
             font-family: 'myanmar' !important;
         }
 
