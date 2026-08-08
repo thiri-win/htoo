@@ -20,6 +20,7 @@ const form = useForm({
     'advance': props.voucher.advance,
     'grand_total': props.voucher.grand_total,
     'remark': props.voucher.remark,
+    'payment_status': props.voucher.payment_status,
 })
 
 const selectedCar = ref({
@@ -91,19 +92,11 @@ const submit = () => {
                     <input type="text" name="description" id="description" placeholder="Description" v-model="form.description" :class="form.errors.description ? 'border-red-300' : ''">
                 </div>
                 <div class="v-select-container">
-                    <v-select
-                        v-model="form.car_id"
-                        :options="cars"
-                        :reduce="car => car.id"
-                        label="car_number"
-                        placeholder="Car Number ရွေးပါ"
-                        :class="form.errors.car_id ? 'v-select-error' : ''"
-                        class="border-b"
-                    ></v-select>
+                    <v-select v-model="form.car_id" :options="cars" :reduce="car => car.id" label="car_number" placeholder="Car Number ရွေးပါ" :class="form.errors.car_id ? 'v-select-error' : ''" class="border-b"></v-select>
                     <p class="text-xs py-2">
-                        {{ selectedCar.car_brand }} 
-                        {{ selectedCar.car_model }} 
-                        {{ selectedCar.customer_name }} 
+                        {{ selectedCar.car_brand }}
+                        {{ selectedCar.car_model }}
+                        {{ selectedCar.customer_name }}
                         {{ selectedCar.customer_phone }}
                     </p>
                 </div>
@@ -185,6 +178,14 @@ const submit = () => {
                         </tr>
                     </tfoot>
                 </table>
+            </div>
+
+            <div class="bg-neutral-100 dark:bg-stone-900 my-5 p-5 rounded-lg">
+                <label for="remark">Payment Status:</label>
+                <div>
+                    <label for="paid" class="mr-5"><input type="radio" name="payment_status" id="paid" v-model="form.payment_status" value="paid">Paid</label>
+                    <label for="unpaid"><input type="radio" name="payment_status" id="unpaid" v-model="form.payment_status" value="unpaid">Unpaid</label>
+                </div>
             </div>
 
             <div class="bg-neutral-100 dark:bg-stone-900 my-5 p-5 rounded-lg">

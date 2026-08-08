@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('advance')->default(0);
             $table->integer('grand_total')->default(0);
             $table->string('remark')->nullable();
+            $table->enum('payment_status', ['paid', 'unpaid'])->default('unpaid');
             $table->timestamps();
         });
     }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Record extends Model
 {
-    protected $fillable = ['date', 'record_number', 'description', 'car_id', 'category_id', 'sub_total', 'discount', 'advance', 'grand_total', 'remark'];
+    protected $fillable = ['date', 'record_number', 'description', 'car_id', 'category_id', 'sub_total', 'discount', 'advance', 'grand_total', 'remark', 'payment_status'];
 
     protected $casts = ['date' => 'datetime'];
 

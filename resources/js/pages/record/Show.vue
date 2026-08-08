@@ -91,11 +91,18 @@ defineProps({
                         <td class="text-right">{{ record.grand_total }}</td>
                     </tr>
                     <tr>
-                        <td>မှတ်ချက် :</td>
+                        <td class="text-nowrap">မှတ်ချက်:</td>
                         <td colspan="4">{{ record.remark }}</td>
                     </tr>
                 </tfoot>
             </table>
+        </div>
+        <div>
+            <p>Payment Status:
+                <span :class="record.payment_status == 'unpaid' ? 'text-red-500' : 'text-green-500'">
+                    {{ record.payment_status }}
+                </span>
+            </p>
         </div>
         <div v-if="record.category.id == 1" class="inline-block">
             <a :href="route('vouchers.edit', record)" class="btn edit-btn my-5 inline-block mr-2">Edit</a>

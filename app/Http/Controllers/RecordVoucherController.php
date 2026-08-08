@@ -77,6 +77,7 @@ class RecordVoucherController extends Controller
     {
         $validated = $request->validate([
             'description' => 'sometimes',
+            'payment_status' => 'sometimes',
             // car
             'car_id' => 'sometimes',
             // record
