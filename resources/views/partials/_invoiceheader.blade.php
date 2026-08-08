@@ -45,13 +45,17 @@
             margin: 3mm 0;
             font-size: 30px;
             font-weight: 700;
-            font-family: "poppins";
+            font-family: "poppins" !important;
         }
 
         h2 {
-            font-family: "poppins";
+            font-family: "poppins" !important;
             font-weight: 600;
             font-size: 16px;
+        }
+
+        p {
+            font-family: 'poppins' !important;
         }
 
         .content {

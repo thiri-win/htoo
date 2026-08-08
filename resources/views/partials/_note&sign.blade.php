@@ -6,7 +6,7 @@
                 Note:
             </label>
         @endif
-        <p style="font-family: Poppins;">{{ $data['remark'] }}</p>
+        <p style="font-family: 'myanmar';">{{ $data['remark'] }}</p>
     </div>
 
     <div style="text-align: right;">

@@ -82,6 +82,7 @@
             display: inline-block;
             padding: 3px 0;
             padding-right: 5px;
+            font-family: 'myanmar' !important;
         }
 
         .invoice-info td {
