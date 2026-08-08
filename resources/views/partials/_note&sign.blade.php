@@ -1,4 +1,4 @@
-<div style="display: flex; gap: 1rem; margin:5mm 0;">
+<div style="display: flex; gap: 1rem; align-items: flex-start; margin:2mm 0;">
 
     <div style="margin-top: 5px; font-size:12px; width: 80%">
         @if ($data['remark'])

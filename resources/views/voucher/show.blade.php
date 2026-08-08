@@ -282,13 +282,22 @@
                                 <td>{{ number_format($data['advance']) }}</td>
                             </tr>
                             <tr>
-                                <td colspan="4">Total</td>
+                                <td colspan="4">Grand Total</td>
                                 <td>{{ number_format($columnSum) }}</td>
                             </tr>
+                            @if ($data['payment_status'] === 'paid')
+                                <tr>
+                                    <td colspan="4">Paid</td>
+                                    <td>{{ number_format($columnSum) }}</td>
+                                </tr>
+                            @endif
                         @endif
                     </tfoot>
                 </table>
                 @if (count($chunks) === 1)
+                    @if ($data['payment_status'] === 'paid')
+                        @include('partials._paidstamp')
+                    @endif
                     @include('partials._note&sign')
                 @endif
             </div>
@@ -380,14 +389,6 @@
                             <td colspan="2">Grand Total</td>
                             <td>{{ number_format($data['grand_total']) }}</td>
                         </tr>
-                        {{-- <tr>
-                            <td colspan="2">Paid</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Due</td>
-                            <td></td>
-                        </tr> --}}
                     </tfoot>
                 </table>
             </div>
