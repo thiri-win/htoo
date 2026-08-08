@@ -65,13 +65,13 @@
         }
 
         .customer-info>div {
-            width: 30%;
+            width: 23%;
             display: flex;
         }
 
         .customer-info>div:nth-of-type(2),
         .customer-info>div:nth-of-type(5) {
-            width: 40%;
+            width: 50%;
         }
 
         .customer-info>div p:first-of-type {
@@ -110,6 +110,10 @@
         .invoice-info th:nth-child(2),
         .invoice-info td:nth-child(2) {
             width: 90mm;
+        }
+
+        .summary-info {
+            position: relative;
         }
 
         .summary-info th:first-child,
@@ -295,10 +299,10 @@
                         @endif
                     </tfoot>
                 </table>
+                @if (count($chunks) == 1 && $data['payment_status'] == 'paid')
+                    @include('partials._paidstamp')
+                @endif
                 @if (count($chunks) === 1)
-                    @if ($data['payment_status'] === 'paid')
-                        @include('partials._paidstamp')
-                    @endif
                     @include('partials._note&sign')
                 @endif
             </div>
@@ -338,7 +342,7 @@
                     <p>{{ $data->car->car_model ?? '' }}</p>
                 </div>
             </div>
-            <div class="summary-info">
+            <div class="summary-info"">
                 <table>
                     <thead>
                         <tr>
@@ -390,9 +394,19 @@
                             <td colspan="2">Grand Total</td>
                             <td>{{ number_format($data['grand_total']) }}</td>
                         </tr>
+                        @if ($data['payment_status'] === 'paid')
+                            <tr>
+                                <td colspan="2">Paid</td>
+                                <td>{{ number_format($columnSum) }}</td>
+                            </tr>
+                        @endif
                     </tfoot>
                 </table>
+                @if ($data['payment_status'] === 'paid')
+                    @include('partials._paidstamp')
+                @endif
             </div>
+
             @include('partials._note&sign')
         @endif
 

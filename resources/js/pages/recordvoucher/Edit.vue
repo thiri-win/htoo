@@ -21,6 +21,7 @@ const form = useForm({
     'grand_total': props.voucher.grand_total,
     'remark': props.voucher.remark,
     'payment_status': props.voucher.payment_status,
+    'payment_date': props.voucher.payment_date,
 })
 
 const selectedCar = ref({
@@ -186,7 +187,11 @@ const submit = () => {
                     <label for="paid" class="mr-5"><input type="radio" name="payment_status" id="paid" v-model="form.payment_status" value="paid">Paid</label>
                     <label for="unpaid"><input type="radio" name="payment_status" id="unpaid" v-model="form.payment_status" value="unpaid">Unpaid</label>
                 </div>
+                <div>
+                    <input type="date" name="payment_date" id="payment_date" v-model="form.payment_date" class="w-auto!">
+                </div>
             </div>
+
 
             <div class="bg-neutral-100 dark:bg-stone-900 my-5 p-5 rounded-lg">
                 <label for="remark">Note:</label>

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->integer('grand_total')->default(0);
             $table->string('remark')->nullable();
             $table->enum('payment_status', ['paid', 'unpaid'])->default('unpaid');
+            $table->date('payment_date');
             $table->timestamps();
         });
     }

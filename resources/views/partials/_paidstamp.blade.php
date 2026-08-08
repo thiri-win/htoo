@@ -6,10 +6,11 @@
         left: 50%;
         top: 73%;
         transform: translate(-50%, -50%) rotate(-15deg);
+        text-align: center;
+        padding: 1rem;
     }
 
     .stamp p {
-        padding: 1rem;
         font-size: 3rem;
         font-weight: 900;
         letter-spacing: .5rem;
@@ -17,4 +18,5 @@
 </style>
 <div class="stamp">
     <p>PAID</p>
+    <span>{{ $data['payment_date'] }}</span>
 </div>
